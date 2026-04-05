@@ -19,7 +19,7 @@ export default function SendVerifyEmail({ email }: { email: string }) {
 
     try {
       const res = await fetch(
-        "http://localhost:5000/api/v1/auth/send-verification-email",
+        `${import.meta.env.VITE_API_URL}/api/v1/auth/send-verification-email`,
         {
           method: "POST",
           headers: {

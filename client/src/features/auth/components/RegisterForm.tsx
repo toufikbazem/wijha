@@ -10,9 +10,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
-import JobseekerRegisterForm from "./jobseekerRegisterForm";
+import JobseekerRegisterForm from "./JobseekerRegisterForm";
 import EmployerRegisterForm from "./EmployerRegisterForm";
-import { employerSchema, jobSeekerSchema } from "../pages/schema";
+import { employerSchema, jobSeekerSchema } from "../schema";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -89,14 +89,17 @@ function RegisterForm({
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/v1/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/v1/auth/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ role: accountType, ...data }),
+          credentials: "include",
         },
-        body: JSON.stringify({ role: accountType, ...data }),
-        credentials: "include",
-      });
+      );
 
       const result = await res.json();
 

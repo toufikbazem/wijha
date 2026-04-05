@@ -74,8 +74,8 @@ const register = async (req, res) => {
       );
     } else if (role === "employer") {
       await db.query(
-        "INSERT INTO company (user_id, company_name, industry, size, address) VALUES ($1, $2, $3, $4, $5)",
-        [newUser.rows[0].id, companyName, industry, size, address],
+        "INSERT INTO employers (user_id, company_name, industry, size, address, phone_number) VALUES ($1, $2, $3, $4, $5, $6)",
+        [newUser.rows[0].id, companyName, industry, size, address, phoneNumber],
       );
     }
     res.status(201).json({ message: "User registered successfully." });

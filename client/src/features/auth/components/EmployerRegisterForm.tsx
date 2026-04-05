@@ -143,10 +143,10 @@ function EmployerRegisterForm({ form }: { form: any }) {
                     <SelectValue placeholder="Select Company Size" />
                   </SelectTrigger>
                   <SelectContent className="p-3" position="item-aligned">
-                    <SelectItem key="small" value="small">
+                    <SelectItem key="small" value="1-10">
                       Small (1-50 employees)
                     </SelectItem>
-                    <SelectItem key="large" value="large">
+                    <SelectItem key="large" value="51-200">
                       Large (201+ employees)
                     </SelectItem>
                   </SelectContent>
