@@ -7,7 +7,12 @@ import auth from "./src/modules/auth/auth.routes.js";
 const app = express();
 dotenv.config();
 
-app.use(cors({}));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000");

@@ -69,7 +69,7 @@ const register = async (req, res) => {
 
     if (role === "jobseeker") {
       await db.query(
-        "INSERT INTO jobseeker (user_id, first_name, last_name, address, phone_number) VALUES ($1, $2, $3, $4, $5)",
+        "INSERT INTO job_seeker (user_id, first_name, last_name, address, phone_number) VALUES ($1, $2, $3, $4, $5)",
         [newUser.rows[0].id, firstName, lastName, address, phoneNumber],
       );
     } else if (role === "employer") {
