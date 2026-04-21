@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search } from "lucide-react";
-import DashJobItem from "./DashJobitem";
+import DashJobItem from "./DashJobItem";
 import DashJobPostsPagination from "./DashJobPostsPagination";
 import { useTranslation } from "react-i18next";
 
@@ -53,9 +53,7 @@ function DashJobPostsList({
           <h3 className="text-xl font-bold text-gray-900 mb-2">
             {t("noJobsFound")}
           </h3>
-          <p className="text-gray-500 mb-6">
-            {t("adjustFilters")}
-          </p>
+          <p className="text-gray-500 mb-6">{t("adjustFilters")}</p>
           <button className="px-6 py-2.5 bg-[#008CBA] text-white rounded-xl hover:bg-[#006d91] transition font-medium">
             {t("clearAllFilters")}
           </button>
