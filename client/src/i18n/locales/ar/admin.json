@@ -1,0 +1,21 @@
+{
+  "dashboard": "لوحة التحكم",
+  "totalUsers": "إجمالي المستخدمين",
+  "jobSeekers": "الباحثون عن عمل",
+  "employers": "أصحاب العمل",
+  "jobPosts": "الوظائف",
+  "activeSubscriptions": "الاشتراكات النشطة",
+  "jobPostsByStatus": "الوظائف حسب الحالة",
+  "recentUsers": "المستخدمون الأخيرون",
+  "recentJobPosts": "الوظائف الأخيرة",
+  "sidebar": {
+    "dashboard": "لوحة التحكم",
+    "jobSeekers": "الباحثون عن عمل",
+    "employers": "أصحاب العمل",
+    "jobPosts": "الوظائف",
+    "plans": "الخطط",
+    "subscriptions": "الاشتراكات",
+    "profileAccess": "الوصول للملفات",
+    "settings": "الإعدادات"
+  }
+}

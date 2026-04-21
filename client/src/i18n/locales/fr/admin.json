@@ -1,0 +1,21 @@
+{
+  "dashboard": "Tableau de bord",
+  "totalUsers": "Total des utilisateurs",
+  "jobSeekers": "Chercheurs d'emploi",
+  "employers": "Employeurs",
+  "jobPosts": "Offres d'emploi",
+  "activeSubscriptions": "Abonnements actifs",
+  "jobPostsByStatus": "Offres par statut",
+  "recentUsers": "Utilisateurs récents",
+  "recentJobPosts": "Offres récentes",
+  "sidebar": {
+    "dashboard": "Tableau de bord",
+    "jobSeekers": "Chercheurs d'emploi",
+    "employers": "Employeurs",
+    "jobPosts": "Offres d'emploi",
+    "plans": "Plans",
+    "subscriptions": "Abonnements",
+    "profileAccess": "Accès aux profils",
+    "settings": "Paramètres"
+  }
+}

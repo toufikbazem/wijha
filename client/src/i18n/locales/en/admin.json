@@ -1,0 +1,21 @@
+{
+  "dashboard": "Dashboard",
+  "totalUsers": "Total Users",
+  "jobSeekers": "Job Seekers",
+  "employers": "Employers",
+  "jobPosts": "Job Posts",
+  "activeSubscriptions": "Active Subscriptions",
+  "jobPostsByStatus": "Job Posts by Status",
+  "recentUsers": "Recent Users",
+  "recentJobPosts": "Recent Job Posts",
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "jobSeekers": "Job Seekers",
+    "employers": "Employers",
+    "jobPosts": "Job Posts",
+    "plans": "Plans",
+    "subscriptions": "Subscriptions",
+    "profileAccess": "Profile Access",
+    "settings": "Settings"
+  }
+}
