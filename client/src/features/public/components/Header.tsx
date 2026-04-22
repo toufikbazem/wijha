@@ -9,7 +9,7 @@ import {
 import { useState } from "react";
 import img from "@/assets/logo.png";
 import img1 from "@/assets/logo1.png";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
   DropdownMenu,
@@ -25,9 +25,16 @@ import { useTranslation } from "react-i18next";
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { user } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
   const { t } = useTranslation("public");
+
+  const navLinkClass = (path: string) =>
+    `${pathname === path ? "text-[#008CBA]" : "text-gray-700"} hover:text-[#008CBA] transition font-medium`;
+
+  const mobileNavLinkClass = (path: string) =>
+    `block ${pathname === path ? "text-[#008CBA]" : "text-gray-700"} hover:text-[#008CBA] transition font-medium`;
 
   const handleLogOut = async () => {
     try {
@@ -61,32 +68,10 @@ function Header() {
             <img src={img1} alt="Logo" className="w-20" />
           </div>
           <div className="hidden lg:flex space-x-8">
-            <Link
-              to="/"
-              className={`${
-                true ? "text-[#008CBA]" : "text-gray-700"
-              } hover:text-[#008CBA] transition font-medium`}
-            >
-              {t("home")}
-            </Link>
-            <Link
-              to="/jobSearch"
-              className="text-gray-700 hover:text-[#008CBA] transition font-medium"
-            >
-              {t("navFindJobs")}
-            </Link>
-            <Link
-              to="/contacts"
-              className="text-gray-700 hover:text-[#008CBA] transition font-medium"
-            >
-              {t("navContacts")}
-            </Link>
-            <Link
-              to="/about"
-              className="text-gray-700 hover:text-[#008CBA] transition font-medium"
-            >
-              {t("navAbout")}
-            </Link>
+            <Link to="/" className={navLinkClass("/")}>{t("home")}</Link>
+            <Link to="/jobSearch" className={navLinkClass("/jobSearch")}>{t("navFindJobs")}</Link>
+            <Link to="/contacts" className={navLinkClass("/contacts")}>{t("navContacts")}</Link>
+            <Link to="/about" className={navLinkClass("/about")}>{t("navAbout")}</Link>
           </div>
           {user ? (
             <DropdownMenu>
@@ -191,34 +176,10 @@ function Header() {
       {isMenuOpen && !user && (
         <div className="lg:hidden bg-white shadow-md border-t">
           <div className="px-4 py-4 space-y-4">
-            <Link
-              to="/"
-              className="block text-gray-700 hover:text-[#008CBA] transition font-medium"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t("home")}
-            </Link>
-            <Link
-              to="/jobSearch"
-              className="block text-gray-700 hover:text-[#008CBA] transition font-medium"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t("navFindJobs")}
-            </Link>
-            <Link
-              to="/contacts"
-              className="block text-gray-700 hover:text-[#008CBA] transition font-medium"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t("navContacts")}
-            </Link>
-            <Link
-              to="/about"
-              className="block text-gray-700 hover:text-[#008CBA] transition font-medium"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              {t("navAbout")}
-            </Link>
+            <Link to="/" className={mobileNavLinkClass("/")} onClick={() => setIsMenuOpen(false)}>{t("home")}</Link>
+            <Link to="/jobSearch" className={mobileNavLinkClass("/jobSearch")} onClick={() => setIsMenuOpen(false)}>{t("navFindJobs")}</Link>
+            <Link to="/contacts" className={mobileNavLinkClass("/contacts")} onClick={() => setIsMenuOpen(false)}>{t("navContacts")}</Link>
+            <Link to="/about" className={mobileNavLinkClass("/about")} onClick={() => setIsMenuOpen(false)}>{t("navAbout")}</Link>
             <div className="flex items-center flex-col gap-4 space-x-4">
               <button
                 onClick={() => navigate("/login")}

@@ -65,5 +65,7 @@
   "title": "العنوان",
   "actions": "الإجراءات",
   "verified": "موثق",
-  "notVerified": "غير موثق"
+  "notVerified": "غير موثق",
+  "addressPlaceholder": "ابحث عن مدينة أو بلدية...",
+  "noAddressFound": "لم يتم العثور على عنوان."
 }

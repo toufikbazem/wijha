@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { Filter, Search, X, MapPin, Briefcase, Wrench } from "lucide-react";
+import { Filter, Search, X, Briefcase, Wrench } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { AddressCombobox } from "@/components/ui/address-combobox";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -202,15 +203,12 @@ export default function ProfileSearch() {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">{t("location")}</FieldLabel>
-                <div className="relative">
-                  <MapPin className="input-icon-filter" size={16} />
-                  <Input
-                    placeholder="e.g. Algiers"
-                    type="text"
-                    className="input-filter"
-                    {...field}
-                  />
-                </div>
+                <AddressCombobox
+                  value={field.value}
+                  onChange={field.onChange}
+                  invalid={fieldState.invalid}
+                  variant="filter"
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}

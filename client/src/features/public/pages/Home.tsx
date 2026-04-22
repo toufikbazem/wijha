@@ -16,6 +16,11 @@ import img5 from "@/assets/4.png";
 import img6 from "@/assets/9.png";
 import img7 from "@/assets/6.png";
 import img8 from "@/assets/7.png";
+import img13 from "@/assets/13.png";
+import img14 from "@/assets/14.png";
+import img15 from "@/assets/15.png";
+import add1 from "@/assets/add1.jpg";
+import add2 from "@/assets/add2.jpg";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import ScrollReveal from "scrollreveal";
@@ -128,7 +133,7 @@ export default function JobSearchLanding() {
 
   const testimonials = [
     {
-      name: "Dr. Sid Ahmed Hadj Aissa",
+      name: "Pr. Sid Ahmed Hadj Aissa",
       role: "المنسق الوطني لمسرعات الأعمال الجامعية",
       image: "SHA",
       text: 'تجربة ممتازة مع منصة "وجهة". واجهة المستخدم سهلة جدا و الوصول الى الفرص الوظيفية كان سريعا وفعالا. أنصح بها بشدة لكل الباحثين عن عمل والذين يبحثون عن تجربة احترافية ومنظمة',
@@ -149,7 +154,8 @@ export default function JobSearchLanding() {
 
   const formatSalary = (min: number | null, max: number | null) => {
     if (!min && !max) return null;
-    if (min && max) return `${min.toLocaleString()} - ${max.toLocaleString()} DA`;
+    if (min && max)
+      return `${min.toLocaleString()} - ${max.toLocaleString()} DA`;
     if (min) return `${min.toLocaleString()}+ DA`;
     return `Up to ${max!.toLocaleString()} DA`;
   };
@@ -388,26 +394,27 @@ export default function JobSearchLanding() {
       </section>
 
       {/* Sponsored Ads Section */}
-      <section className="py-10 bg-gray-50">
+      {/* <section className="py-10 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-xs text-gray-400 uppercase tracking-widest text-center mb-4">
             {t("sponsored")}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Ad slot 1 — wide banner */}
-            <div className="md:col-span-2 h-36 rounded-2xl bg-gray-200 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm select-none">
-              728 × 90 — Leaderboard Ad
+          
+          
+            <div className="md:col-span-2 h-80 rounded-2xl bg-gray-200 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm select-none">
+              <img src={add1} alt="" className="w-full h-full" />
             </div>
-            {/* Ad slot 2 — square */}
-            <div className="h-36 rounded-2xl bg-gray-200 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm select-none">
-              300 × 250 — Rectangle Ad
+          
+            <div className="h-80 rounded-2xl bg-gray-200 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm select-none">
+              <img src={add2} alt="" className="w-full h-full" />
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Featured Employers */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bottom-reveal text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -415,19 +422,52 @@ export default function JobSearchLanding() {
             </h2>
             <p className="text-lg text-gray-600">{t("employersSubtitle")}</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            <img src={img8} alt="" className="right-reveal" />
-            <img src={img3} alt="" className="right-reveal" />
-            <img src={img4} alt="" className="right-reveal" />
-            <img src={img5} alt="" className="right-reveal" />
-            <img src={img6} alt="" className="right-reveal" />
-            <img src={img7} alt="" className="right-reveal" />
+        </div>
+        {/* Infinite marquee strip */}
+        <div className="relative w-full">
+          {/* Left fade */}
+          <div className="pointer-events-none absolute left-0 top-0 h-full w-24 z-10 bg-gradient-to-r from-white to-transparent" />
+          {/* Right fade */}
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-24 z-10 bg-gradient-to-l from-white to-transparent" />
+
+          <div className="flex gap-6 w-max animate-marquee">
+            {[
+              img8,
+              img3,
+              img4,
+              img5,
+              img6,
+              img7,
+              img13,
+              img14,
+              img15,
+              img8,
+              img3,
+              img4,
+              img5,
+              img6,
+              img7,
+              img13,
+              img14,
+              img15,
+            ].map((src, i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-36 h-36 flex items-center justify-center"
+              >
+                <img
+                  src={src}
+                  alt=""
+                  className="max-h-36 max-w-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+      <section className="py-20 bg-linear-to-br from-gray-50 to-blue-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bottom-reveal text-center mb-16">
             <div className="inline-block bg-[#008CBA]/10 text-[#008CBA] px-4 py-2 rounded-full text-sm font-semibold mb-4">

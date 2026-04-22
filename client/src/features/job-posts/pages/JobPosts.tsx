@@ -36,6 +36,9 @@ import {
   unsaveJobPost,
 } from "@/features/auth/userSlice";
 import { useTranslation } from "react-i18next";
+import moment from "moment";
+import Footer from "@/features/public/components/Footer";
+import Header from "@/features/public/components/Header";
 
 export default function JobPosts() {
   const { user } = useSelector((state: any) => state.user);
@@ -60,6 +63,7 @@ export default function JobPosts() {
           `${import.meta.env.VITE_API_URL}/api/v1/job-posts/${id}`,
           {
             method: "GET",
+            credentials: "include",
             headers: {
               "Content-Type": "application/json",
             },
@@ -196,7 +200,8 @@ export default function JobPosts() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <Header />
       {!loading ? (
         <div className="max-w-7xl mx-auto px-4 py-8">
           {/* Header Section */}
@@ -227,9 +232,7 @@ export default function JobPosts() {
                       </AlertDialogTrigger>
                       <AlertDialogContent className="bg-white">
                         <AlertDialogHeader>
-                          <AlertDialogTitle>
-                            {t("needsLogin")}
-                          </AlertDialogTitle>
+                          <AlertDialogTitle>{t("needsLogin")}</AlertDialogTitle>
                           <AlertDialogDescription>
                             {t("loginOrCreate")}
                           </AlertDialogDescription>
@@ -341,7 +344,7 @@ export default function JobPosts() {
                   </span>
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#008CBA] backdrop-blur-sm rounded-full text-white text-sm">
                     <Calendar size={14} />
-                    {/* TODO: use moment for relative date */}
+                    {moment(data.created_at).fromNow()}
                   </span>
                 </div>
               </div>
@@ -419,7 +422,7 @@ export default function JobPosts() {
                         <AlertDialogCancel className="bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300 transition-colors shadow-md">
                           Cancel
                         </AlertDialogCancel>
-                        <AlertDialogAction className="bg-[#008CBA] text-white font-semibold rounded-xl hover:bg-[#0077A3] transition-colors shadow-md">
+                        <AlertDialogAction className="bg-primary-500! text-white font-semibold rounded-xl hover:bg-primary-600 transition-colors shadow-md">
                           Continue
                         </AlertDialogAction>
                       </AlertDialogFooter>
@@ -472,7 +475,9 @@ export default function JobPosts() {
                       <TrendingUp className="w-5 h-5 text-[#008CBA]" />
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">{tc("experienceLevel")}</p>
+                      <p className="text-xs text-gray-500">
+                        {tc("experienceLevel")}
+                      </p>
                       <p className="text-sm font-semibold text-gray-900">
                         {data.experience_level}
                       </p>
@@ -483,7 +488,9 @@ export default function JobPosts() {
                       <GraduationCap className="w-5 h-5 text-[#008CBA]" />
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">{tc("educationLevel")}</p>
+                      <p className="text-xs text-gray-500">
+                        {tc("educationLevel")}
+                      </p>
                       <p className="text-sm font-semibold text-gray-900">
                         {data.education_level}
                       </p>
@@ -498,12 +505,11 @@ export default function JobPosts() {
                     <div>
                       <p className="text-xs text-gray-500">{t("deadline")}</p>
                       <p className="text-sm font-semibold text-gray-900">
-                        {/* {data && moment(data.deadline).format("MMMM D, YYYY")} */}
-                        18/02/2012
+                        {data && moment(data.deadline).format("MMMM D, YYYY")}
                       </p>
                     </div>
                   </div>
-                  {/* {data.salaryRange && (
+                  {data && data.min_salary && data.max_salary && (
                     <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
                       <div className="w-10 h-10 bg-[#E6F7FB] rounded-lg flex items-center justify-center">
                         <DollarSign className="w-5 h-5 text-[#008CBA]" />
@@ -515,7 +521,7 @@ export default function JobPosts() {
                         </p>
                       </div>
                     </div>
-                  )} */}
+                  )}
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
                     <div className="w-10 h-10 bg-[#E6F7FB] rounded-lg flex items-center justify-center">
                       <Users className="w-5 h-5 text-[#008CBA]" />
@@ -584,7 +590,9 @@ export default function JobPosts() {
                       </p>
                     </div>
                     <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-gray-500 mb-1">{t("founded")}</p>
+                      <p className="text-xs text-gray-500 mb-1">
+                        {t("founded")}
+                      </p>
                       <p className="font-semibold text-gray-900 text-sm">
                         {/* {data && data.employerIdInfo.foundingYear} */}
                         {data.employer_founded_year}
@@ -610,7 +618,7 @@ export default function JobPosts() {
                 </div>
 
                 <button
-                  onClick={() => navigate(`#`)}
+                  onClick={() => navigate(`/companyProfile/${data.employerid}`)}
                   className="cursor-pointer w-full px-4 py-3 bg-[#008CBA] text-white rounded-xl hover:shadow-lg transition-all duration-300 font-semibold"
                 >
                   {t("viewCompanyProfile")}
@@ -689,6 +697,7 @@ export default function JobPosts() {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 }

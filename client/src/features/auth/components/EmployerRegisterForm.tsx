@@ -1,5 +1,6 @@
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { AddressCombobox } from "@/components/ui/address-combobox";
 import {
   Select,
   SelectContent,
@@ -8,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { companySize, industries } from "@/utils/data";
-import { Building2, Factory, MapPinHouse, Phone, Users } from "lucide-react";
+import { Building2, Factory, Phone, Users } from "lucide-react";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -72,16 +73,12 @@ function EmployerRegisterForm({ form }: { form: any }) {
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldLabel className="input-label">{t("address", { ns: "common" })}</FieldLabel>
-            <div className="relative">
-              <MapPinHouse className="input-icon" size={20} />
-              <Input
-                type="text"
-                className="input"
-                {...field}
-                aria-invalid={fieldState.invalid}
-                placeholder="Chrega, Algiers"
-              />
-            </div>
+            <AddressCombobox
+              value={field.value}
+              onChange={field.onChange}
+              invalid={fieldState.invalid}
+              variant="default"
+            />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
         )}

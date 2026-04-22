@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { Link, useNavigate } from "react-router";
 
 function DashCompanyProfileContent({
   companyInfo,
@@ -27,6 +28,7 @@ function DashCompanyProfileContent({
   editMode: boolean;
   form: any;
 }) {
+  const navigate = useNavigate();
   const [mission, setMission] = useState("");
   const { t } = useTranslation("employer");
 
@@ -285,9 +287,13 @@ function DashCompanyProfileContent({
                     )}
                   />
                 ) : (
-                  <p className="text-sm font-medium text-gray-900">
+                  <Link
+                    to={companyInfo.linkedin}
+                    target="_blank"
+                    className="block overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-gray-900"
+                  >
                     {companyInfo.linkedin}
-                  </p>
+                  </Link>
                 )}
               </div>
             </div>
@@ -320,9 +326,12 @@ function DashCompanyProfileContent({
                     )}
                   />
                 ) : (
-                  <p className="text-sm font-medium text-gray-900">
+                  <Link
+                    to={`tel:${companyInfo.phone_number}`}
+                    className="block overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-gray-900"
+                  >
                     {companyInfo.phone_number}
-                  </p>
+                  </Link>
                 )}
               </div>
             </div>
@@ -353,9 +362,13 @@ function DashCompanyProfileContent({
                     )}
                   />
                 ) : (
-                  <p className="text-sm font-medium text-gray-900">
+                  <Link
+                    to={companyInfo.website}
+                    target="_blank"
+                    className="block overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-gray-900"
+                  >
                     {companyInfo.website}
-                  </p>
+                  </Link>
                 )}
               </div>
             </div>

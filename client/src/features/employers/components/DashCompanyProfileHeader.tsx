@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { AddressCombobox } from "@/components/ui/address-combobox";
 import {
   Building2,
   Building2Icon,
@@ -280,16 +281,12 @@ function DashCompanyProfileHeader({
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field className="flex-1" data-invalid={fieldState.invalid}>
-                      <div className="relative">
-                        <MapPin className="input-icon-filter w-4 h-4" />
-                        <Input
-                          {...field}
-                          type="text"
-                          className="input-filter"
-                          aria-invalid={fieldState.invalid}
-                          placeholder="Chrega, Algiers"
-                        />
-                      </div>
+                      <AddressCombobox
+                        value={field.value}
+                        onChange={field.onChange}
+                        invalid={fieldState.invalid}
+                        variant="filter"
+                      />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}

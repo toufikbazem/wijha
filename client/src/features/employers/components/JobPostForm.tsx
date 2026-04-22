@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { AddressCombobox } from "@/components/ui/address-combobox";
 import {
   Popover,
   PopoverContent,
@@ -29,9 +30,6 @@ import {
   ClipboardList,
   Clock,
   FileText,
-  Mail,
-  MapPin,
-  MapPinCheck,
   Save,
   Send,
 } from "lucide-react";
@@ -95,12 +93,11 @@ function JobPostForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">{t("location")}</FieldLabel>
-                <MapPin className="input-icon" size={20} />
-                <Input
-                  {...field}
-                  placeholder="e.g., New York, NY"
-                  type="text"
-                  className="input pl-4!"
+                <AddressCombobox
+                  value={field.value}
+                  onChange={field.onChange}
+                  invalid={fieldState.invalid}
+                  variant="default"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -118,7 +115,6 @@ function JobPostForm({
                 <FieldLabel className="input-label">
                   {t("companyName")}
                 </FieldLabel>
-                <Building2 className="input-icon" size={20} />
                 <Input
                   {...field}
                   disabled
@@ -157,7 +153,6 @@ function JobPostForm({
                   <FieldLabel className="input-label">
                     {t("jobType")}
                   </FieldLabel>
-                  <Clock className="input-icon" size={20} />
                   <Select
                     name={field.name}
                     value={field.value}

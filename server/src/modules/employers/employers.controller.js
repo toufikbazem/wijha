@@ -123,7 +123,7 @@ export const updateEmployerProfile = async (req, res) => {
     }
 
     if (missions.length > 0) {
-      updates.push(`mission = $${index++}`);
+      updates.push(`missions = $${index++}`);
       values.push(missions);
     }
 
@@ -192,7 +192,13 @@ export const getDashboardStats = async (req, res) => {
     const employerId = employer.rows[0].id;
 
     // Run all queries in parallel
-    const [totalJobsResult, activeJobsResult, totalApplicantsResult, recentJobsResult, recentApplicantsResult] = await Promise.all([
+    const [
+      totalJobsResult,
+      activeJobsResult,
+      totalApplicantsResult,
+      recentJobsResult,
+      recentApplicantsResult,
+    ] = await Promise.all([
       // Total job posts
       db.query(
         "SELECT COUNT(*) AS count FROM job_post WHERE employer_id = $1 AND status != 'Deleted'",

@@ -1,36 +1,37 @@
-## Context
+i want to create about us page that provide information about the website
 
-I am building a job search web application using:
+- the website contain this information
+  -provide their traduction with arabic, frensh, and english
+- provide professional modern and clean design
+  ✦ About Us | من نحن
 
-- Frontend: React ( TypeScript)
-- State management: Redux
-- Backend: Node.js + Express
+في عالم مليء بالخيارات والتحديات، يجد الكثير من الشباب أنفسهم في حالة من التردد والضياع المهني، بين طموحات كبيرة وواقع غير واضح المعالم.
+هنا جاءت وجهة لتكون أكثر من مجرد منصة… بل نقطة انطلاق حقيقية نحو المستقبل.
 
-Requirements:
+وجهة هي منصة رقمية تهدف إلى ربط الشباب الطموح بالفرص المناسبة، من خلال الجمع بين التوظيف، التوجيه، وبناء مجتمع مهني فعّال. نحن نؤمن أن كل شخص يمتلك إمكانيات عظيمة، لكنه يحتاج فقط إلى الاتجاه الصحيح.
 
-1. Protect Routes (Frontend)
+✦ رؤيتنا
 
-Implement route protection for:
-Authenticated routes (only accessible when user is logged in)
-Non-authenticated routes (like login/register pages should not be accessible when logged in)
+أن نكون المنصة الأولى عربيًا في توجيه الشباب نحو مساراتهم المهنية بوعي وفعالية، ومرافقتهم في رحلتهم من التعلم إلى العمل.
 
-Redirect:
-Unauthenticated users → /login
-Authenticated users trying to access public routes → /dashboard
+✦ رسالتنا
 
-2. Session Handling & Auto Logout
-   Check both:
-   Redux state
-   Authentication token stored in cookies
-   If the token is missing or expired:
-   Automatically log out the user
-   Clear Redux state
-   Remove any stored tokens/cookies
-   Redirect to /login
+تمكين الشباب من:
 
-## Before Coding
+اكتشاف قدراتهم وتحديد أهدافهم
+الوصول إلى فرص عمل وتدريب حقيقية
+بناء شبكة علاقات مهنية قوية
+اتخاذ قرارات مدروسة لمستقبلهم
+✦ ماذا نقدم؟
+🔹 فرص عمل وتدريب من شركات موثوقة
+🔹 محتوى توجيهي يساعدك على فهم سوق العمل
+🔹 مجتمع مهني لتبادل الخبرات والفرص
+🔹 أدوات تساعدك على تطوير مهاراتك ومسارك
+✦ لماذا "وجهة"؟
 
-First, explain:
+لأننا لا نساعدك فقط في إيجاد عمل…
+بل نساعدك في اختيار الطريق الصحيح.
 
-- Analyze the current project structure.
-- Detailed explanation of approach, do not write any code.
+✦ فلسفتنا
+
+النجاح ليس في الوصول السريع… بل في الوصول إلى الوجهة الصحيحة.s

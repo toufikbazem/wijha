@@ -1,136 +1,128 @@
 export const verifyEmailHtml = (url) => {
-  return `
-  <!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Verify Your Email</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <title>Verify Your Email — Wijha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background-color: #f0f4f8;
-      font-family: 'DM Sans', sans-serif;
+      background-color: #f1f5f9;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
       padding: 48px 16px;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     .email-wrapper {
-      max-width: 560px;
+      max-width: 580px;
       width: 100%;
       margin: 0 auto;
     }
 
-    /* Header bar */
+    /* ── Header ── */
     .email-header {
-      background: #008CBA;
+      background: linear-gradient(135deg, #008CBA 0%, #006f96 100%);
       border-radius: 16px 16px 0 0;
-      padding: 32px 48px 28px;
+      padding: 28px 40px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .logo-mark {
-      width: 36px;
-      height: 36px;
-      background: rgba(255,255,255,0.18);
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
-
-    .logo-mark svg { display: block; }
 
     .brand-name {
-      font-family: 'DM Serif Display', serif;
-      font-size: 20px;
+      font-size: 22px;
+      font-weight: 700;
       color: #ffffff;
-      letter-spacing: 0.3px;
+      letter-spacing: -0.3px;
     }
 
-    /* Body card */
+    /* ── Body ── */
     .email-body {
       background: #ffffff;
-      padding: 52px 48px 44px;
+      padding: 48px 40px 40px;
+      border-left: 1px solid #e2e8f0;
+      border-right: 1px solid #e2e8f0;
     }
 
-    /* Icon circle */
     .icon-wrap {
-      width: 72px;
-      height: 72px;
-      background: #e6f5fb;
-      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+      background: #e0f4fb;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
-    h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 28px;
-      color: #0d1b2a;
-      margin-bottom: 14px;
-      line-height: 1.25;
+    .email-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 12px;
+      letter-spacing: -0.4px;
+      line-height: 1.3;
     }
 
-    .subtitle {
+    .email-subtitle {
       font-size: 15px;
-      color: #5a6a7a;
-      line-height: 1.7;
-      margin-bottom: 36px;
-      max-width: 420px;
+      color: #64748b;
+      line-height: 1.75;
+      margin-bottom: 32px;
+      max-width: 440px;
     }
 
-    /* Button */
-    .btn-verify {
+    /* ── Primary Button ── */
+    .btn-primary {
       display: inline-block;
       background: #008CBA;
-      color: #ffffff;
+      color: #ffffff !important;
       text-decoration: none;
       font-size: 15px;
       font-weight: 600;
-      letter-spacing: 0.3px;
-      padding: 15px 40px;
+      letter-spacing: 0.1px;
+      padding: 14px 36px;
       border-radius: 10px;
       margin-bottom: 36px;
-      transition: background 0.2s ease, transform 0.15s ease;
     }
 
-    .btn-verify:hover {
-      background: #006f96;
-      transform: translateY(-1px);
-    }
-
-    /* Divider */
+    /* ── Divider ── */
     .divider {
       height: 1px;
-      background: #e8edf2;
+      background: #f1f5f9;
       margin-bottom: 28px;
     }
 
-    /* Fallback link block */
+    /* ── Fallback link box ── */
     .fallback {
-      background: #f6f9fb;
-      border: 1px solid #dde8ef;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
       border-radius: 10px;
-      padding: 18px 20px;
-      margin-bottom: 32px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
     }
 
     .fallback-label {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #8a9aaa;
+      letter-spacing: 1px;
+      color: #94a3b8;
       margin-bottom: 8px;
     }
 
@@ -142,40 +134,47 @@ export const verifyEmailHtml = (url) => {
       font-weight: 500;
     }
 
-    /* Expiry notice */
+    /* ── Expiry notice ── */
     .expiry {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 9px 14px;
       font-size: 13px;
-      color: #8a9aaa;
-      margin-bottom: 0;
+      color: #92400e;
     }
 
-    .expiry svg { flex-shrink: 0; }
+    .expiry strong {
+      font-weight: 600;
+      color: #78350f;
+    }
 
-    /* Footer */
+    /* ── Footer ── */
     .email-footer {
-      background: #f6f9fb;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-top: none;
       border-radius: 0 0 16px 16px;
-      border-top: 1px solid #e8edf2;
-      padding: 24px 48px;
+      padding: 20px 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
 
     .footer-note {
       font-size: 12.5px;
-      color: #8a9aaa;
+      color: #94a3b8;
       line-height: 1.6;
     }
 
     .footer-links {
       display: flex;
-      gap: 16px;
+      gap: 18px;
     }
 
     .footer-links a {
@@ -184,8 +183,6 @@ export const verifyEmailHtml = (url) => {
       text-decoration: none;
       font-weight: 500;
     }
-
-    .footer-links a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -194,53 +191,53 @@ export const verifyEmailHtml = (url) => {
   <!-- Header -->
   <div class="email-header">
     <div class="logo-mark">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M9 1L16 5V13L9 17L2 13V5L9 1Z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
-        <circle cx="9" cy="9" r="2.5" fill="white"/>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 2L17 6V14L10 18L3 14V6L10 2Z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
+        <circle cx="10" cy="10" r="2.8" fill="white"/>
       </svg>
     </div>
-    <span class="brand-name">Yourapp</span>
+    <span class="brand-name">Wijha</span>
   </div>
 
   <!-- Body -->
   <div class="email-body">
 
     <div class="icon-wrap">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="4" y="8" width="24" height="17" rx="3" stroke="#008CBA" stroke-width="1.8"/>
-        <path d="M4 11L16 19L28 11" stroke="#008CBA" stroke-width="1.8" stroke-linecap="round"/>
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="7" width="24" height="17" rx="3.5" stroke="#008CBA" stroke-width="1.8"/>
+        <path d="M3 11L15 19L27 11" stroke="#008CBA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
 
-    <h1>Verify your email address</h1>
+    <h1 class="email-title">Verify your email address</h1>
 
-    <p class="subtitle">
-      Thanks for signing up! Please confirm your email address so we can activate your account and keep you secure.
+    <p class="email-subtitle">
+      Thanks for signing up for Wijha! Please confirm your email address to activate your account and get started.
     </p>
 
-    <a href=${url} class="btn-verify">Verify Email Address</a>
+    <a href="${url}" class="btn-primary">Verify Email Address</a>
 
     <div class="divider"></div>
 
     <div class="fallback">
-      <div class="fallback-label">Or copy this link</div>
-      <a href="#" class="fallback-link">${url}</a>
+      <div class="fallback-label">Or copy &amp; paste this link</div>
+      <a href="${url}" class="fallback-link">${url}</a>
     </div>
 
-    <p class="expiry">
-      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="7.5" cy="7.5" r="6" stroke="#8a9aaa" stroke-width="1.4"/>
-        <path d="M7.5 4.5V7.5L9.5 9" stroke="#8a9aaa" stroke-width="1.4" stroke-linecap="round"/>
+    <div class="expiry">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="7" cy="7" r="5.5" stroke="#d97706" stroke-width="1.3"/>
+        <path d="M7 4V7L9 8.5" stroke="#d97706" stroke-width="1.3" stroke-linecap="round"/>
       </svg>
-      This link expires in <strong style="color:#0d1b2a; margin-left:3px;">24 hours</strong>.
-    </p>
+      This link expires in <strong>24 hours</strong>
+    </div>
 
   </div>
 
   <!-- Footer -->
   <div class="email-footer">
     <p class="footer-note">
-      If you didn't create an account, you can safely ignore this email.
+      Didn't create an account? You can safely ignore this email.
     </p>
     <div class="footer-links">
       <a href="#">Help</a>
@@ -251,142 +248,151 @@ export const verifyEmailHtml = (url) => {
 
 </div>
 </body>
-</html>
-  `;
+</html>`;
 };
+
 export const resetPasswordEmailHtml = (url) => {
-  return `
-  <!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Reset Your Password</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <title>Reset Your Password — Wijha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background-color: #f0f4f8;
-      font-family: 'DM Sans', sans-serif;
+      background-color: #f1f5f9;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      -webkit-font-smoothing: antialiased;
       padding: 48px 16px;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     .email-wrapper {
-      max-width: 560px;
+      max-width: 580px;
       width: 100%;
       margin: 0 auto;
     }
 
-    /* Header bar */
+    /* ── Header ── */
     .email-header {
-      background: #008CBA;
+      background: linear-gradient(135deg, #008CBA 0%, #006f96 100%);
       border-radius: 16px 16px 0 0;
-      padding: 32px 48px 28px;
+      padding: 28px 40px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .logo-mark {
-      width: 36px;
-      height: 36px;
-      background: rgba(255,255,255,0.18);
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
-
-    .logo-mark svg { display: block; }
 
     .brand-name {
-      font-family: 'DM Serif Display', serif;
-      font-size: 20px;
+      font-size: 22px;
+      font-weight: 700;
       color: #ffffff;
-      letter-spacing: 0.3px;
+      letter-spacing: -0.3px;
     }
 
-    /* Body card */
+    /* ── Body ── */
     .email-body {
       background: #ffffff;
-      padding: 52px 48px 44px;
+      padding: 48px 40px 40px;
+      border-left: 1px solid #e2e8f0;
+      border-right: 1px solid #e2e8f0;
     }
 
-    /* Icon circle */
     .icon-wrap {
-      width: 72px;
-      height: 72px;
-      background: #e6f5fb;
-      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+      background: #fef3c7;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
-    h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 28px;
-      color: #0d1b2a;
-      margin-bottom: 14px;
-      line-height: 1.25;
+    .email-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 12px;
+      letter-spacing: -0.4px;
+      line-height: 1.3;
     }
 
-    .subtitle {
+    .email-subtitle {
       font-size: 15px;
-      color: #5a6a7a;
-      line-height: 1.7;
-      margin-bottom: 36px;
-      max-width: 420px;
+      color: #64748b;
+      line-height: 1.75;
+      margin-bottom: 32px;
+      max-width: 440px;
     }
 
-    /* Button */
-    .btn-verify {
+    /* ── Security warning banner ── */
+    .security-banner {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-left: 3px solid #f97316;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: #9a3412;
+      line-height: 1.6;
+    }
+
+    .security-banner strong {
+      font-weight: 600;
+    }
+
+    /* ── Primary Button ── */
+    .btn-primary {
       display: inline-block;
       background: #008CBA;
-      color: #ffffff;
+      color: #ffffff !important;
       text-decoration: none;
       font-size: 15px;
       font-weight: 600;
-      letter-spacing: 0.3px;
-      padding: 15px 40px;
+      letter-spacing: 0.1px;
+      padding: 14px 36px;
       border-radius: 10px;
       margin-bottom: 36px;
-      transition: background 0.2s ease, transform 0.15s ease;
     }
 
-    .btn-verify:hover {
-      background: #006f96;
-      transform: translateY(-1px);
-    }
-
-    /* Divider */
+    /* ── Divider ── */
     .divider {
       height: 1px;
-      background: #e8edf2;
+      background: #f1f5f9;
       margin-bottom: 28px;
     }
 
-    /* Fallback link block */
+    /* ── Fallback link box ── */
     .fallback {
-      background: #f6f9fb;
-      border: 1px solid #dde8ef;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
       border-radius: 10px;
-      padding: 18px 20px;
-      margin-bottom: 32px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
     }
 
     .fallback-label {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #8a9aaa;
+      letter-spacing: 1px;
+      color: #94a3b8;
       margin-bottom: 8px;
     }
 
@@ -398,40 +404,47 @@ export const resetPasswordEmailHtml = (url) => {
       font-weight: 500;
     }
 
-    /* Expiry notice */
+    /* ── Expiry notice ── */
     .expiry {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 9px 14px;
       font-size: 13px;
-      color: #8a9aaa;
-      margin-bottom: 0;
+      color: #92400e;
     }
 
-    .expiry svg { flex-shrink: 0; }
+    .expiry strong {
+      font-weight: 600;
+      color: #78350f;
+    }
 
-    /* Footer */
+    /* ── Footer ── */
     .email-footer {
-      background: #f6f9fb;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-top: none;
       border-radius: 0 0 16px 16px;
-      border-top: 1px solid #e8edf2;
-      padding: 24px 48px;
+      padding: 20px 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
 
     .footer-note {
       font-size: 12.5px;
-      color: #8a9aaa;
+      color: #94a3b8;
       line-height: 1.6;
     }
 
     .footer-links {
       display: flex;
-      gap: 16px;
+      gap: 18px;
     }
 
     .footer-links a {
@@ -440,8 +453,6 @@ export const resetPasswordEmailHtml = (url) => {
       text-decoration: none;
       font-weight: 500;
     }
-
-    .footer-links a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -450,53 +461,58 @@ export const resetPasswordEmailHtml = (url) => {
   <!-- Header -->
   <div class="email-header">
     <div class="logo-mark">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M9 1L16 5V13L9 17L2 13V5L9 1Z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
-        <circle cx="9" cy="9" r="2.5" fill="white"/>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 2L17 6V14L10 18L3 14V6L10 2Z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
+        <circle cx="10" cy="10" r="2.8" fill="white"/>
       </svg>
     </div>
-    <span class="brand-name">Yourapp</span>
+    <span class="brand-name">Wijha</span>
   </div>
 
   <!-- Body -->
   <div class="email-body">
 
     <div class="icon-wrap">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="4" y="8" width="24" height="17" rx="3" stroke="#008CBA" stroke-width="1.8"/>
-        <path d="M4 11L16 19L28 11" stroke="#008CBA" stroke-width="1.8" stroke-linecap="round"/>
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="12" width="10" height="11" rx="1.5" stroke="#d97706" stroke-width="1.8"/>
+        <path d="M12 12V9.5a3 3 0 1 1 6 0V12" stroke="#d97706" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="15" cy="17.5" r="1.2" fill="#d97706"/>
       </svg>
     </div>
 
-    <h1>Reset Your Password</h1>
+    <h1 class="email-title">Reset your password</h1>
 
-    <p class="subtitle">
-      You have requested to reset your password. Please click the button below to proceed.
+    <p class="email-subtitle">
+      We received a request to reset the password for your Wijha account. Click the button below to create a new password.
     </p>
 
-    <a href=${url} class="btn-verify">Reset Password</a>
+    <div class="security-banner">
+      <strong>Didn't request this?</strong> If you didn't ask to reset your password, you can ignore this email — your account remains secure.
+    </div>
+
+    <a href="${url}" class="btn-primary">Reset Password</a>
 
     <div class="divider"></div>
 
     <div class="fallback">
-      <div class="fallback-label">Or copy this link</div>
-      <a href="#" class="fallback-link">${url}</a>
+      <div class="fallback-label">Or copy &amp; paste this link</div>
+      <a href="${url}" class="fallback-link">${url}</a>
     </div>
 
-    <p class="expiry">
-      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="7.5" cy="7.5" r="6" stroke="#8a9aaa" stroke-width="1.4"/>
-        <path d="M7.5 4.5V7.5L9.5 9" stroke="#8a9aaa" stroke-width="1.4" stroke-linecap="round"/>
+    <div class="expiry">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="7" cy="7" r="5.5" stroke="#d97706" stroke-width="1.3"/>
+        <path d="M7 4V7L9 8.5" stroke="#d97706" stroke-width="1.3" stroke-linecap="round"/>
       </svg>
-      This link expires in <strong style="color:#0d1b2a; margin-left:3px;">15 minutes</strong>.
-    </p>
+      This link expires in <strong>15 minutes</strong>
+    </div>
 
   </div>
 
   <!-- Footer -->
   <div class="email-footer">
     <p class="footer-note">
-      If you didn't request a password reset, you can safely ignore this email.
+      Didn't request a password reset? You can safely ignore this email.
     </p>
     <div class="footer-links">
       <a href="#">Help</a>
@@ -507,6 +523,5 @@ export const resetPasswordEmailHtml = (url) => {
 
 </div>
 </body>
-</html>
-  `;
+</html>`;
 };

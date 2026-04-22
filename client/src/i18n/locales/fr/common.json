@@ -65,5 +65,7 @@
   "title": "Titre",
   "actions": "Actions",
   "verified": "Vérifié",
-  "notVerified": "Non vérifié"
+  "notVerified": "Non vérifié",
+  "addressPlaceholder": "Rechercher une ville ou commune...",
+  "noAddressFound": "Aucune adresse trouvée."
 }

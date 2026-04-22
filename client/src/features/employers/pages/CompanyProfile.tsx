@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
-import { MapPin, Users, Globe, Mail, Phone, Calendar } from "lucide-react";
+import {
+  MapPin,
+  Users,
+  Globe,
+  Mail,
+  Phone,
+  Calendar,
+  Share2,
+} from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useParams } from "react-router";
+import Header from "@/features/public/components/Header";
+import Footer from "@/features/public/components/Footer";
 
 export default function CompanyProfile() {
   const [loading, setLoading] = useState(true);
@@ -46,7 +56,8 @@ export default function CompanyProfile() {
 
   return (
     <div>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+      <Header />
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-6">
         {loading && (
           <div className="space-y-8">
             {/* ===== Header ===== */}
@@ -241,11 +252,11 @@ export default function CompanyProfile() {
                       </div>
                     </div>
                     <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
-                      <Phone className="w-5 h-5 mt-0.5 text-[#008CBA]" />
+                      <Share2 className="w-5 h-5 mt-0.5 text-[#008CBA]" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-600 mb-0.5">Phone</p>
+                        <p className="text-xs text-gray-600 mb-0.5">LinkedIn</p>
                         <p className="text-sm font-medium text-gray-900">
-                          {companyInfo.phone_number}
+                          {companyInfo.linkedin}
                         </p>
                       </div>
                     </div>
@@ -265,6 +276,7 @@ export default function CompanyProfile() {
           </>
         )}
       </div>
+      <Footer />
     </div>
   );
 }

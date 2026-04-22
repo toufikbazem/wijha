@@ -1,9 +1,23 @@
 import img from "@/assets/logo.png";
 import img1 from "@/assets/logo1.png";
 import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/i18n";
+
+const LANGUAGES = [
+  { code: "en", label: "English" },
+  { code: "fr", label: "Français" },
+  { code: "ar", label: "العربية" },
+];
 
 function Footer() {
   const { t } = useTranslation("public");
+
+  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const lang = e.target.value;
+    i18n.changeLanguage(lang);
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = lang;
+  };
 
   return (
     <footer className="bg-gray-900 text-white py-16">
@@ -98,7 +112,20 @@ function Footer() {
           <p className="text-gray-400 text-sm mb-4 md:mb-0">
             {t("footerRights")}
           </p>
-          <div className="flex"></div>
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400 text-sm">{t("footerLanguage")}</span>
+            <select
+              value={i18n.language}
+              onChange={handleLanguageChange}
+              className="bg-gray-800 text-gray-300 text-sm border border-gray-700 rounded px-2 py-1 focus:outline-none focus:border-[#008CBA] cursor-pointer"
+            >
+              {LANGUAGES.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
     </footer>

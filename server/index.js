@@ -15,6 +15,7 @@ import users from "./src/modules/users/users.routes.js";
 import profileAccess from "./src/modules/profile-access/profile-access.routes.js";
 import subscriptions from "./src/modules/subscriptions/subscriptions.routes.js";
 import admin from "./src/modules/admin/admin.routes.js";
+import contact from "./src/modules/contact/contact.routes.js";
 
 const app = express();
 dotenv.config();
@@ -46,6 +47,7 @@ app.use("/api/v1/languages", languages);
 app.use("/api/v1/profile-access", profileAccess);
 app.use("/api/v1/subscriptions", subscriptions);
 app.use("/api/v1/admin", admin);
+app.use("/api/v1/contact", contact);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

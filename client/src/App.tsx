@@ -16,6 +16,8 @@ import CompanyProfile from "./features/employers/pages/CompanyProfile";
 import JobseekerDashboard from "@/features/jobseekers/pages/Dashboard";
 import EmployerDashboard from "@/features/employers/pages/Dashboard";
 import Admin from "./features/admin/pages/Admin";
+import AboutUs from "./features/public/pages/AboutUs";
+import ContactUs from "./features/public/pages/ContactUs";
 
 import SessionGuard from "./components/SessionGuard";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -49,6 +51,8 @@ function App() {
           <Route path="/jobSearch" element={<JobPostsSearch />} />
           <Route path="/jobPost/:id" element={<JobPosts />} />
           <Route path="/companyProfile/:id" element={<CompanyProfile />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/contacts" element={<ContactUs />} />
 
           {/* Protected: any authenticated user */}
           <Route element={<ProtectedRoute />}>

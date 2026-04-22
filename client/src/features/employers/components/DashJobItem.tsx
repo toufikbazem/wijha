@@ -97,12 +97,16 @@ function DashJobItem({
           <span className="text-lg font-semibold text-gray-900">
             {job.applicants}
           </span>
-          <span className="ltr:ml-1 rtl:mr-1 text-sm text-gray-500">{t("applicants")}</span>
+          <span className="ltr:ml-1 rtl:mr-1 text-sm text-gray-500">
+            {t("applicants")}
+          </span>
         </td>
 
         {/* views */}
         <td className="px-3 py-2">
-          <span className="text-sm text-gray-600">{job.views} {t("views")}</span>
+          <span className="text-sm text-gray-600">
+            {job.views} {t("views")}
+          </span>
         </td>
 
         {/* actions */}
@@ -148,7 +152,7 @@ function DashJobItem({
               className="cursor-pointer p-2 text-gray-600 hover:text-[#008CBA] hover:bg-blue-50 rounded-lg transition-colors"
               title="View"
             >
-              <Link target="_blank" to={`/jobs/${job.id}`}>
+              <Link target="_blank" to={`/jobPost/${job.id}`}>
                 <Eye className="w-4 h-4" />
               </Link>
             </Button>

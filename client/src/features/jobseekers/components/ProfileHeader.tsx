@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { AddressCombobox } from "@/components/ui/address-combobox";
 import { Building2, Mail, MapPin, Phone, Upload, User } from "lucide-react";
 import { useRef, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
@@ -222,16 +223,12 @@ function ProfileHeader({ profile, isEditing, form, setProfile }: any) {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field data-invalid={fieldState.invalid}>
-                        <div className="relative">
-                          <Building2 className="input-icon-filter h-4 w-4" />
-                          <Input
-                            {...field}
-                            type="text"
-                            className="input-filter text-3xl font-bold"
-                            aria-invalid={fieldState.invalid}
-                            placeholder="address"
-                          />
-                        </div>
+                        <AddressCombobox
+                          value={field.value}
+                          onChange={field.onChange}
+                          invalid={fieldState.invalid}
+                          variant="filter"
+                        />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
                         )}

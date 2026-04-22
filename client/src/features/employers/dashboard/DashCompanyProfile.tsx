@@ -30,6 +30,7 @@ export default function DashCompanyProfile() {
     missions: [],
     founding_year: "",
     website: "",
+    linkedin: "",
   });
 
   const { user } = useSelector((state: any) => state.user);
@@ -78,6 +79,7 @@ export default function DashCompanyProfile() {
       description: companyInfo?.description ? companyInfo.description : "",
       missions: companyInfo?.missions ? companyInfo.missions : [],
       website: companyInfo?.website ? companyInfo.website : "",
+      linkedin: companyInfo?.linkedin ? companyInfo.linkedin : "",
       founding_year: companyInfo?.founding_year
         ? companyInfo.founding_year
         : "",
@@ -98,6 +100,7 @@ export default function DashCompanyProfile() {
         missions: companyInfo.missions || [],
         founding_year: companyInfo.founding_year || "",
         website: companyInfo.website || "",
+        linkedin: companyInfo.linkedin || "",
       });
     }
   }, [companyInfo]);
@@ -133,8 +136,6 @@ export default function DashCompanyProfile() {
       setLoadingEditMode(false);
     }
   };
-
-  console.log(form.getValues());
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>

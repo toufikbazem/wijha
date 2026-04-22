@@ -12,6 +12,7 @@ export const companyProfileSchema = z.object({
   missions: array(string()).optional(),
   founding_year: string().optional(),
   website: string().optional(),
+  linkedin: string().optional(),
 });
 
 export const jobPostSchema = z.object({
