@@ -141,8 +141,8 @@ const login = async (req, res) => {
       .status(200)
       .cookie("token", token, {
         httpOnly: true,
-        secure: false,
-        sameSite: "Lax",
+        secure: true,
+        sameSite: "none",
         path: "/",
         maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000,
       })
