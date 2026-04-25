@@ -14,10 +14,23 @@ import {
   Building2Icon,
   Calendar,
   Camera,
+  CheckCircle2,
   Mail,
   MapPin,
+  ShieldAlert,
+  ShieldOff,
   Users,
+  XCircle,
 } from "lucide-react";
+
+type ProfileStatus = "active" | "unverified" | "suspended" | "deactivated";
+
+const statusConfig: Record<ProfileStatus, { icon: React.ElementType; className: string; key: string }> = {
+  active: { icon: CheckCircle2, className: "bg-green-50 text-green-700 border border-green-200", key: "statusActive" },
+  unverified: { icon: ShieldAlert, className: "bg-yellow-50 text-yellow-700 border border-yellow-200", key: "statusUnverified" },
+  suspended: { icon: XCircle, className: "bg-red-50 text-red-700 border border-red-200", key: "statusSuspended" },
+  deactivated: { icon: ShieldOff, className: "bg-gray-100 text-gray-500 border border-gray-200", key: "statusDeactivated" },
+};
 import { useRef, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslation } from "react-i18next";
@@ -225,9 +238,22 @@ function DashCompanyProfileHeader({
                 )}
               />
             ) : (
-              <h2 className="text-2xl font-bold text-gray-900">
-                {companyInfo.company_name}
-              </h2>
+              <div className="flex items-center gap-3 flex-wrap">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {companyInfo.company_name}
+                </h2>
+                {companyInfo.status && (() => {
+                  const cfg = statusConfig[companyInfo.status as ProfileStatus];
+                  if (!cfg) return null;
+                  const Icon = cfg.icon;
+                  return (
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${cfg.className}`}>
+                      <Icon size={12} />
+                      {t(cfg.key)}
+                    </span>
+                  );
+                })()}
+              </div>
             )}
 
             {/* industry */}

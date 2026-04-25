@@ -4,6 +4,19 @@ export const createSavedJob = async (req, res) => {
   const { jobId, userId } = req.body;
 
   try {
+    const user = await db.query("SELECT * FROM job_seeker WHERE id = $1", [
+      userId,
+    ]);
+    if (
+      user.rows[0].status !== "active" &&
+      user.rows[0].status !== "unverified"
+    ) {
+      return res.status(403).json({
+        error_code: "ACCOUNT_INACTIVE",
+        message: "Your account is not active. Please contact support.",
+      });
+    }
+
     const result = await db.query(
       "INSERT INTO saved_jobs (job_seeker, job_post) VALUES ($1, $2) RETURNING *",
       [userId, jobId],
@@ -71,6 +84,18 @@ export const deleteSavedJob = async (req, res) => {
   const { jobId, userId } = req.body;
 
   try {
+    const user = await db.query("SELECT * FROM job_seeker WHERE id = $1", [
+      userId,
+    ]);
+    if (
+      user.rows[0].status !== "active" &&
+      user.rows[0].status !== "unverified"
+    ) {
+      return res.status(403).json({
+        error_code: "ACCOUNT_INACTIVE",
+        message: "Your account is not active. Please contact support.",
+      });
+    }
     const result = await db.query(
       "DELETE FROM saved_jobs WHERE job_post = $1 AND job_seeker = $2 RETURNING *",
       [jobId, userId],

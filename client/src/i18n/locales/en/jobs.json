@@ -25,5 +25,7 @@
   "needsLogin": "You need to be logged in to apply",
   "loginOrCreate": "Please log in or create an account to apply for this job.",
   "employersCantApply": "Employers cannot apply for job offers",
-  "loginJobseeker": "Please log in with a job seeker account to apply for this job."
+  "loginJobseeker": "Please log in with a job seeker account to apply for this job.",
+  "uploadCV": "Please upload your CV before applying.",
+  "accountInactive": "Your account is inactive. Please contact support for more information."
 }

@@ -130,8 +130,13 @@ export default function JobPosts() {
           },
         },
       );
+      const data = await res.json();
       if (!res.ok) {
-        toast.error(t("failedSave"));
+        if (data.error_code === "ACCOUNT_INACTIVE") {
+          toast.error(t("accountInactive"));
+        } else {
+          toast.error(t("failedSave"));
+        }
       } else {
         toast.success(t("successSave"));
         setSaved(true);
@@ -157,8 +162,13 @@ export default function JobPosts() {
           },
         },
       );
+      const data = await res.json();
       if (!res.ok) {
-        toast.error(t("failedUnsave"));
+        if (data.error_code === "ACCOUNT_INACTIVE") {
+          toast.error(t("accountInactive"));
+        } else {
+          toast.error(t("failedUnsave"));
+        }
       } else {
         toast.success(t("successUnsave"));
         setSaved(false);
@@ -173,6 +183,11 @@ export default function JobPosts() {
 
   const handleApplication = async () => {
     setApplyLoading(true);
+    if (!user.cv) {
+      toast.error(t("uploadCV"));
+      setApplyLoading(false);
+      return;
+    }
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/v1/applications`,
@@ -185,8 +200,13 @@ export default function JobPosts() {
           },
         },
       );
+      const result = await res.json();
       if (!res.ok) {
-        toast.error(t("failedApply"));
+        if (result.error_code === "ACCOUNT_INACTIVE") {
+          toast.error(t("accountInactive"));
+        } else {
+          toast.error(t("failedApply"));
+        }
       } else {
         dispatch(createApplication(data.id));
         setApplied(true);

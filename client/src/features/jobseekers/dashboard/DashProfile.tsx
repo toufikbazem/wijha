@@ -11,8 +11,11 @@ import { ProfileSchema } from "../Schema";
 import ProfileHeader from "../components/ProfileHeader";
 import ProfileContent from "../components/ProfileContent";
 import { toast } from "sonner";
+import { updateProfile } from "@/features/auth/userSlice";
+import { useDispatch } from "react-redux";
 
 const DashProfile = () => {
+  const dispatch = useDispatch();
   const { t } = useTranslation("jobseeker");
   const [loading, setLoading] = useState(true);
   const [loadingEdit, setLoadingEdit] = useState(false);
@@ -49,6 +52,7 @@ const DashProfile = () => {
     experience_years?: number;
     skills?: string[];
     cv?: string;
+    status?: "active" | "unverified" | "suspended" | "deactivated";
   }>({});
 
   const { user } = useSelector((state: any) => state.user);
@@ -112,6 +116,7 @@ const DashProfile = () => {
             experience_years: data.experience_years,
             skills: data.skills,
             cv: data.cv,
+            status: data.status,
           });
         } else {
           console.error("Failed to fetch user profile");
@@ -148,7 +153,6 @@ const DashProfile = () => {
   }, [profile]);
 
   const onSubmit = async (data: z.infer<typeof ProfileSchema>) => {
-    console.log("Submitting data:", data);
     setLoadingEdit(true);
     try {
       const res = await fetch(
@@ -165,9 +169,14 @@ const DashProfile = () => {
       const result = await res.json();
       if (res.ok) {
         setProfile({ ...result, email: profile.email });
+        dispatch(updateProfile({ ...result, email: profile.email }));
         toast.success(t("profileUpdated"));
       } else {
-        toast.error(t("failedUpdateProfile") + ": " + result.message);
+        if (result.error_code === "ACCOUNT_INACTIVE") {
+          toast.error(t("accountInactive"));
+        } else {
+          toast.error(t("failedUpdateProfile") + ": " + result.message);
+        }
       }
     } catch (error) {
       toast.error(t("errorUpdateProfile"));
@@ -176,8 +185,6 @@ const DashProfile = () => {
       setLoadingEdit(false);
     }
   };
-
-  console.log(form.formState.errors);
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -243,14 +250,14 @@ const DashProfile = () => {
       {!loading && (
         <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50">
           {/* Top Navigation */}
-          <div className="flex justify-between items-center max-w-7xl mx-auto px-6 py-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto px-6 py-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{t("myProfile")}</h1>
-              <p className="mt-1 text-gray-600">
-                {t("viewEditProfile")}
-              </p>
+              <h1 className="text-3xl font-bold text-gray-900">
+                {t("myProfile")}
+              </h1>
+              <p className="mt-1 text-gray-600">{t("viewEditProfile")}</p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="mt-6 sm:mt-0 flex items-center gap-3">
               {!isEditing ? (
                 <button
                   type="button"
@@ -258,7 +265,7 @@ const DashProfile = () => {
                     e.preventDefault();
                     setIsEditing(true);
                   }}
-                  className="cursor-pointer flex items-center gap-2 px-5 py-2.5 bg-[#008CBA] text-white rounded-xl hover:bg-[#007B9E] transition"
+                  className=" cursor-pointer flex items-center gap-2 px-5 py-2.5 bg-[#008CBA] text-white rounded-xl hover:bg-[#007B9E] transition"
                 >
                   <Edit2 className="w-4 h-4" />
                   {t("editProfile2")}
@@ -266,7 +273,7 @@ const DashProfile = () => {
               ) : (
                 <>
                   <button
-                    className="cursor-pointer flex items-center gap-2 px-5 py-2.5  text-white rounded-xl bg-[#008CBA] hover:bg-[#007B9E] transition"
+                    className=" cursor-pointer flex items-center gap-2 px-5 py-2.5  text-white rounded-xl bg-[#008CBA] hover:bg-[#007B9E] transition"
                     type="submit"
                   >
                     <Save className="w-4 h-4" />

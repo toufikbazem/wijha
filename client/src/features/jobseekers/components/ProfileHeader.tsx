@@ -1,16 +1,58 @@
 import { Input } from "@/components/ui/input";
 import { AddressCombobox } from "@/components/ui/address-combobox";
-import { Building2, Mail, MapPin, Phone, Upload, User } from "lucide-react";
+import {
+  Building2,
+  Mail,
+  MapPin,
+  Phone,
+  Upload,
+  User,
+  CheckCircle2,
+  XCircle,
+  ShieldAlert,
+  ShieldOff,
+  IdCard,
+} from "lucide-react";
 import { useRef, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Spinner } from "@/components/ui/spinner";
 import { Controller } from "react-hook-form";
 import { Field, FieldError } from "@/components/ui/field";
+import { useTranslation } from "react-i18next";
+
+type ProfileStatus = "active" | "unverified" | "suspended" | "deactivated";
+
+const statusConfig: Record<
+  ProfileStatus,
+  { icon: React.ElementType; className: string; key: string }
+> = {
+  active: {
+    icon: CheckCircle2,
+    className: "bg-green-50 text-green-700 border border-green-200",
+    key: "statusActive",
+  },
+  unverified: {
+    icon: ShieldAlert,
+    className: "bg-yellow-50 text-yellow-700 border border-yellow-200",
+    key: "statusUnverified",
+  },
+  suspended: {
+    icon: XCircle,
+    className: "bg-red-50 text-red-700 border border-red-200",
+    key: "statusSuspended",
+  },
+  deactivated: {
+    icon: ShieldOff,
+    className: "bg-gray-100 text-gray-500 border border-gray-200",
+    key: "statusDeactivated",
+  },
+};
 
 function ProfileHeader({ profile, isEditing, form, setProfile }: any) {
   const [loadingUploadProfileImage, setLoadingUpLoadProfileImage] =
     useState(false);
   const profileImg = useRef<HTMLInputElement | null>(null);
+  const { t } = useTranslation("jobseeker");
 
   const handleProfileImgUpload = async (e: any) => {
     setLoadingUpLoadProfileImage(true);
@@ -96,13 +138,13 @@ function ProfileHeader({ profile, isEditing, form, setProfile }: any) {
                     render={({ field, fieldState }) => (
                       <Field data-invalid={fieldState.invalid}>
                         <div className="relative">
-                          <Building2 className="input-icon-filter h-4 w-4" />
+                          <User className="input-icon-filter h-4 w-4" />
                           <Input
                             {...field}
                             type="text"
                             className="input-filter text-3xl font-bold"
                             aria-invalid={fieldState.invalid}
-                            placeholder="First Name"
+                            placeholder={t("firstName")}
                           />
                         </div>
                         {fieldState.invalid && (
@@ -117,13 +159,13 @@ function ProfileHeader({ profile, isEditing, form, setProfile }: any) {
                     render={({ field, fieldState }) => (
                       <Field data-invalid={fieldState.invalid}>
                         <div className="relative">
-                          <Building2 className="input-icon-filter h-4 w-4" />
+                          <User className="input-icon-filter h-4 w-4" />
                           <Input
                             {...field}
                             type="text"
                             className="input-filter text-3xl font-bold"
                             aria-invalid={fieldState.invalid}
-                            placeholder="Last Name"
+                            placeholder={t("lastName")}
                           />
                         </div>
                         {fieldState.invalid && (
@@ -139,13 +181,13 @@ function ProfileHeader({ profile, isEditing, form, setProfile }: any) {
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
                       <div className="relative">
-                        <Building2 className="input-icon-filter h-4 w-4" />
+                        <IdCard className="input-icon-filter h-4 w-4" />
                         <Input
                           {...field}
                           type="text"
                           className="input-filter text-3xl font-bold"
                           aria-invalid={fieldState.invalid}
-                          placeholder="Professional Title"
+                          placeholder={t("professionalTitle")}
                         />
                       </div>
                       {fieldState.invalid && (
@@ -157,9 +199,25 @@ function ProfileHeader({ profile, isEditing, form, setProfile }: any) {
               </div>
             ) : (
               <>
-                <h2 className="text-3xl font-bold text-gray-900">
-                  {profile.first_name} {profile.last_name}
-                </h2>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h2 className="text-3xl font-bold text-gray-900">
+                    {profile.first_name} {profile.last_name}
+                  </h2>
+                  {profile.status &&
+                    (() => {
+                      const cfg = statusConfig[profile.status as ProfileStatus];
+                      if (!cfg) return null;
+                      const Icon = cfg.icon;
+                      return (
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${cfg.className}`}
+                        >
+                          <Icon size={12} />
+                          {t(cfg.key)}
+                        </span>
+                      );
+                    })()}
+                </div>
                 <p className="text-xl text-[#008CBA] font-medium mt-1">
                   {profile.professional_title}
                 </p>
@@ -182,7 +240,7 @@ function ProfileHeader({ profile, isEditing, form, setProfile }: any) {
                             type="text"
                             className="input-filter text-3xl font-bold"
                             aria-invalid={fieldState.invalid}
-                            placeholder="Email Address"
+                            placeholder={t("emailAddress")}
                           />
                         </div>
                         {fieldState.invalid && (
@@ -208,7 +266,7 @@ function ProfileHeader({ profile, isEditing, form, setProfile }: any) {
                             type="text"
                             className="input-filter text-3xl font-bold"
                             aria-invalid={fieldState.invalid}
-                            placeholder="phone_number"
+                            placeholder={t("phoneNumber")}
                           />
                         </div>
                         {fieldState.invalid && (

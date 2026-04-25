@@ -38,6 +38,7 @@ function RegisterForm({
       form.reset({
         firstName: "",
         lastName: "",
+        professionalTitle: "",
         email: "",
         phoneNumber: "",
         address: "",
@@ -69,6 +70,7 @@ function RegisterForm({
         ? {
             firstName: "",
             lastName: "",
+            professionalTitle: "",
             email: "",
             phoneNumber: "",
             address: "",
@@ -108,7 +110,9 @@ function RegisterForm({
       if (!res.ok) {
         setErrorMessage(result.message || t("registrationFailed"));
       } else {
-        toast.success(t("registrationSuccessful"), { position: "bottom-right" });
+        toast.success(t("registrationSuccessful"), {
+          position: "bottom-right",
+        });
         setVerifyEmail(data.email);
       }
     } catch (error) {
@@ -127,7 +131,9 @@ function RegisterForm({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel className="input-label">{t("emailAddress")}</FieldLabel>
+              <FieldLabel className="input-label">
+                {t("emailAddress")}
+              </FieldLabel>
               <div className="relative">
                 <Mail className="input-icon" size={20} />
                 <Input
@@ -184,7 +190,9 @@ function RegisterForm({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel className="input-label">{t("confirmPassword")}</FieldLabel>
+              <FieldLabel className="input-label">
+                {t("confirmPassword")}
+              </FieldLabel>
               <div className="relative">
                 <Lock className="input-icon" size={20} />
                 <Input
@@ -251,7 +259,8 @@ function RegisterForm({
         >
           {loading ? (
             <>
-              <Spinner className="ltr:mr-2 rtl:ml-2" /> {t("loading", { ns: "common" })}
+              <Spinner className="ltr:mr-2 rtl:ml-2" />{" "}
+              {t("loading", { ns: "common" })}
             </>
           ) : (
             t("createAccount")

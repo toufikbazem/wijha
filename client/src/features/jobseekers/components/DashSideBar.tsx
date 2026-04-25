@@ -1,7 +1,6 @@
 import {
   BookmarkIcon,
   Briefcase,
-  Building2,
   FileText,
   LogOut,
   Settings,
@@ -13,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { logout } from "@/features/auth/userSlice";
+import { useTranslation } from "react-i18next";
 
 function DashSideBar({
   active,
@@ -24,22 +24,33 @@ function DashSideBar({
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(active || "dashboard");
   const dispatch = useDispatch();
+  const { t } = useTranslation("jobseeker");
 
   useEffect(() => {
     setActiveTab(active || "dashboard");
   }, [active]);
 
   const menuItems = [
-    { id: "dash", label: "Dashboard", icon: Briefcase, url: "dash" },
+    { id: "dash", labelKey: "sidebar.dashboard", icon: Briefcase, url: "dash" },
     {
       id: "applications",
-      label: "My Applications",
+      labelKey: "sidebar.applications",
       icon: FileText,
       url: "applications",
     },
-    { id: "saved", label: "Saved Jobs", icon: BookmarkIcon, url: "saved" },
-    { id: "profile", label: "Profile", icon: User, url: "profile" },
-    { id: "settings", label: "Settings", icon: Settings, url: "settings" },
+    {
+      id: "saved",
+      labelKey: "sidebar.savedJobs",
+      icon: BookmarkIcon,
+      url: "saved",
+    },
+    { id: "profile", labelKey: "sidebar.profile", icon: User, url: "profile" },
+    {
+      id: "settings",
+      labelKey: "sidebar.settings",
+      icon: Settings,
+      url: "settings",
+    },
   ];
 
   const handleLogOut = async () => {
@@ -64,8 +75,8 @@ function DashSideBar({
 
   return (
     <aside
-      className={`max-h-screen w-56 flex flex-col bg-white border-r border-gray-200
-          shrink-0 z-50 fixed md:sticky top-0 left-0 transform transition-transform 
+      className={`h-screen w-56 flex flex-col bg-white border-r border-gray-200
+          shrink-0 z-50 fixed md:sticky top-0 left-0 transform transition-transform
           duration-300 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0`}
     >
@@ -84,17 +95,17 @@ function DashSideBar({
             <button
               onClick={() => navigate(`/dashboard?tab=${item.url}`)}
               key={item.id}
-              className={`hover:bg-primary-50 hover:text-primary-500 cursor-pointer ${active ? "bg-primary-50 text-primary-500" : "text-gray-700"} relative w-full flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg transition-colors mb-0.5 text-left`}
+              className={`hover:bg-primary-50 hover:text-primary-500 cursor-pointer ${active ? "bg-primary-50 text-primary-500" : "text-gray-700"} relative w-full flex items-center gap-2.5 px-2.5 py-2.5 rounded-lg transition-colors mb-0.5 ltr:text-left rtl:text-right`}
             >
               {active && (
-                <span className="bg-primary-500 absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[60%] rounded-r-sm" />
+                <span className="bg-primary-500 absolute ltr:left-0 rtl:right-0 top-1/2 -translate-y-1/2 w-[3px] h-[60%] ltr:rounded-r-sm rtl:rounded-l-sm" />
               )}
               <Icon
                 className={`${active && "text-primary-500"} flex items-center justify-center w-5 h-5`}
               />
 
               <span className="text-[13.5px] font-medium flex-1 whitespace-nowrap">
-                {item.label}
+                {t(item.labelKey)}
               </span>
             </button>
           );
@@ -109,7 +120,7 @@ function DashSideBar({
         <LogOut className={`text-red-500 w-6 h-6`} />
 
         <span className=" text-sm font-medium flex-1 whitespace-nowrap">
-          Log Out
+          {t("sidebar.logout")}
         </span>
       </div>
     </aside>

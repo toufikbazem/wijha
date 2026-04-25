@@ -99,7 +99,7 @@ export const updateJobSeekerProfile = async (req, res) => {
     profile_image,
     professional_summary,
     experience_years,
-    CV,
+    cv,
     skills,
     linkedin,
     github,
@@ -115,6 +115,20 @@ export const updateJobSeekerProfile = async (req, res) => {
   //     .status(403)
   //     .json({ message: "You are not authorized to update this profile" });
   // }
+
+  const userResult = await db.query(
+    "SELECT id, status FROM job_seeker WHERE id = $1",
+    [id],
+  );
+  if (
+    userResult.rows[0].status !== "active" &&
+    userResult.rows[0].status !== "unverified"
+  ) {
+    return res.status(403).json({
+      error_code: "ACCOUNT_INACTIVE",
+      message: "Your account is inactive, please contact support.",
+    });
+  }
 
   const values = [];
   const updates = [];
@@ -156,9 +170,9 @@ export const updateJobSeekerProfile = async (req, res) => {
     updates.push(`experience_years = $${index++}`);
     values.push(experience_years);
   }
-  if (CV) {
+  if (cv) {
     updates.push(`cv = $${index++}`);
-    values.push(CV);
+    values.push(cv);
   }
   if (skills && skills.length > 0) {
     updates.push(`skills = $${index++}`);
@@ -177,8 +191,12 @@ export const updateJobSeekerProfile = async (req, res) => {
     values.push(portfolio);
   }
 
+  if (updates.length === 0) {
+    return res.status(400).json({ message: "No fields to update" });
+  }
+
   try {
-    const query = `UPDATE job_seeker SET ${updates.join(", ")} WHERE id = $${index} AND status = 'active' RETURNING *`;
+    const query = `UPDATE job_seeker SET ${updates.join(", ")} WHERE id = $${index} RETURNING *`;
     values.push(id);
 
     const result = await db.query(query, values);

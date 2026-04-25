@@ -14,6 +14,7 @@ const register = async (req, res) => {
     role,
     firstName,
     lastName,
+    professionalTitle,
     address,
     phoneNumber,
     companyName,
@@ -28,7 +29,8 @@ const register = async (req, res) => {
       !email ||
       !password ||
       !address ||
-      !phoneNumber
+      !phoneNumber ||
+      !professionalTitle
     ) {
       res
         .status(400)
@@ -70,8 +72,8 @@ const register = async (req, res) => {
 
     if (role === "jobseeker") {
       await db.query(
-        "INSERT INTO job_seeker (user_id, first_name, last_name, address, phone_number) VALUES ($1, $2, $3, $4, $5)",
-        [newUser.rows[0].id, firstName, lastName, address, phoneNumber],
+        "INSERT INTO job_seeker (user_id, first_name, last_name, professional_title, address, phone_number) VALUES ($1, $2, $3, $4, $5, $6)",
+        [newUser.rows[0].id, firstName, lastName, professionalTitle, address, phoneNumber],
       );
     } else if (role === "employer") {
       await db.query(

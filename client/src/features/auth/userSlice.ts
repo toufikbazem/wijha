@@ -14,6 +14,9 @@ const userSlice = createSlice({
     logout: (state) => {
       state.user = null;
     },
+    updateProfile: (state, action) => {
+      state.user = { ...state.user, ...action.payload };
+    },
     saveJobPost: (state, action) => {
       state.user?.saved.push(action.payload);
     },
@@ -51,6 +54,7 @@ export const {
   logout,
   changeEmail,
   verifyEmail,
+  updateProfile,
 } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -21,6 +21,7 @@ import {
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/i18n";
 
 interface Language {
   language: string;
@@ -109,7 +110,10 @@ function ProfileLanguage({
                 <Plus className="w-4 h-4" />
               </button>
             </DialogTrigger>
-            <DialogContent className="bg-white max-h-[90vh] overflow-y-auto overflow-x-hidden">
+            <DialogContent
+              dir={i18n.dir()}
+              className="bg-white max-h-[90vh] overflow-y-auto overflow-x-hidden"
+            >
               <DialogTitle>{t("addLanguage")}</DialogTitle>
               <div className="flex flex-col gap-1">
                 <Label className="input-label mb-1">{t("languageLabel")}</Label>
@@ -122,36 +126,38 @@ function ProfileLanguage({
                       language: e.target.value,
                     })
                   }
-                  className="input-filter pl-2"
+                  className="input-filter ltr:pl-2! rtl:pr-2!"
                 />
               </div>
               <div className="relative">
-                <Label className="input-label mb-1.5">{t("languageLevel")}</Label>
+                <Label className="input-label mb-1.5">
+                  {t("languageLevel")}
+                </Label>
                 <Select
                   value={language.level}
                   onValueChange={(value) =>
                     setLanguage({ ...language, level: value })
                   }
                 >
-                  <SelectTrigger className="input-filter">
+                  <SelectTrigger
+                    dir={i18n.dir()}
+                    className="input-filter rtl:pr-2! ltr:pl-2!"
+                  >
                     <SelectValue placeholder={t("selectLanguageLevel")} />
                   </SelectTrigger>
-                  <SelectContent className="p-2 border-gray-300 bg-white">
-                    <SelectItem value="A1 - Beginner">A1 - Beginner</SelectItem>
-                    <SelectItem value="A2 - Elementary">
-                      A2 - Elementary
-                    </SelectItem>
-                    <SelectItem value="B1 - Intermediate">
-                      B1 - Intermediate
-                    </SelectItem>
+                  <SelectContent
+                    dir={i18n.dir()}
+                    className="p-2 border-gray-300 bg-white"
+                  >
+                    <SelectItem value="A1 - Beginner">{t("A1")}</SelectItem>
+                    <SelectItem value="A2 - Elementary">{t("A2")}</SelectItem>
+                    <SelectItem value="B1 - Intermediate">{t("B1")}</SelectItem>
                     <SelectItem value="B2 - Upper Intermediate">
-                      B2 - Upper Intermediate
+                      {t("B2")}
                     </SelectItem>
-                    <SelectItem value="C1 - Advanced">C1 - Advanced</SelectItem>
-                    <SelectItem value="C2 - Proficient">
-                      C2 - Proficient
-                    </SelectItem>
-                    <SelectItem value="Natif">{t("native")}</SelectItem>
+                    <SelectItem value="C1 - Advanced">{t("C1")}</SelectItem>
+                    <SelectItem value="C2 - Proficient">{t("C2")}</SelectItem>
+                    <SelectItem value="Native">{t("Native")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

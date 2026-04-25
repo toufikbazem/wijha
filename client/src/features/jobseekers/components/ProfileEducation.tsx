@@ -21,6 +21,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/i18n";
 
 const months = [
   "January",
@@ -210,7 +211,10 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                 {t("add")}
               </button>
             </DialogTrigger>
-            <DialogContent className="bg-white max-h-[90vh] overflow-y-auto overflow-x-hidden">
+            <DialogContent
+              dir={i18n.dir()}
+              className="bg-white max-h-[90vh] overflow-y-auto overflow-x-hidden"
+            >
               <DialogTitle>{t("addNewFormation")}</DialogTitle>
               <div className="flex flex-col gap-1">
                 <Label className="input-label">{t("formationTitle")}</Label>
@@ -223,7 +227,7 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                       title: e.target.value,
                     })
                   }
-                  className="input-filter pl-2!"
+                  className="input-filter ltr:pl-2! rtl:pr-2!"
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -237,7 +241,7 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                       institution: e.target.value,
                     })
                   }
-                  className="input-filter pl-2!"
+                  className="input-filter ltr:pl-2! rtl:pr-2!"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -253,16 +257,19 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                       }
                       value={formation.fromMonth}
                     >
-                      <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                      <SelectTrigger
+                        dir={i18n.dir()}
+                        className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
+                      >
                         <SelectValue placeholder={t("selectMonth")} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent dir={i18n.dir()} className="bg-white">
                         {months.map((month, index) => (
                           <SelectItem
                             key={index}
                             value={(index + 1).toString()}
                           >
-                            {month}
+                            {t(month)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -275,10 +282,13 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                         }))
                       }
                     >
-                      <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                      <SelectTrigger
+                        dir={i18n.dir()}
+                        className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
+                      >
                         <SelectValue placeholder={t("selectYear")} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent dir={i18n.dir()} className="bg-white">
                         {years.map((year, index) => (
                           <SelectItem key={index} value={year.toString()}>
                             {year}
@@ -299,16 +309,19 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                         }))
                       }
                     >
-                      <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                      <SelectTrigger
+                        dir={i18n.dir()}
+                        className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
+                      >
                         <SelectValue placeholder={t("selectMonth")} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent dir={i18n.dir()} className="bg-white">
                         {months.map((month, index) => (
                           <SelectItem
                             key={index}
                             value={(index + 1).toString()}
                           >
-                            {month}
+                            {t(month)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -321,10 +334,13 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                         }))
                       }
                     >
-                      <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                      <SelectTrigger
+                        dir={i18n.dir()}
+                        className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
+                      >
                         <SelectValue placeholder={t("selectYear")} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent dir={i18n.dir()} className="bg-white">
                         {years.map((year, index) => (
                           <SelectItem key={index} value={year.toString()}>
                             {year}
@@ -371,15 +387,15 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                 {edu?.institution}
               </p>
               <p className="text-sm text-gray-500 mt-1">
-                {months[new Date(edu.from).getMonth()]}-
+                {t(months[new Date(edu.from).getMonth()])}-
                 {new Date(edu.from).getFullYear()}
                 {"    "}
-                {months[new Date(edu.to).getMonth()]}-
+                {t(months[new Date(edu.to).getMonth()])}-
                 {new Date(edu.to).getFullYear()}
               </p>
             </div>
             {isEditing && (
-              <div className="absolute top-2 right-2 flex flex-row gap-2">
+              <div className="absolute top-2 ltr:right-2 rtl:left-2 flex flex-row gap-2">
                 <Dialog>
                   <DialogTrigger asChild>
                     <button
@@ -401,13 +417,18 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                       <Pen className=" w-5 h-5" />
                     </button>
                   </DialogTrigger>
-                  <DialogContent className="bg-white max-h-[90vh] overflow-y-auto overflow-x-hidden">
+                  <DialogContent
+                    dir={i18n.dir()}
+                    className="bg-white max-h-[90vh] overflow-y-auto overflow-x-hidden"
+                  >
                     <DialogTitle>{t("addNewFormation")}</DialogTitle>
                     <div className="flex flex-col gap-1">
-                      <Label className="input-label">Formation Title</Label>
+                      <Label className="input-label">
+                        {t("formationTitle")}
+                      </Label>
                       <Input
                         type="text"
-                        placeholder="Formation Title"
+                        placeholder={t("formationTitle")}
                         value={formation.title}
                         onChange={(e) =>
                           setFormation({
@@ -415,14 +436,14 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                             title: e.target.value,
                           })
                         }
-                        className="input-filter pl-2!"
+                        className="input-filter ltr:pl-2! rtl:pr-2!"
                       />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <Label className="input-label">Institution</Label>
+                      <Label className="input-label">{t("institution")}</Label>
                       <Input
                         type="text"
-                        placeholder="Institution"
+                        placeholder={t("institution")}
                         value={formation.institution}
                         onChange={(e) =>
                           setFormation({
@@ -430,7 +451,7 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                             institution: e.target.value,
                           })
                         }
-                        className="input-filter pl-2!"
+                        className="input-filter ltr:pl-2! rtl:pr-2!"
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -446,16 +467,22 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                             }
                             value={formation.fromMonth}
                           >
-                            <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                            <SelectTrigger
+                              dir={i18n.dir()}
+                              className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
+                            >
                               <SelectValue placeholder={t("selectMonth")} />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent
+                              dir={i18n.dir()}
+                              className="bg-white"
+                            >
                               {months.map((month, index) => (
                                 <SelectItem
                                   key={index}
                                   value={(index + 1).toString()}
                                 >
-                                  {month}
+                                  {t(month)}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -469,10 +496,16 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                             }
                             value={formation.fromYear}
                           >
-                            <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                            <SelectTrigger
+                              dir={i18n.dir()}
+                              className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
+                            >
                               <SelectValue placeholder={t("selectYear")} />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent
+                              dir={i18n.dir()}
+                              className="bg-white"
+                            >
                               {years.map((year, index) => (
                                 <SelectItem key={index} value={year.toString()}>
                                   {year}
@@ -494,16 +527,22 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                             }
                             value={formation.toMonth}
                           >
-                            <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                            <SelectTrigger
+                              dir={i18n.dir()}
+                              className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
+                            >
                               <SelectValue placeholder={t("selectMonth")} />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent
+                              dir={i18n.dir()}
+                              className="bg-white"
+                            >
                               {months.map((month, index) => (
                                 <SelectItem
                                   key={index}
                                   value={(index + 1).toString()}
                                 >
-                                  {month}
+                                  {t(month)}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -517,10 +556,16 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                             }
                             value={formation.toYear}
                           >
-                            <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                            <SelectTrigger
+                              dir={i18n.dir()}
+                              className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
+                            >
                               <SelectValue placeholder={t("selectYear")} />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent
+                              dir={i18n.dir()}
+                              className="bg-white"
+                            >
                               {years.map((year, index) => (
                                 <SelectItem key={index} value={year.toString()}>
                                   {year}
@@ -538,7 +583,7 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                           className="border-[#008CBA] text-[#008CBA] hover:bg-gray-50 cursor-pointer"
                           variant="outline"
                         >
-                          Cancel
+                          {t("cancel", { ns: "common" })}
                         </Button>
                       </DialogClose>
                       <DialogClose asChild>
@@ -546,7 +591,7 @@ function ProfileEducation({ isEditing, educations, setEducations }: any) {
                           onClick={() => handleEditFormation()}
                           className="bg-[#008CBA] hover:bg-[#007399] text-white cursor-pointer"
                         >
-                          Save changes
+                          {t("saveChanges")}
                         </Button>
                       </DialogClose>
                     </DialogFooter>

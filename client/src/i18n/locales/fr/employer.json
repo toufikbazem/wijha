@@ -178,6 +178,10 @@
   "unlimited": "Illimité",
   "posts": "offres",
   "access": "accès",
+  "statusActive": "Actif",
+  "statusUnverified": "Non vérifié",
+  "statusSuspended": "Suspendu",
+  "statusDeactivated": "Désactivé",
   "sidebar": {
     "dashboard": "Tableau de bord",
     "jobPosts": "Offres d'emploi",

@@ -25,16 +25,23 @@ import { Spinner } from "@/components/ui/spinner";
 import { Controller, useForm } from "react-hook-form";
 import { changeEmailSchema, changePasswordSchema } from "../Schema";
 import { changeEmail } from "@/features/auth/userSlice";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function SettingsPage() {
-  const { t } = useTranslation("jobseeker");
+  const { t, i18n } = useTranslation("jobseeker");
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [loadingEmail, setLoadingEmail] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState(i18n.language);
   const { user } = useSelector((state: any) => state.user);
 
   const changePasswordForm = useForm<z.infer<typeof changePasswordSchema>>({
@@ -109,6 +116,10 @@ export default function SettingsPage() {
     } finally {
       setLoadingEmail(false);
     }
+  };
+
+  const handleSaveLanguage = () => {
+    i18n.changeLanguage(language);
   };
 
   return (
@@ -256,10 +267,10 @@ export default function SettingsPage() {
                     )}
                   />
                 </div>
-                <div className=" mt-6 flex justify-end">
+                <div className=" mt-6 flex ">
                   <button
                     disabled={loading}
-                    className="cursor-pointer ml-auto px-6 py-2.5 bg-[#008CBA] text-white rounded-lg hover:bg-[#007a9e] transition-colors font-medium"
+                    className="cursor-pointer ltr:ml-auto rtl:mr-auto px-6 py-2.5 bg-[#008CBA] text-white rounded-lg hover:bg-[#007a9e] transition-colors font-medium"
                   >
                     {loading ? (
                       <>
@@ -308,12 +319,12 @@ export default function SettingsPage() {
                       className="input"
                     />
                     {user?.is_email_verified ? (
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs font-medium text-green-600 bg-green-50 rounded-full px-2 py-0.5">
+                      <span className="absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs font-medium text-green-600 bg-green-50 rounded-full px-2 py-0.5">
                         <CheckCircle2 size={12} />
                         {t("verified")}
                       </span>
                     ) : (
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs font-medium text-red-600 bg-red-50 rounded-full px-2 py-0.5">
+                      <span className="absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs font-medium text-red-600 bg-red-50 rounded-full px-2 py-0.5">
                         <XCircle size={12} />
                         {t("notVerified")}
                       </span>
@@ -385,29 +396,38 @@ export default function SettingsPage() {
                   <h2 className="text-lg font-semibold text-gray-900">
                     {t("language")}
                   </h2>
-                  <p className="text-sm text-gray-500">
-                    {t("selectLanguage")}
-                  </p>
+                  <p className="text-sm text-gray-500">{t("selectLanguage")}</p>
                 </div>
               </div>
             </div>
             <div className="px-6 py-6">
               <div className="max-w-md">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="input-label mb-2">
                   {t("preferredLanguage")}
                 </label>
-                <select
-                  value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white"
-                >
-                  <option value="en">English</option>
-                  <option value="fr">French</option>
-                  <option value="ar">Arabic</option>
-                </select>
+                <div className="relative">
+                  <Globe className="input-icon" size={20} />
+                  <Select value={language} onValueChange={setLanguage}>
+                    <SelectTrigger
+                      dir={i18n.language === "ar" ? "rtl" : "ltr"}
+                      aria-label={t("preferredLanguage")}
+                      className="input"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="p-3" dir={i18n.language === "ar" ? "rtl" : "ltr"}>
+                      <SelectItem value="en">{t("english")}</SelectItem>
+                      <SelectItem value="fr">{t("french")}</SelectItem>
+                      <SelectItem value="ar">{t("arabic")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className="mt-6 flex justify-end">
-                <button className="cursor-pointer px-6 py-2.5 bg-[#008CBA] text-white rounded-lg hover:bg-[#007a9e] transition-colors font-medium">
+                <button
+                  onClick={handleSaveLanguage}
+                  className="cursor-pointer px-6 py-2.5 bg-[#008CBA] text-white rounded-lg hover:bg-[#007a9e] transition-colors font-medium"
+                >
                   {t("saveLanguage")}
                 </button>
               </div>

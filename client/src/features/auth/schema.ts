@@ -12,6 +12,11 @@ export const jobSeekerSchema = z
       .min(1, "User name is required.")
       .min(2, "User name must be at least 2 characters.")
       .max(25, "User name must not exceed 25 characters."),
+    professionalTitle: z
+      .string()
+      .min(1, "Professional title is required.")
+      .min(2, "Professional title must be at least 2 characters.")
+      .max(50, "Professional title must not exceed 50 characters."),
     email: z
       .string()
       .min(1, "Email is required.")

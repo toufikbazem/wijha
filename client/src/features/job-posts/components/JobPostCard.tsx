@@ -32,14 +32,20 @@ function JobPostCard({ job }: { job: any }) {
           },
         },
       );
+      const data = await res.json();
       if (!res.ok) {
-        toast.error(t("failedSave"));
+        if (data.error_code === "ACCOUNT_INACTIVE") {
+          toast.error(t("accountInactive"));
+        } else {
+          toast.error(t("failedSave"));
+        }
       } else {
         toast.success(t("successSave"));
         setIsSaved(true);
         dispatch(saveJobPost(job.id));
       }
     } catch (error) {
+      console.error("Error saving job post:", error);
       toast.error(t("failedSave"));
     } finally {
       setOnSaving(false);
@@ -59,8 +65,13 @@ function JobPostCard({ job }: { job: any }) {
           },
         },
       );
+      const data = await res.json();
       if (!res.ok) {
-        toast.error(t("failedUnsave"));
+        if (data.error_code === "ACCOUNT_INACTIVE") {
+          toast.error(t("accountInactive"));
+        } else {
+          toast.error(t("failedUnsave"));
+        }
       } else {
         toast.success(t("successUnsave"));
         setIsSaved(false);

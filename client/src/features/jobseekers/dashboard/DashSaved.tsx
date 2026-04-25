@@ -81,7 +81,12 @@ const DashSaved = () => {
           <>
             <div className="grid grid-cols-1 gap-6">
               {savedJobs.map((job: any) => (
-                <JobPostCard key={job.id} job={job} />
+                <JobPostCard
+                  key={job.id}
+                  job={job}
+                  savedJobs={savedJobs}
+                  setSavedJobs={setSavedJobs}
+                />
               ))}
             </div>
 

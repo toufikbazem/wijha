@@ -13,6 +13,13 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
@@ -320,18 +327,22 @@ export default function SettingsPage() {
             </div>
             <div className="px-6 py-6">
               <div className="max-w-md">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="input-label mb-2">
                   {t("preferredLanguage")}
                 </label>
-                <select
-                  value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white"
-                >
-                  <option value="en">{t("english")}</option>
-                  <option value="fr">{t("french")}</option>
-                  <option value="ar">{t("arabic")}</option>
-                </select>
+                <div className="relative">
+                  <Globe className="input-icon" size={20} />
+                  <Select value={language} onValueChange={setLanguage}>
+                    <SelectTrigger aria-label={t("preferredLanguage")} className="input">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="p-3" position="item-aligned">
+                      <SelectItem value="en">{t("english")}</SelectItem>
+                      <SelectItem value="fr">{t("french")}</SelectItem>
+                      <SelectItem value="ar">{t("arabic")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className="mt-6 flex justify-end">
                 <button onClick={handleSaveLanguage} className="cursor-pointer px-6 py-2.5 bg-[#008CBA] text-white rounded-lg hover:bg-[#007a9e] transition-colors font-medium">

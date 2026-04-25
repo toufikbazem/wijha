@@ -151,19 +151,19 @@
     @apply box-border;
   }
   .input {
-    @apply text-[16px] h-auto! w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008CBA] focus:border-transparent outline-none transition;
+    @apply text-[16px] h-auto! w-full ltr:pl-11 rtl:pr-11 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008CBA] focus:border-transparent outline-none transition;
   }
   .input-filter {
-    @apply text-[14px] h-auto! w-full pl-8 pr-2 py-1.5 border border-gray-300 rounded-lg focus:ring-[#008CBA] focus:ring-2 focus:border-transparent outline-none transition;
+    @apply text-[14px] h-auto! w-full ltr:pl-8 rtl:pr-8 pr-2 py-1.5 border border-gray-300 rounded-lg focus:ring-[#008CBA] focus:ring-2 focus:border-transparent outline-none transition;
   }
   .input-icon {
-    @apply absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400;
+    @apply absolute ltr:left-3 rtl:right-3 top-1/2 transform -translate-y-1/2 text-gray-400;
   }
   .input-icon-right {
-    @apply absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer;
+    @apply absolute ltr:right-3 rtl:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer;
   }
   .input-icon-filter {
-    @apply absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400;
+    @apply absolute ltr:left-2 rtl:right-2 top-1/2 transform -translate-y-1/2 text-gray-400;
   }
   .input-label {
     @apply block text-sm font-medium text-gray-700;
@@ -172,7 +172,7 @@
     @apply text-sm text-red-500 mt-1;
   }
   .input-checkbox {
-    @apply mt-1 mr-3 h-4 w-4 text-[#008CBA] focus:ring-[#008CBA] border-gray-300 rounded;
+    @apply mt-1 ltr:mr-3 rtl:ml-3 h-4 w-4 text-[#008CBA] focus:ring-[#008CBA] border-gray-300 rounded;
   }
   /* .btn {
     @apply py-3 px-4 rounded-lg font-semibold text-white transition-all duration-200 bg-blue-600 hover:bg-blue-700 active:bg-blue-80;

@@ -25,5 +25,7 @@
   "needsLogin": "Vous devez être connecté pour postuler",
   "loginOrCreate": "Veuillez vous connecter ou créer un compte pour postuler.",
   "employersCantApply": "Les employeurs ne peuvent pas postuler aux offres",
-  "loginJobseeker": "Veuillez vous connecter avec un compte chercheur d'emploi pour postuler."
+  "loginJobseeker": "Veuillez vous connecter avec un compte chercheur d'emploi pour postuler.",
+  "uploadCV": "Veuillez télécharger votre CV avant de postuler.",
+  "accountInactive": "Votre compte est inactif. Veuillez contacter le support pour plus d'informations."
 }

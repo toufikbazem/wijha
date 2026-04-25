@@ -178,6 +178,10 @@
   "unlimited": "غير محدود",
   "posts": "وظائف",
   "access": "وصول",
+  "statusActive": "نشط",
+  "statusUnverified": "غير موثق",
+  "statusSuspended": "موقوف",
+  "statusDeactivated": "معطل",
   "sidebar": {
     "dashboard": "لوحة التحكم",
     "jobPosts": "الوظائف",

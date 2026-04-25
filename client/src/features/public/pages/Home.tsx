@@ -394,24 +394,30 @@ export default function JobSearchLanding() {
       </section>
 
       {/* Sponsored Ads Section */}
-      {/* <section className="py-10 bg-gray-50">
+      <section className="py-10 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-xs text-gray-400 uppercase tracking-widest text-center mb-4">
             {t("sponsored")}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          
-          
-            <div className="md:col-span-2 h-80 rounded-2xl bg-gray-200 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm select-none">
-              <img src={add1} alt="" className="w-full h-full" />
+          <div className="mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="rounded-2xl overflow-hidden h-64 md:h-auto">
+              <img
+                src={add1}
+                alt="Advertisement"
+                className="w-full h-full object-cover"
+              />
             </div>
-          
-            <div className="h-80 rounded-2xl bg-gray-200 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm select-none">
-              <img src={add2} alt="" className="w-full h-full" />
+
+            <div className="rounded-2xl overflow-hidden h-64 md:h-auto">
+              <img
+                src={add2}
+                alt="Advertisement"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         </div>
-      </section> */}
+      </section>
 
       {/* Featured Employers */}
       <section className="py-20 bg-white overflow-hidden">

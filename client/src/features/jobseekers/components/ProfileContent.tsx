@@ -6,14 +6,16 @@ import ProfileEducation from "./ProfileEducation";
 import {
   ArrowUp,
   Award,
-  ArrowUp01,
   Globe,
   Link2,
   Plus,
   Share2,
   Upload,
   X,
-  ArrowUpRight,
+  Download,
+  FileText,
+  RefreshCw,
+  CheckCircle2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { Input } from "@/components/ui/input";
@@ -31,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import ProfileLanguage from "./ProfileLanguage";
 import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/i18n";
 
 function ProfileContent({
   profile,
@@ -46,11 +49,21 @@ function ProfileContent({
 }: any) {
   const { t } = useTranslation("jobseeker");
   const [skill, setSkill] = useState("");
+  const [cvUploading, setCvUploading] = useState(false);
+  const [cvUploadProgress, setCvUploadProgress] = useState(0);
 
   const handleCVUpload = async (e: any) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
     const file = files[0];
+
+    setCvUploading(true);
+    setCvUploadProgress(0);
+
+    // Simulate early progress while waiting for upload
+    const progressInterval = setInterval(() => {
+      setCvUploadProgress((prev) => (prev < 80 ? prev + 5 : prev));
+    }, 150);
 
     const fileName = `${Date.now()}-${file.name}`;
 
@@ -58,24 +71,37 @@ function ProfileContent({
       .from("CV")
       .upload(`public/${fileName}`, file);
 
+    clearInterval(progressInterval);
+
     if (error) {
       console.error(error.message);
+      setCvUploading(false);
+      setCvUploadProgress(0);
       return;
     }
+
+    setCvUploadProgress(100);
 
     const { data } = supabase.storage
       .from("CV")
       .getPublicUrl(`public/${fileName}`);
 
-    if (!data?.publicUrl) return;
+    if (!data?.publicUrl) {
+      setCvUploading(false);
+      setCvUploadProgress(0);
+      return;
+    }
 
-    data &&
-      form.setValue("CV", data.publicUrl, {
-        shouldDirty: true,
-        shouldTouch: true,
-      });
-
+    form.setValue("cv", data.publicUrl, {
+      shouldDirty: true,
+      shouldTouch: true,
+    });
     setProfile(form.getValues());
+
+    setTimeout(() => {
+      setCvUploading(false);
+      setCvUploadProgress(0);
+    }, 600);
   };
 
   return (
@@ -98,7 +124,7 @@ function ProfileContent({
                 <Field data-invalid={fieldState.invalid}>
                   <div className="relative">
                     <Textarea
-                      placeholder="Company Description"
+                      placeholder={t("professionalSummaryPlaceholder")}
                       {...field}
                       className="h-[446px] text-[16px] w-full  px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008CBA] focus:border-transparent outline-none transition"
                     />
@@ -111,8 +137,7 @@ function ProfileContent({
             />
           ) : (
             <p className="text-gray-700 leading-relaxed">
-              {profile.professional_summary ||
-                t("noProfessionalSummary")}
+              {profile.professional_summary || t("noProfessionalSummary")}
             </p>
           )}
         </div>
@@ -131,48 +156,114 @@ function ProfileContent({
           setEducations={setEducations}
         />
 
-        {/* CV Upload */}
-        <div className="border-2 border-dashed border-[#B3E6F5] rounded-xl p-8 text-center bg-white/50 hover:bg-white/70 transition">
-          {isEditing ? (
-            <>
-              <input
-                type="file"
-                id="cv-upload"
-                className="hidden"
-                accept=".pdf,.doc,.docx"
-                onChange={handleCVUpload}
-              />
+        {/* CV Section */}
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="flex items-center gap-2 mb-5">
+            <div className="w-1 h-6 bg-[#008CBA] rounded-full"></div>
+            <h3 className="text-xl font-bold text-gray-900">
+              {t("cvSection")}
+            </h3>
+          </div>
 
-              <label htmlFor="cv-upload" className="cursor-pointer">
-                <Upload className="w-12 h-12 mx-auto text-[#008CBA] mb-3" />
-                <p className="text-gray-700 font-semibold mb-1">
-                  {profile.cv
-                    ? "✓ " + t("cvUploadSuccess")
-                    : t("cvLabel")}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {t("cvFormats")}
-                </p>
-              </label>
-            </>
-          ) : (
-            <>
-              {profile.cv ? (
-                <a
-                  href={profile.cv}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex flex-col items-center gap-2 text-[#008CBA] hover:underline"
+          <input
+            type="file"
+            id="cv-upload"
+            className="hidden"
+            accept=".pdf"
+            onChange={handleCVUpload}
+            disabled={cvUploading}
+          />
+
+          {/* Uploading state */}
+          {cvUploading && (
+            <div className="rounded-xl border border-[#B3E6F5] bg-[#F0FAFE] p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-[#E6F7FB] flex items-center justify-center shrink-0">
+                  <Upload className="w-6 h-6 text-[#008CBA] animate-bounce" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-800 mb-1">
+                    {t("cvUploading")}
+                  </p>
+                  <p className="text-xs text-gray-500">{cvUploadProgress}%</p>
+                </div>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div
+                  className="h-2 rounded-full bg-[#008CBA] transition-all duration-200"
+                  style={{ width: `${cvUploadProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* CV exists state */}
+          {!cvUploading && profile.cv && (
+            <div className="rounded-xl border border-[#B3E6F5] bg-[#F0FAFE] p-5">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-[#E6F7FB] flex items-center justify-center shrink-0">
+                  <FileText className="w-6 h-6 text-[#008CBA]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-800 truncate">
+                    {t("cvFileName")}
+                  </p>
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 shrink-0" />
+                    <p className="text-xs text-green-600 font-medium">
+                      {t("cvUploadSuccess")}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <a
+                    href={profile.cv}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white border border-[#008CBA] text-[#008CBA] text-sm font-medium hover:bg-[#E6F7FB] transition"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span className="hidden sm:inline">
+                      {t("viewDownloadCV")}
+                    </span>
+                  </a>
+                  {isEditing && (
+                    <label
+                      htmlFor="cv-upload"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#008CBA] text-white text-sm font-medium hover:bg-[#007399] transition cursor-pointer"
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                      <span className="hidden sm:inline">{t("replaceCV")}</span>
+                    </label>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* No CV state */}
+          {!cvUploading && !profile.cv && (
+            <div className="rounded-xl border-2 border-dashed border-[#B3E6F5] bg-gray-50 p-8 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-[#E6F7FB] flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-[#008CBA]" />
+              </div>
+              <p className="text-gray-800 font-semibold mb-1">
+                {t("noCVAvailable")}
+              </p>
+              <p className="text-sm text-gray-500 mb-5">{t("noCVDesc")}</p>
+              {isEditing && (
+                <label
+                  htmlFor="cv-upload"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#008CBA] text-white text-sm font-medium hover:bg-[#007399] transition cursor-pointer"
                 >
-                  <Upload className="w-12 h-12" />
-                  <span className="font-semibold">
-                    {t("viewDownloadCV")}
-                  </span>
-                </a>
-              ) : (
-                <p className="text-gray-500">{t("noCVAvailable")}</p>
+                  <Upload className="w-4 h-4" />
+                  {t("uploadCV")}
+                </label>
               )}
-            </>
+              {!isEditing && (
+                <p className="text-xs text-gray-400">{t("cvFormats")}</p>
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -201,7 +292,7 @@ function ProfileContent({
                           type="text"
                           className="input-filter text-3xl font-bold"
                           aria-invalid={fieldState.invalid}
-                          placeholder="LinkedIn URL"
+                          placeholder={t("linkedinPlaceholder")}
                         />
                       </div>
                       {fieldState.invalid && (
@@ -222,7 +313,7 @@ function ProfileContent({
                           type="text"
                           className="input-filter text-3xl font-bold"
                           aria-invalid={fieldState.invalid}
-                          placeholder="Github URL"
+                          placeholder={t("githubPlaceholder")}
                         />
                       </div>
                       {fieldState.invalid && (
@@ -243,7 +334,7 @@ function ProfileContent({
                           type="text"
                           className="input-filter text-3xl font-bold"
                           aria-invalid={fieldState.invalid}
-                          placeholder="Portfolio URL"
+                          placeholder={t("portfolioPlaceholder")}
                         />
                       </div>
                       {fieldState.invalid && (
@@ -349,7 +440,10 @@ function ProfileContent({
                     <Plus className="w-4 h-4" />
                   </button>
                 </DialogTrigger>
-                <DialogContent className="bg-white max-h-[90vh] overflow-y-auto overflow-x-hidden">
+                <DialogContent
+                  dir={i18n.dir()}
+                  className="bg-white max-h-[90vh] overflow-y-auto overflow-x-hidden"
+                >
                   <DialogTitle>{t("addSkill")}</DialogTitle>
                   <div className="flex flex-col gap-1">
                     <Label className="input-label">{t("skill")}</Label>
@@ -357,7 +451,7 @@ function ProfileContent({
                       type="text"
                       placeholder={t("skill")}
                       onChange={(e) => setSkill(e.target.value)}
-                      className="input-filter pl-2!"
+                      className="input-filter ltr:pl-2! rtl:pr-2!"
                     />
                   </div>
 

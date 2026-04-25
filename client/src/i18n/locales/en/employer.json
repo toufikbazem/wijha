@@ -189,6 +189,10 @@
   "posts": "posts",
   "access": "access",
 
+  "statusActive": "Active",
+  "statusUnverified": "Unverified",
+  "statusSuspended": "Suspended",
+  "statusDeactivated": "Deactivated",
   "sidebar": {
     "dashboard": "Dashboard",
     "jobPosts": "Job Posts",

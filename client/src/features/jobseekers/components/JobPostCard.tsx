@@ -4,18 +4,52 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
-import moment from "moment";
-import { useTranslation } from "react-i18next";
 
-function JobPostCard({ job }: { job: any }) {
+import moment from "moment/min/moment-with-locales";
+import { useTranslation } from "react-i18next";
+import addressData from "@/utils/address.json";
+
+interface AddressEntry {
+  label: string;
+  labelAr: string;
+  communeFr: string;
+  communeAr: string;
+  wilayaFr: string;
+  wilayaAr: string;
+}
+
+const addresses = addressData as AddressEntry[];
+
+function resolveLocation(frenchLabel: string, lang: string): string {
+  if (!frenchLabel) return frenchLabel;
+  if (lang === "ar") {
+    const entry = addresses.find((a) => a.label === frenchLabel);
+    return entry ? entry.labelAr : frenchLabel;
+  }
+  return frenchLabel;
+}
+
+function JobPostCard({
+  job,
+  savedJobs,
+  setSavedJobs,
+}: {
+  job: any;
+  savedJobs?: any[];
+  setSavedJobs?: (jobs: any[]) => void;
+}) {
   const navigate = useNavigate();
   const { user } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
-  const { t } = useTranslation("jobseeker");
+  const { t, i18n } = useTranslation("jobseeker");
   const [onSaving, setOnSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(
     user?.saved?.includes(job.id) ? true : false,
   );
+
+  i18n.on("languageChanged", (lng) => {
+    moment.locale(lng);
+  });
 
   const handleSave = async (job: any) => {
     setOnSaving(true);
@@ -31,9 +65,17 @@ function JobPostCard({ job }: { job: any }) {
           },
         },
       );
+      const data = await res.json();
+      console.log("not ok");
       if (!res.ok) {
-        toast.error(t("failedSaveJob"));
+        if (data.error_code === "ACCOUNT_INACTIVE") {
+          toast.error(t("accountInactive"));
+        } else {
+          toast.error(t("failedSaveJob"));
+        }
       } else {
+        console.log("ok");
+        setSavedJobs && savedJobs && setSavedJobs([...savedJobs, job]);
         toast.success(t("saveJobSuccess"));
         setIsSaved(true);
         dispatch(saveJobPost(job.id));
@@ -44,6 +86,7 @@ function JobPostCard({ job }: { job: any }) {
       setOnSaving(false);
     }
   };
+
   const handleUnsave = async (job: any) => {
     setOnSaving(true);
     try {
@@ -58,9 +101,18 @@ function JobPostCard({ job }: { job: any }) {
           },
         },
       );
+      const data = await res.json();
       if (!res.ok) {
-        toast.error(t("failedUnsaveJob"));
+        console.log("Error unsaving job:", data);
+        if (data.error_code === "ACCOUNT_INACTIVE") {
+          toast.error(t("accountInactive"));
+        } else {
+          toast.error(t("failedSaveJob"));
+        }
       } else {
+        setSavedJobs &&
+          savedJobs &&
+          setSavedJobs(savedJobs.filter((savedJob) => savedJob.id !== job.id));
         toast.success(t("unsaveJobSuccess"));
         setIsSaved(false);
         dispatch(unsaveJobPost(job.id));
@@ -121,26 +173,34 @@ function JobPostCard({ job }: { job: any }) {
 
       {/* Meta chips */}
       <div className="flex flex-wrap gap-2">
-        {[
-          { icon: MapPin, label: job.location },
-          { icon: Globe, label: job.job_mode },
-          { icon: Briefcase, label: job.job_type },
-        ].map(({ icon: Icon, label }) => (
-          <span
-            key={label}
-            className="inline-flex items-center gap-1.5 text-[12px] text-gray-500 bg-gray-50 rounded-md px-2.5 py-1"
-          >
-            <Icon className="w-3 h-3" />
-            {label}
-          </span>
-        ))}
+        <span
+          key={1}
+          className="inline-flex items-center gap-1.5 text-[12px] text-gray-500 bg-gray-50 rounded-md px-2.5 py-1"
+        >
+          <MapPin className="w-3 h-3" />
+          {resolveLocation(job.location, i18n.language)}
+        </span>
+        <span
+          key={2}
+          className="inline-flex items-center gap-1.5 text-[12px] text-gray-500 bg-gray-50 rounded-md px-2.5 py-1"
+        >
+          <Globe className="w-3 h-3" />
+          {t(job.job_mode)}
+        </span>
+        <span
+          key={3}
+          className="inline-flex items-center gap-1.5 text-[12px] text-gray-500 bg-gray-50 rounded-md px-2.5 py-1"
+        >
+          <Briefcase className="w-3 h-3" />
+          {t(job.job_type)}
+        </span>
       </div>
 
       {/* Footer */}
       <div className="flex items-center justify-between pt-3 border-t border-gray-100">
         <span className="flex items-center text-[12px] font-medium text-sky-700 bg-sky-50 rounded-md px-2.5 py-1">
-          <Clock className="w-3 h-3 inline-block mr-2" />
-          {moment(job.created_at).fromNow()}
+          <Clock className="w-3 h-3 inline-block rtl:ml-2 ltr:mr-2" />
+          {moment(job.created_at).locale(i18n.language).fromNow()}
         </span>
         <button
           onClick={() => navigate(`/jobPost/${job.id}`)}

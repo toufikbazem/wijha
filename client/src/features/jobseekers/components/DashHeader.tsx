@@ -65,14 +65,14 @@ export default function DashHeader({
         </button>
 
         <form onSubmit={() => navigate(`/jobSearch?search=${search}`)}>
-          <div className="min-w-xs">
+          <div className="sm:min-w-xs">
             <div className="relative">
               <Search className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 onChange={(e) => setSearch(e.target.value)}
                 type="text"
                 placeholder={t("searchJobs") + "..."}
-                className="w-full ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 py-2 text-sm border border-gray-300 rounded-lg
+                className="sm:w-full w-fit ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 py-2 text-sm border border-gray-300 rounded-lg
                      focus:outline-none focus:ring-2 focus:ring-[#008CBA] focus:border-transparent"
               />
             </div>
@@ -85,7 +85,11 @@ export default function DashHeader({
               <div className="flex items-center gap-3 cursor-pointer">
                 <div className="w-9 h-9 bg-[#008CBA] rounded-full flex items-center justify-center">
                   {user?.profile_image ? (
-                    <img src={user?.profile_image} alt="Profile" className="w-full h-full rounded-full object-cover" />
+                    <img
+                      src={user?.profile_image}
+                      alt="Profile"
+                      className="w-full h-full rounded-full object-cover"
+                    />
                   ) : (
                     <User className="w-5 h-5 text-white" />
                   )}
@@ -109,17 +113,32 @@ export default function DashHeader({
                   {user?.email}
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuItem onClick={() => navigate("/dashboard?tab=dash")} className="hover:bg-gray-100 rounded-md cursor-pointer p-2">
-                <Building className="w-4 h-4 ltr:mr-2 rtl:ml-2" /> {t("dashboard")}
+              <DropdownMenuItem
+                onClick={() => navigate("/dashboard?tab=dash")}
+                className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
+              >
+                <Building className="w-4 h-4 ltr:mr-2 rtl:ml-2" />{" "}
+                {t("dashboard")}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/dashboard?tab=profile")} className="hover:bg-gray-100 rounded-md cursor-pointer p-2">
-                <User2Icon className="w-4 h-4 ltr:mr-2 rtl:ml-2" /> {t("profile")}
+              <DropdownMenuItem
+                onClick={() => navigate("/dashboard?tab=profile")}
+                className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
+              >
+                <User2Icon className="w-4 h-4 ltr:mr-2 rtl:ml-2" />{" "}
+                {t("profile")}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/dashboard?tab=settings")} className="hover:bg-gray-100 rounded-md cursor-pointer p-2">
-                <Settings className="w-4 h-4 ltr:mr-2 rtl:ml-2" /> {t("settings")}
+              <DropdownMenuItem
+                onClick={() => navigate("/dashboard?tab=settings")}
+                className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
+              >
+                <Settings className="w-4 h-4 ltr:mr-2 rtl:ml-2" />{" "}
+                {t("settings")}
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-gray-200" />
-              <DropdownMenuItem onClick={handleLogOut} className="hover:bg-gray-100 rounded-md cursor-pointer p-2">
+              <DropdownMenuItem
+                onClick={handleLogOut}
+                className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
+              >
                 <LogOutIcon className="w-4 h-4 ltr:mr-2 rtl:ml-2" />
                 {t("logout")}
               </DropdownMenuItem>

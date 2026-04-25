@@ -8,7 +8,6 @@ import {
   User,
   MapPin,
   Building2,
-  Clock,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "react-i18next";
@@ -37,7 +36,6 @@ export default function DashMain() {
   const navigate = useNavigate();
   const { user } = useSelector((state: any) => state.user);
   const { t } = useTranslation("jobseeker");
-  const { t: tc } = useTranslation("common");
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -111,7 +109,9 @@ export default function DashMain() {
         {/* Header */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{tc("dashboard")}</h1>
+            <h1 className=" text-3xl font-bold text-gray-900">
+              {t("sidebar.dashboard")}
+            </h1>
             <p className="mt-1 text-gray-600">
               {t("welcome")} {user?.first_name} {user?.last_name}
             </p>
@@ -119,14 +119,14 @@ export default function DashMain() {
           <div className="flex gap-3">
             <button
               onClick={() => navigate("/jobSearch")}
-              className="cursor-pointer inline-flex items-center justify-center px-6 py-3 bg-[#008CBA] text-white font-medium rounded-lg hover:bg-[#007399] transition-colors shadow-md hover:shadow-lg"
+              className="overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer inline-flex items-center justify-center px-6 py-3 bg-[#008CBA] text-white font-medium rounded-lg hover:bg-[#007399] transition-colors shadow-md hover:shadow-lg"
             >
               <Search className="w-5 h-5 ltr:mr-2 rtl:ml-2" />
               {t("browseJobs")}
             </button>
             <button
               onClick={() => navigate("/dashboard?tab=profile")}
-              className="cursor-pointer inline-flex items-center justify-center px-6 py-3 bg-white text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+              className="overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer inline-flex items-center justify-center px-6 py-3 bg-white text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
             >
               <User className="w-5 h-5 ltr:mr-2 rtl:ml-2" />
               {t("editProfile")}
@@ -143,12 +143,16 @@ export default function DashMain() {
                 key={card.label}
                 className="bg-white rounded-xl border border-gray-200 p-6 flex items-center gap-4"
               >
-                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${card.color}`}>
+                <div
+                  className={`w-12 h-12 rounded-lg flex items-center justify-center ${card.color}`}
+                >
                   <Icon className="w-6 h-6" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">{card.label}</p>
-                  <p className="text-2xl font-bold text-gray-900">{card.value}</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {card.value}
+                  </p>
                 </div>
               </div>
             );
@@ -165,7 +169,7 @@ export default function DashMain() {
               onClick={() => navigate("/dashboard?tab=applications")}
               className="text-sm text-[#008CBA] hover:underline cursor-pointer"
             >
-              {tc("viewAll")}
+              {t("viewAll")}
             </button>
           </div>
           {stats?.recentApplications.length === 0 ? (
@@ -182,27 +186,37 @@ export default function DashMain() {
                 >
                   <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden shrink-0">
                     {app.logo ? (
-                      <img src={app.logo} alt={app.company_name} className="w-full h-full object-cover" />
+                      <img
+                        src={app.logo}
+                        alt={app.company_name}
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
                       <Building2 className="w-5 h-5 text-gray-400" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{app.title}</p>
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {app.title}
+                    </p>
                     <div className="flex items-center gap-3 mt-1">
                       <span className="flex items-center text-xs text-gray-500">
-                        <Building2 className="w-3 h-3 ltr:mr-1 rtl:ml-1" />
+                        <Building2 className="w-3 h-3 mr-1" />
                         {app.company_name}
                       </span>
                       <span className="flex items-center text-xs text-gray-500">
-                        <MapPin className="w-3 h-3 ltr:mr-1 rtl:ml-1" />
+                        <MapPin className="w-3 h-3 mr-1" />
                         {app.location}
                       </span>
                     </div>
                   </div>
-                  <div className="ltr:text-right rtl:text-left shrink-0">
-                    <p className="text-xs text-gray-500">{formatDate(app.applied_at)}</p>
-                    <span className="text-xs font-medium text-gray-500">{app.job_type}</span>
+                  <div className="text-right shrink-0">
+                    <p className="text-xs text-gray-500">
+                      {formatDate(app.applied_at)}
+                    </p>
+                    <span className="text-xs font-medium text-gray-500">
+                      {app.job_type}
+                    </span>
                   </div>
                 </div>
               ))}

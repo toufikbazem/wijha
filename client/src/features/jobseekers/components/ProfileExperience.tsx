@@ -20,8 +20,8 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
-import { set } from "zod";
 import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/i18n";
 
 const months = [
   "January",
@@ -215,7 +215,10 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                 {t("add")}
               </button>
             </DialogTrigger>
-            <DialogContent className="bg-white max-h-[90vh] overflow-y-auto overflow-x-hidden">
+            <DialogContent
+              dir={i18n.language === "ar" ? "rtl" : "ltr"}
+              className="bg-white max-h-[90vh] overflow-y-auto overflow-x-hidden"
+            >
               <DialogTitle>{t("addNewExperience")}</DialogTitle>
               <div className="flex flex-col gap-1">
                 <Label className="input-label">{t("jobTitle")}</Label>
@@ -228,7 +231,7 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                       title: e.target.value,
                     })
                   }
-                  className="input-filter pl-2!"
+                  className="input-filter rtl:pr-2! ltr:pl-2!"
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -242,7 +245,7 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                       company: e.target.value,
                     })
                   }
-                  className="input-filter pl-2!"
+                  className="input-filter rtl:pr-2! ltr:pl-2!"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -258,16 +261,22 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                       }
                       value={experience.fromMonth}
                     >
-                      <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                      <SelectTrigger
+                        dir={i18n.language === "ar" ? "rtl" : "ltr"}
+                        className="input-filter flex w-full justify-between rtl:pr-2! ltr:pl-2!"
+                      >
                         <SelectValue placeholder={t("selectMonth")} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent
+                        dir={i18n.language === "ar" ? "rtl" : "ltr"}
+                        className="bg-white"
+                      >
                         {months.map((month, index) => (
                           <SelectItem
                             key={index}
                             value={(index + 1).toString()}
                           >
-                            {month}
+                            {t(month)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -280,10 +289,16 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                         }))
                       }
                     >
-                      <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                      <SelectTrigger
+                        dir={i18n.language === "ar" ? "rtl" : "ltr"}
+                        className="input-filter flex w-full justify-between rtl:pr-2! ltr:pl-2!"
+                      >
                         <SelectValue placeholder={t("selectYear")} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent
+                        dir={i18n.language === "ar" ? "rtl" : "ltr"}
+                        className="bg-white"
+                      >
                         {years.map((year, index) => (
                           <SelectItem key={index} value={year.toString()}>
                             {year}
@@ -304,16 +319,22 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                         }))
                       }
                     >
-                      <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                      <SelectTrigger
+                        dir={i18n.language === "ar" ? "rtl" : "ltr"}
+                        className="input-filter flex w-full justify-between rtl:pr-2! ltr:pl-2!"
+                      >
                         <SelectValue placeholder={t("selectMonth")} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent
+                        dir={i18n.language === "ar" ? "rtl" : "ltr"}
+                        className="bg-white"
+                      >
                         {months.map((month, index) => (
                           <SelectItem
                             key={index}
                             value={(index + 1).toString()}
                           >
-                            {month}
+                            {t(month)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -326,10 +347,16 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                         }))
                       }
                     >
-                      <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                      <SelectTrigger
+                        dir={i18n.language === "ar" ? "rtl" : "ltr"}
+                        className="input-filter flex w-full justify-between rtl:pr-2! ltr:pl-2!"
+                      >
                         <SelectValue placeholder={t("selectYear")} />
                       </SelectTrigger>
-                      <SelectContent className="bg-white">
+                      <SelectContent
+                        dir={i18n.language === "ar" ? "rtl" : "ltr"}
+                        className="bg-white"
+                      >
                         {years.map((year, index) => (
                           <SelectItem key={index} value={year.toString()}>
                             {year}
@@ -351,7 +378,7 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                       description: e.target.value,
                     })
                   }
-                  className="input-filter pl-2! resize-none"
+                  className="input-filter rtl:pr-2! ltr:pl-2! resize-none"
                 />
               </div>
               <DialogFooter>
@@ -381,25 +408,25 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
         {experiences.map((exp, index) => (
           <div
             key={index}
-            className="relative pl-8 before:content-[''] before:absolute before:left-0 before:top-2 before:w-3 before:h-3 before:bg-[#008CBA] before:rounded-full before:shadow-lg"
+            className="relative ltr:pl-8 rtl:pr-8 before:content-[''] before:absolute ltr:before:left-0 rtl:before:right-0 before:top-2 before:w-3 before:h-3 before:bg-[#008CBA] before:rounded-full before:shadow-lg"
           >
             {index !== experiences.length - 1 && (
-              <div className="absolute left-[5px] top-5 bottom-0 w-0.5 bg-gray-200"></div>
+              <div className="absolute ltr:left-[5px] rtl:right-[5px] top-5 bottom-0 w-0.5 bg-gray-200"></div>
             )}
             <h4 className="font-bold text-gray-900 text-lg">{exp.title}</h4>
             <p className="text-[#008CBA] font-semibold mt-1">{exp.company}</p>
             <p className="text-sm text-gray-500 mt-1">
-              {months[new Date(exp.from).getMonth()]}-
+              {t(months[new Date(exp.from).getMonth()])}-
               {new Date(exp.from).getFullYear()}
               {"    "}
-              {months[new Date(exp.to).getMonth()]}-
+              {t(months[new Date(exp.to).getMonth()])}-
               {new Date(exp.to).getFullYear()}
             </p>
             <p className="text-gray-700 mt-3 leading-relaxed">
               {exp.description}
             </p>
             {isEditing && (
-              <div className="top-2 right-2 absolute flex gap-2">
+              <div className="top-2 ltr:right-2 rtl:left-2 absolute flex gap-2">
                 <Dialog>
                   <DialogTrigger asChild>
                     <button
@@ -425,10 +452,10 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                   <DialogContent className="bg-white max-h-[90vh] overflow-y-auto overflow-x-hidden">
                     <DialogTitle>{t("addNewExperience")}</DialogTitle>
                     <div className="flex flex-col gap-1">
-                      <Label className="input-label">Job Title</Label>
+                      <Label className="input-label">{t("jobTitle")}</Label>
                       <Input
                         type="text"
-                        placeholder="Job Title"
+                        placeholder={t("jobTitle")}
                         onChange={(e) =>
                           setExperience({
                             ...experience,
@@ -436,14 +463,14 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                           })
                         }
                         value={experience.title}
-                        className="input-filter pl-2!"
+                        className="input-filter ltr:pl-2! rtl:pr-2!"
                       />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <Label className="input-label">Company</Label>
+                      <Label className="input-label">{t("company")}</Label>
                       <Input
                         type="text"
-                        placeholder="Company"
+                        placeholder={t("company")}
                         onChange={(e) =>
                           setExperience({
                             ...experience,
@@ -451,7 +478,7 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                           })
                         }
                         value={experience.company}
-                        className="input-filter pl-2!"
+                        className="input-filter ltr:pl-2! rtl:pr-2!"
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -467,16 +494,22 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                             }
                             value={experience.fromMonth}
                           >
-                            <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                            <SelectTrigger
+                              dir={i18n.dir()}
+                              className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
+                            >
                               <SelectValue placeholder={t("selectMonth")} />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent
+                              dir={i18n.dir()}
+                              className="bg-white"
+                            >
                               {months.map((month, index) => (
                                 <SelectItem
                                   key={index}
                                   value={(index + 1).toString()}
                                 >
-                                  {month}
+                                  {t(month)}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -490,10 +523,16 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                             }
                             value={experience.fromYear}
                           >
-                            <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                            <SelectTrigger
+                              dir={i18n.dir()}
+                              className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
+                            >
                               <SelectValue placeholder={t("selectYear")} />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent
+                              dir={i18n.dir()}
+                              className="bg-white"
+                            >
                               {years.map((year, index) => (
                                 <SelectItem key={index} value={year.toString()}>
                                   {year}
@@ -515,16 +554,22 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                             }
                             value={experience.toMonth}
                           >
-                            <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                            <SelectTrigger
+                              dir={i18n.dir()}
+                              className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
+                            >
                               <SelectValue placeholder={t("selectMonth")} />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent
+                              dir={i18n.dir()}
+                              className="bg-white"
+                            >
                               {months.map((month, index) => (
                                 <SelectItem
                                   key={index}
                                   value={(index + 1).toString()}
                                 >
-                                  {month}
+                                  {t(month)}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -538,10 +583,16 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                             }
                             value={experience.toYear}
                           >
-                            <SelectTrigger className="input-filter flex w-full justify-between pl-2!">
+                            <SelectTrigger
+                              dir={i18n.dir()}
+                              className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
+                            >
                               <SelectValue placeholder={t("selectYear")} />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent
+                              dir={i18n.dir()}
+                              className="bg-white"
+                            >
                               {years.map((year, index) => (
                                 <SelectItem key={index} value={year.toString()}>
                                   {year}
@@ -553,9 +604,11 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                       </div>
                     </div>
                     <div className="flex flex-col gap-1 w-full">
-                      <Label className="input-label">Job Description</Label>
+                      <Label className="input-label">
+                        {t("jobDescription")}
+                      </Label>
                       <textarea
-                        placeholder="Job Description"
+                        placeholder={t("jobDescription")}
                         rows={4}
                         onChange={(e) =>
                           setExperience({
@@ -564,7 +617,7 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                           })
                         }
                         value={experience.description}
-                        className="input-filter pl-2! resize-none"
+                        className="input-filter ltr:pl-2! rtl:pr-2! resize-none"
                       />
                     </div>
                     <DialogFooter>
@@ -573,7 +626,7 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                           className="border-[#008CBA] text-[#008CBA] hover:bg-gray-50 cursor-pointer"
                           variant="outline"
                         >
-                          Cancel
+                          {t("cancel")}
                         </Button>
                       </DialogClose>
                       <DialogClose asChild>
@@ -581,7 +634,7 @@ function ProfileExperience({ isEditing, experiences, setExperiences }: any) {
                           onClick={() => handleEditExperience()}
                           className="bg-[#008CBA] hover:bg-[#007399] text-white cursor-pointer"
                         >
-                          Save changes
+                          {t("saveChanges")}
                         </Button>
                       </DialogClose>
                     </DialogFooter>

@@ -9,6 +9,24 @@ export const createApplication = async (req, res) => {
   }
 
   try {
+    const jobSeeker = await db.query("SELECT * FROM job_seeker WHERE id = $1", [
+      jobseekerId,
+    ]);
+    if (jobSeeker.rows[0].status !== "active") {
+      return res.status(403).json({
+        error_code: "ACCOUNT_INACTIVE",
+        message: "Your account is not active. Please contact support.",
+      });
+    }
+    if (!jobSeeker.rows[0].cv) {
+      return res
+        .status(400)
+        .json({
+          error_code: "CV_MISSING",
+          message: "Please upload your CV before applying.",
+        });
+    }
+
     const application = await db.query(
       "INSERT INTO applications (job_post, jobseeker) VALUES ($1, $2)",
       [jobId, jobseekerId],

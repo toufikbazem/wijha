@@ -1,7 +1,7 @@
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { AddressCombobox } from "@/components/ui/address-combobox";
-import { Phone, User } from "lucide-react";
+import { IdCard, Phone, User } from "lucide-react";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -60,6 +60,30 @@ function JobseekerRegisterForm({ form }: { form: any }) {
         />
       </div>
 
+      {/* Professional Title */}
+      <Controller
+        name="professionalTitle"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel className="input-label">
+              {t("professionalTitle")}
+            </FieldLabel>
+            <div className="relative">
+              <IdCard className="input-icon" size={20} />
+              <Input
+                type="text"
+                className="input"
+                {...field}
+                aria-invalid={fieldState.invalid}
+                placeholder={t("enterProfessionalTitle")}
+              />
+            </div>
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+
       {/* Phone Number */}
       <Controller
         name="phoneNumber"
@@ -88,7 +112,9 @@ function JobseekerRegisterForm({ form }: { form: any }) {
         control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
-            <FieldLabel className="input-label">{t("address", { ns: "common" })}</FieldLabel>
+            <FieldLabel className="input-label">
+              {t("address", { ns: "common" })}
+            </FieldLabel>
             <AddressCombobox
               value={field.value}
               onChange={field.onChange}
