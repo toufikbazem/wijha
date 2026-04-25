@@ -106,7 +106,10 @@ function DashSideBar({
           md:!translate-x-0`}
     >
       {/* Logo */}
-      <div className="h-15 flex items-center gap-2.5 px-4.5 border-b border-gray-200 shrink-0">
+      <div
+        onClick={() => navigate("/")}
+        className="h-15 flex items-center gap-2.5 px-4.5 border-b border-gray-200 shrink-0"
+      >
         <img className="w-8 h-8" src={img} alt="logo" />
         <img className="h-6" src={img1} alt="logo" />
       </div>
