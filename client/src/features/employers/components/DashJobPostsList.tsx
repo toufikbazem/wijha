@@ -69,19 +69,19 @@ function DashJobPostsList({
                   <th className="px-6 py-4 ltr:text-left rtl:text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     {t("jobTitle")}
                   </th>
-                  <th className="px-6 py-4 ltr:text-left rtl:text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     {t("status")}
                   </th>
-                  <th className="px-6 py-4 ltr:text-left rtl:text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     {t("datePosted")}
                   </th>
-                  <th className="px-6 py-4 ltr:text-left rtl:text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     {t("applications")}
                   </th>
-                  <th className="px-6 py-4 ltr:text-left rtl:text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                    {t("views")}
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    {t("numberOfPositions")}
                   </th>
-                  <th className="px-6 py-4 ltr:text-left rtl:text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     {t("actions")}
                   </th>
                 </tr>

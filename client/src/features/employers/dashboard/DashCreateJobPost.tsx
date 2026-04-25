@@ -32,6 +32,7 @@ const DashCreateJobPost = () => {
       min_salary: "",
       max_salary: "",
       deadline: undefined,
+      is_anonymous: false,
     },
   });
 

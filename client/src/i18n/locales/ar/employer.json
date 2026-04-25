@@ -112,7 +112,7 @@
   "selectEducationLevel": "اختر المستوى التعليمي",
   "minimumSalary": "الحد الأدنى للراتب",
   "maximumSalary": "الحد الأقصى للراتب",
-  "numberOfPositions": "عدد المناصب",
+  "numberOfPositions": "المناصب",
   "jobDescription": "وصف الوظيفة",
   "applicationDeadline": "آخر أجل للتقديم",
   "pickDate": "اختر تاريخاً",
@@ -178,10 +178,18 @@
   "unlimited": "غير محدود",
   "posts": "وظائف",
   "access": "وصول",
+  "anonymousCompany": "شركة مجهولة",
+  "anonymousCompanyHint": "عند التفعيل، سيتم إخفاء معلومات الشركة عن الباحثين عن عمل.",
+  "statusInfo": "معلومات الحالة",
+  "statusRejectedReason": "تم رفض إعلان الوظيفة. يرجى مراجعة المحتوى وإعادة التقديم.",
+  "statusSuspendedReason": "تم تعليق إعلان الوظيفة. يرجى الاتصال بالدعم لمزيد من ال��علومات.",
+  "confirmDeleteJobTitle": "حذف الوظيفة",
+  "cancel": "إلغاء",
+  "delete": "حذف",
   "statusActive": "نشط",
   "statusUnverified": "غير موثق",
   "statusSuspended": "موقوف",
-  "statusDeactivated": "معطل",
+  "statusDeactivated": "مع��ل",
   "sidebar": {
     "dashboard": "لوحة التحكم",
     "jobPosts": "الوظائف",
@@ -190,5 +198,6 @@
     "profileAccess": "الوصول للملفات",
     "subscription": "الاشتراك",
     "settings": "الإعدادات"
-  }
+  },
+  "employerInactive": "حسابك غير نشط. يرجى الاتصال بالدعم لمزيد من المعلومات."
 }

@@ -1,6 +1,31 @@
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Spinner } from "@/components/ui/spinner";
-import { Edit2, Eye, Pause, Play, Trash2, Upload, Users } from "lucide-react";
+import {
+  Edit2,
+  Eye,
+  HelpCircle,
+  Pause,
+  Play,
+  Trash2,
+  Upload,
+  Users,
+} from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
@@ -16,11 +41,6 @@ function DashJobItem({
   const { t } = useTranslation("employer");
 
   const handleChangeStatus = async (jobId: string, newStatus: string) => {
-    if (newStatus === "Deleted") {
-      const confirmed = window.confirm(t("confirmDeleteJob"));
-      if (!confirmed) return;
-    }
-
     setLoadingState(true);
     try {
       const res = await fetch(
@@ -69,6 +89,16 @@ function DashJobItem({
     }
   };
 
+  const getStatusObservation = () => {
+    if (job.status === "Rejected") {
+      return job.status_reason || t("statusRejectedReason");
+    }
+    if (job.status === "Suspended") {
+      return job.status_reason || t("statusSuspendedReason");
+    }
+    return null;
+  };
+
   return (
     <>
       <tr className="hover:bg-gray-50 transition-colors">
@@ -79,21 +109,41 @@ function DashJobItem({
         </td>
 
         {/* job status */}
-        <td className="px-3 py-2">
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-medium ${statusBadgeClass()}`}
-          >
-            {job.status}
-          </span>
+        <td className="px-3 py-2 text-center">
+          <div className="flex items-center gap-1 justify-center">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-medium ${statusBadgeClass()}`}
+            >
+              {job.status}
+            </span>
+            {(job.status === "Rejected" || job.status === "Suspended") && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    className="cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
+                    title={t("statusInfo")}
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-64 bg-white p-3 text-sm text-gray-700"
+                  align="start"
+                >
+                  {getStatusObservation()}
+                </PopoverContent>
+              </Popover>
+            )}
+          </div>
         </td>
 
         {/* created at */}
-        <td className="px-3 py-2 text-sm">
+        <td className="px-3 py-2 text-sm text-center">
           {new Date(job.created_at).toLocaleDateString("en-GB")}
         </td>
 
         {/* applicants */}
-        <td className="px-3 py-2">
+        <td className="px-3 py-2 text-center">
           <span className="text-lg font-semibold text-gray-900">
             {job.applicants}
           </span>
@@ -102,15 +152,15 @@ function DashJobItem({
           </span>
         </td>
 
-        {/* views */}
-        <td className="px-3 py-2">
+        {/* number of positions */}
+        <td className="px-3 py-2 text-center">
           <span className="text-sm text-gray-600">
-            {job.views} {t("views")}
+            {job.number_of_positions ?? "-"}
           </span>
         </td>
 
         {/* actions */}
-        <td className="px-3 py-2">
+        <td className="px-3 py-2 text-center">
           <div className="flex justify-center items-center gap-1">
             {loadingState && <Spinner className="w-5 h-5 text-gray-400" />}
 
@@ -177,15 +227,39 @@ function DashJobItem({
               </Link>
             </Button>
 
-            {/* DELETE BUTTON (soft delete) */}
+            {/* DELETE BUTTON (soft delete) with AlertDialog */}
             {!loadingState && job.status !== "Deleted" && (
-              <Button
-                onClick={() => handleChangeStatus(job.id, "Deleted")}
-                className="cursor-pointer p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                title="Delete"
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    className="cursor-pointer p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Delete"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="bg-white">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      {t("confirmDeleteJobTitle")}
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {t("confirmDeleteJob")}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300 transition-colors">
+                      {t("cancel")}
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => handleChangeStatus(job.id, "Deleted")}
+                      className="bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors"
+                    >
+                      {t("delete")}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
           </div>
         </td>

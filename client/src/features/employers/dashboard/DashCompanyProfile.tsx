@@ -106,7 +106,6 @@ export default function DashCompanyProfile() {
   }, [companyInfo]);
 
   const onSubmit = async (data: z.infer<typeof companyProfileSchema>) => {
-    console.log(data);
     setLoadingEditMode(true);
     try {
       const res = await fetch(
@@ -121,25 +120,32 @@ export default function DashCompanyProfile() {
         },
       );
 
+      const resData = await res.json();
+
       if (res.ok) {
         setEditMode(false);
         const updatedData = await res.json();
         toast.success(t("profileEditedSuccess"));
         setCompanyInfo(updatedData);
       } else {
-        toast.error(t("errorOccurred"));
-        console.error("Failed to update company data");
+        if (resData && resData.error_code === "EMPLOYER_INACTIVE") {
+          toast.error(t("employerInactive"));
+        } else {
+          toast.error(t("errorOccurred"));
+        }
       }
     } catch (error) {
       console.error("Error updating company data:", error);
+      toast.error(t("errorOccurred"));
     } finally {
       setLoadingEditMode(false);
+      setEditMode(false);
     }
   };
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-6">
         {loading && (
           <div className="space-y-8">
             {/* ===== Header ===== */}

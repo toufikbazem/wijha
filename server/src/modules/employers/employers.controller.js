@@ -3,8 +3,6 @@ import db from "../../config/db.js";
 export const getEmployerProfile = async (req, res) => {
   const { id } = req.params;
 
-  console.log(id);
-
   let user;
 
   try {
@@ -83,6 +81,23 @@ export const updateEmployerProfile = async (req, res) => {
   }
 
   try {
+    const employer = await db.query(
+      "SELECT * FROM employers WHERE user_id = $1",
+      [id],
+    );
+
+    if (
+      employer.rows[0].status !== "active" &&
+      employer.rows[0].status !== "unverified"
+    ) {
+      return res
+        .status(403)
+        .json({
+          error_code: "EMPLOYER_INACTIVE",
+          message: "Employer account is not active, contact support",
+        });
+    }
+
     const updates = [];
     const values = [];
     let index = 1;

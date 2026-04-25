@@ -1,8 +1,19 @@
 import { useEffect, useState } from "react";
 import { Search, ChevronLeft, ChevronRight, Eye } from "lucide-react";
 import { useNavigate } from "react-router";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Textarea } from "@/components/ui/textarea";
 
-const JOB_STATUSES = ["Active", "In-review", "Pending", "Paused", "Rejected", "Expired"];
+const JOB_STATUSES = ["Active", "In-review", "Pending", "Paused", "Rejected", "Suspended", "Expired"];
 
 export default function JobPostsList() {
   const navigate = useNavigate();
@@ -13,6 +24,14 @@ export default function JobPostsList() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const limit = 10;
+
+  // Reason dialog state
+  const [reasonDialogOpen, setReasonDialogOpen] = useState(false);
+  const [pendingStatusChange, setPendingStatusChange] = useState<{
+    jobId: string;
+    status: string;
+  } | null>(null);
+  const [statusReason, setStatusReason] = useState("");
 
   const fetchJobPosts = async () => {
     setLoading(true);
@@ -45,7 +64,7 @@ export default function JobPostsList() {
     fetchJobPosts();
   };
 
-  const handleStatusChange = async (jobId: string, newStatus: string) => {
+  const handleStatusChange = async (jobId: string, newStatus: string, reason?: string) => {
     try {
       await fetch(
         `http://localhost:5000/api/v1/admin/job-posts/${jobId}/status`,
@@ -53,7 +72,7 @@ export default function JobPostsList() {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ status: newStatus }),
+          body: JSON.stringify({ status: newStatus, status_reason: reason || null }),
         },
       );
       fetchJobPosts();
@@ -62,12 +81,39 @@ export default function JobPostsList() {
     }
   };
 
+  const onSelectChange = (jobId: string, newStatus: string) => {
+    if (newStatus === "Rejected" || newStatus === "Suspended") {
+      setPendingStatusChange({ jobId, status: newStatus });
+      setStatusReason("");
+      setReasonDialogOpen(true);
+    } else {
+      handleStatusChange(jobId, newStatus);
+    }
+  };
+
+  const confirmReasonDialog = () => {
+    if (pendingStatusChange) {
+      handleStatusChange(pendingStatusChange.jobId, pendingStatusChange.status, statusReason);
+    }
+    setReasonDialogOpen(false);
+    setPendingStatusChange(null);
+    setStatusReason("");
+  };
+
+  const cancelReasonDialog = () => {
+    setReasonDialogOpen(false);
+    setPendingStatusChange(null);
+    setStatusReason("");
+    fetchJobPosts();
+  };
+
   const statusColors: Record<string, string> = {
     Active: "bg-green-50 text-green-700",
     "In-review": "bg-yellow-50 text-yellow-700",
     Pending: "bg-blue-50 text-blue-700",
     Paused: "bg-gray-100 text-gray-700",
     Rejected: "bg-red-50 text-red-700",
+    Suspended: "bg-red-50 text-red-700",
     Expired: "bg-orange-50 text-orange-700",
   };
 
@@ -156,7 +202,7 @@ export default function JobPostsList() {
                     <td className="px-4 py-3">
                       <select
                         value={job.status}
-                        onChange={(e) => handleStatusChange(job.id, e.target.value)}
+                        onChange={(e) => onSelectChange(job.id, e.target.value)}
                         className={`text-xs font-medium px-2 py-1 rounded border-0 cursor-pointer ${
                           statusColors[job.status] || "bg-gray-100 text-gray-700"
                         }`}
@@ -204,6 +250,42 @@ export default function JobPostsList() {
           </div>
         )}
       </div>
+
+      {/* Reason Dialog for Rejected / Suspended */}
+      <AlertDialog open={reasonDialogOpen} onOpenChange={setReasonDialogOpen}>
+        <AlertDialogContent className="bg-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {pendingStatusChange?.status === "Rejected"
+                ? "Reject Job Post"
+                : "Suspend Job Post"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Provide a reason that will be visible to the employer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <Textarea
+            value={statusReason}
+            onChange={(e) => setStatusReason(e.target.value)}
+            placeholder="Enter reason..."
+            className="min-h-[100px] text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          />
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={cancelReasonDialog}
+              className="bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300 transition-colors"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmReasonDialog}
+              className="bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors"
+            >
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

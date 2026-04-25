@@ -414,9 +414,9 @@ export const getJobPostDetails = async (req, res) => {
 
 export const changeJobPostStatus = async (req, res) => {
   const { id } = req.params;
-  const { status } = req.body;
+  const { status, status_reason } = req.body;
 
-  const validStatuses = ["Active", "Paused", "Rejected", "Pending", "In-review", "Deleted"];
+  const validStatuses = ["Active", "Paused", "Rejected", "Pending", "In-review", "Deleted", "Suspended"];
 
   if (!status || !validStatuses.includes(status)) {
     return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
@@ -424,8 +424,8 @@ export const changeJobPostStatus = async (req, res) => {
 
   try {
     const result = await db.query(
-      "UPDATE job_post SET status = $1 WHERE id = $2 RETURNING *",
-      [status, id],
+      "UPDATE job_post SET status = $1, status_reason = $2 WHERE id = $3 RETURNING *",
+      [status, (status === "Rejected" || status === "Suspended") ? (status_reason || null) : null, id],
     );
 
     if (result.rows.length === 0) {

@@ -116,7 +116,7 @@
   "selectEducationLevel": "Select Education Level",
   "minimumSalary": "Minimum Salary",
   "maximumSalary": "Maximum Salary",
-  "numberOfPositions": "Number of Positions",
+  "numberOfPositions": "Positions",
   "jobDescription": "Job Description",
   "applicationDeadline": "Application Deadline",
   "pickDate": "Pick a date",
@@ -189,6 +189,14 @@
   "posts": "posts",
   "access": "access",
 
+  "anonymousCompany": "Anonymous Company",
+  "anonymousCompanyHint": "When enabled, company information will be hidden from job seekers.",
+  "statusInfo": "Status Information",
+  "statusRejectedReason": "Your job post has been rejected. Please review the content and resubmit.",
+  "statusSuspendedReason": "Your job post has been suspended. Please contact support for more information.",
+  "confirmDeleteJobTitle": "Delete Job Post",
+  "cancel": "Cancel",
+  "delete": "Delete",
   "statusActive": "Active",
   "statusUnverified": "Unverified",
   "statusSuspended": "Suspended",
@@ -201,5 +209,6 @@
     "profileAccess": "Profile Access",
     "subscription": "Subscription",
     "settings": "Settings"
-  }
+  },
+  "employerInactive": "Your account is inactive. Please contact support for more information."
 }

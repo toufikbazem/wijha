@@ -162,5 +162,7 @@
   "Native": "Langue maternelle",
   "linkedinPlaceholder": "Entrez votre profil LinkedIn",
   "githubPlaceholder": "Entrez votre profil GitHub",
-  "portfolioPlaceholder": "Entrez votre site portfolio"
+  "portfolioPlaceholder": "Entrez votre site portfolio",
+  "anonymousCompany": "Entreprise anonyme",
+  "employerInactive": "Votre compte est inactif. Veuillez contacter le support pour obtenir de l'aide."
 }

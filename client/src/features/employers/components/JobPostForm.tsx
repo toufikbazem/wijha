@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   educationLevels,
   experienceLevels,
@@ -125,6 +126,32 @@ function JobPostForm({
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
+              </Field>
+            )}
+          />
+
+          {/* Anonymous Company */}
+          <Controller
+            name="is_anonymous"
+            control={form.control}
+            render={({ field }) => (
+              <Field>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="is_anonymous"
+                    checked={field.value ?? false}
+                    onCheckedChange={field.onChange}
+                  />
+                  <label
+                    htmlFor="is_anonymous"
+                    className="text-sm font-medium text-gray-700 cursor-pointer"
+                  >
+                    {t("anonymousCompany")}
+                  </label>
+                </div>
+                <p className="text-xs text-gray-500 ltr:ml-6 rtl:mr-6">
+                  {t("anonymousCompanyHint")}
+                </p>
               </Field>
             )}
           />
@@ -527,7 +554,9 @@ Requirements (Qualifications & Skills)
                       disabled={(date) => {
                         const today = new Date();
                         today.setHours(0, 0, 0, 0);
-                        return date <= today;
+                        const maxDate = new Date();
+                        maxDate.setMonth(maxDate.getMonth() + 3);
+                        return date <= today || date > maxDate;
                       }}
                     />
                   </PopoverContent>

@@ -228,7 +228,11 @@ export default function JobPosts() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-6">
             <div className="flex flex-col lg:flex-row gap-6 px-8 py-6">
               <div className="flex justify-between">
-                {data && data.logo ? (
+                {data?.is_anonymous ? (
+                  <div className="w-24 h-24 rounded-2xl bg-gray-200 flex items-center justify-center">
+                    <Building2 className="w-10 h-10 text-gray-400" />
+                  </div>
+                ) : data && data.logo ? (
                   <img
                     src={data?.logo}
                     alt="logo"
@@ -345,9 +349,15 @@ export default function JobPosts() {
                   {data && data.title}
                 </h1>
                 <p className="cursor-pointer text-xl font-medium text-gray-600 mb-3">
-                  <Link to={`/companyProfile/${data?.employerid}`}>
-                    {data && data.company_name}
-                  </Link>
+                  {data?.is_anonymous ? (
+                    <span className="text-gray-400 italic">
+                      {t("anonymousCompany")}
+                    </span>
+                  ) : (
+                    <Link to={`/companyProfile/${data?.employerid}`}>
+                      {data && data.company_name}
+                    </Link>
+                  )}
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#008CBA] backdrop-blur-sm rounded-full text-white text-sm">
@@ -575,75 +585,92 @@ export default function JobPosts() {
 
             {/* Right Column - Skills & Actions */}
             <div className="col-span-2 xl:col-span-1 space-y-6">
-              {/* Required Skills */}
-              <aside className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 sticky top-24">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-[#008CBA] rounded-xl flex items-center justify-center">
-                    <Building2 className="w-6 h-6 text-white" />
+              {data?.is_anonymous ? (
+                <aside className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 sticky top-24">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center">
+                      <Building2 className="w-6 h-6 text-gray-400" />
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-900">
+                      {t("aboutCompany")}
+                    </h2>
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">
-                    {t("aboutCompany")}
-                  </h2>
-                </div>
+                  <p className="text-gray-500 text-sm italic">
+                    {t("anonymousCompany")}
+                  </p>
+                </aside>
+              ) : (
+                <aside className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 sticky top-24">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 bg-[#008CBA] rounded-xl flex items-center justify-center">
+                      <Building2 className="w-6 h-6 text-white" />
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-900">
+                      {t("aboutCompany")}
+                    </h2>
+                  </div>
 
-                <div className="space-y-4 mb-6">
-                  <div className="p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl">
-                    <p className="text-sm text-gray-500 mb-1">{t("company")}</p>
-                    <p className="font-bold text-gray-900 text-lg">
-                      {data.company_name}
+                  <div className="space-y-4 mb-6">
+                    <div className="p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl">
+                      <p className="text-sm text-gray-500 mb-1">
+                        {t("company")}
+                      </p>
+                      <p className="font-bold text-gray-900 text-lg">
+                        {data.company_name}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 bg-gray-50 rounded-xl">
+                        <p className="text-xs text-gray-500 mb-1">Industry</p>
+                        <p className="whitespace-nowrap truncate font-semibold text-gray-900 text-sm">
+                          {data.employer_industry}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-xl">
+                        <p className="text-xs text-gray-500 mb-1">
+                          {t("size")}
+                        </p>
+                        <p className="whitespace-nowrap font-semibold text-gray-900 text-sm">
+                          {data.employer_size}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-xl">
+                        <p className="text-xs text-gray-500 mb-1">
+                          {t("founded")}
+                        </p>
+                        <p className="font-semibold text-gray-900 text-sm">
+                          {data.employer_founded_year}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded-xl">
+                        <Globe className="w-4 h-4 text-gray-400 mb-1" />
+                        <a
+                          href={`http://${data.employer_website}`}
+                          className="font-semibold text-blue-600 hover:underline text-sm block truncate"
+                        >
+                          {tc("website")}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 mb-6">
+                    <p className="text-gray-700 leading-relaxed text-sm">
+                      {data.employer_description}
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-gray-500 mb-1">Industry</p>
-                      <p className="whitespace-nowrap truncate font-semibold text-gray-900 text-sm">
-                        {/* {data && data.employerIdInfo.industry} */}
-                        {data.employer_industry}
-                      </p>
-                    </div>
-                    <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-gray-500 mb-1">{t("size")}</p>
-                      <p className="whitespace-nowrap font-semibold text-gray-900 text-sm">
-                        {/* {data && data.employerIdInfo.size} */}
-                        {data.employer_size}
-                      </p>
-                    </div>
-                    <div className="p-3 bg-gray-50 rounded-xl">
-                      <p className="text-xs text-gray-500 mb-1">
-                        {t("founded")}
-                      </p>
-                      <p className="font-semibold text-gray-900 text-sm">
-                        {/* {data && data.employerIdInfo.foundingYear} */}
-                        {data.employer_founded_year}
-                      </p>
-                    </div>
-                    <div className="p-3 bg-gray-50 rounded-xl">
-                      <Globe className="w-4 h-4 text-gray-400 mb-1" />
-                      <a
-                        href={`http://${data.employer_website}`}
-                        className="font-semibold text-blue-600 hover:underline text-sm block truncate"
-                      >
-                        {tc("website")}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4 mb-6">
-                  <p className="text-gray-700 leading-relaxed text-sm">
-                    {/* {data && data.employerIdInfo.description} */}
-                    {data.employer_description}
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => navigate(`/companyProfile/${data.employerid}`)}
-                  className="cursor-pointer w-full px-4 py-3 bg-[#008CBA] text-white rounded-xl hover:shadow-lg transition-all duration-300 font-semibold"
-                >
-                  {t("viewCompanyProfile")}
-                </button>
-              </aside>
+                  <button
+                    onClick={() =>
+                      navigate(`/companyProfile/${data.employerid}`)
+                    }
+                    className="cursor-pointer w-full px-4 py-3 bg-[#008CBA] text-white rounded-xl hover:shadow-lg transition-all duration-300 font-semibold"
+                  >
+                    {t("viewCompanyProfile")}
+                  </button>
+                </aside>
+              )}
             </div>
           </div>
         </div>

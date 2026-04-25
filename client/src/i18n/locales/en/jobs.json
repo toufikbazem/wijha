@@ -27,5 +27,6 @@
   "employersCantApply": "Employers cannot apply for job offers",
   "loginJobseeker": "Please log in with a job seeker account to apply for this job.",
   "uploadCV": "Please upload your CV before applying.",
-  "accountInactive": "Your account is inactive. Please contact support for more information."
+  "accountInactive": "Your account is inactive. Please contact support for more information.",
+  "anonymousCompany": "Anonymous Company"
 }

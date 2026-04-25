@@ -33,6 +33,7 @@ function DashEditJob() {
     min_salary: "",
     max_salary: "",
     deadline: new Date(),
+    is_anonymous: false,
   });
 
   const { user } = useSelector((state: any) => state.user);
@@ -53,6 +54,7 @@ function DashEditJob() {
       min_salary: "",
       max_salary: "",
       deadline: new Date(),
+      is_anonymous: false,
     },
   });
 
@@ -98,6 +100,7 @@ function DashEditJob() {
         min_salary: jobPost.min_salary ? jobPost.min_salary.toString() : "",
         max_salary: jobPost.max_salary ? jobPost.max_salary.toString() : "",
         deadline: new Date(jobPost.deadline),
+        is_anonymous: jobPost.is_anonymous ?? false,
       });
     }
   }, [jobPost]);

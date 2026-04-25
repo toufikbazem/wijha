@@ -1,5 +1,5 @@
 import { saveJobPost, unsaveJobPost } from "@/features/auth/userSlice";
-import { Bookmark, Briefcase, Clock, Globe, MapPin } from "lucide-react";
+import { Bookmark, Briefcase, Building2, Clock, Globe, MapPin } from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
@@ -90,22 +90,30 @@ function JobPostCard({ job }: { job: any }) {
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="font-semibold w-13 h-13 bg-[#E6F7FB] rounded-xl hidden sm:flex items-center justify-center text-xl shrink-0 border border-gray-100">
-            {job.logo ? (
+            {job.is_anonymous ? (
+              <Building2 className="w-6 h-6 text-gray-400" />
+            ) : job.logo ? (
               <img src={job.logo} alt="logo" />
             ) : (
-              job.company_name.charAt(0).toUpperCase()
+              job.company_name?.charAt(0).toUpperCase()
             )}
           </div>
           <div>
             <h4 className="text-[15px] font-medium text-gray-900 mb-0.5">
               {job.title}
             </h4>
-            <Link
-              to={`/companyProfile/${job.employer_id}`}
-              className="block text-[13px] text-gray-500"
-            >
-              {job.company_name}
-            </Link>
+            {job.is_anonymous ? (
+              <span className="block text-[13px] text-gray-400 italic">
+                {t("anonymousCompany")}
+              </span>
+            ) : (
+              <Link
+                to={`/companyProfile/${job.employer_id}`}
+                className="block text-[13px] text-gray-500"
+              >
+                {job.company_name}
+              </Link>
+            )}
           </div>
         </div>
         {user && user.role === "jobseeker" && (

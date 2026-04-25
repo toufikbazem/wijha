@@ -162,5 +162,6 @@
   "Native": "Native",
   "linkedinPlaceholder": "Enter your LinkedIn profile",
   "githubPlaceholder": "Enter your GitHub profile",
-  "portfolioPlaceholder": "Enter your portfolio website"
+  "portfolioPlaceholder": "Enter your portfolio website",
+  "anonymousCompany": "Anonymous Company"
 }

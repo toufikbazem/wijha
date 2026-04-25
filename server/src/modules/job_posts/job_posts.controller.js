@@ -15,6 +15,7 @@ export const createJobPost = async (req, res) => {
     min_salary,
     max_salary,
     deadline,
+    is_anonymous,
   } = req.body;
 
   console.log(req.user.userId, employerId);
@@ -49,9 +50,15 @@ export const createJobPost = async (req, res) => {
         return res.status(403).json({ message: "Employer profile not active" });
       }
     }
-    // check required fields
 
-    // check deadline data is valid not more than 3 months in the future
+    // Validate deadline is not more than 3 months in the future
+    if (deadline) {
+      const maxDate = new Date();
+      maxDate.setMonth(maxDate.getMonth() + 3);
+      if (new Date(deadline) > maxDate) {
+        return res.status(400).json({ message: "Deadline cannot be more than 3 months from now" });
+      }
+    }
 
     const updates = [];
     const values = [];
@@ -115,6 +122,11 @@ export const createJobPost = async (req, res) => {
     if (number_of_positions !== undefined) {
       updates.push(`number_of_positions`);
       values.push(number_of_positions);
+    }
+
+    if (is_anonymous !== undefined) {
+      updates.push(`is_anonymous`);
+      values.push(is_anonymous);
     }
 
     if (employerId !== undefined) {
@@ -178,6 +190,7 @@ export const updateJobPost = async (req, res) => {
     min_salary,
     max_salary,
     deadline,
+    is_anonymous,
   } = req.body;
 
   try {
@@ -206,9 +219,15 @@ export const updateJobPost = async (req, res) => {
         return res.status(403).json({ message: "Employer profile not active" });
       }
     }
-    // check required fields
 
-    // check deadline data is valid not more than 3 months in the future
+    // Validate deadline is not more than 3 months in the future
+    if (deadline) {
+      const maxDate = new Date();
+      maxDate.setMonth(maxDate.getMonth() + 3);
+      if (new Date(deadline) > maxDate) {
+        return res.status(400).json({ message: "Deadline cannot be more than 3 months from now" });
+      }
+    }
 
     const updates = [];
     const values = [];
@@ -274,6 +293,11 @@ export const updateJobPost = async (req, res) => {
       values.push(number_of_positions);
     }
 
+    if (is_anonymous !== undefined) {
+      updates.push(`is_anonymous`);
+      values.push(is_anonymous);
+    }
+
     const status = req.user.role === "admin" ? "Active" : "In-review";
     updates.push(`status`);
     values.push(status);
@@ -297,7 +321,7 @@ export const updateJobPost = async (req, res) => {
 
 export const updateJobPostStatus = async (req, res) => {
   const { id } = req.params;
-  const { status: newStatus } = req.body;
+  const { status: newStatus, status_reason } = req.body;
 
   if (!newStatus) {
     return res.status(400).json({ message: "Status is required" });
@@ -367,9 +391,11 @@ export const updateJobPostStatus = async (req, res) => {
       }
     }
 
+    const reasonValue = (newStatus === "Rejected" || newStatus === "Suspended") ? (status_reason || null) : null;
+
     const result = await db.query(
-      `UPDATE job_post SET status = $1 WHERE id = $2 RETURNING *`,
-      [newStatus, id],
+      `UPDATE job_post SET status = $1, status_reason = $2 WHERE id = $3 RETURNING *`,
+      [newStatus, reasonValue, id],
     );
 
     return res.status(200).json(result.rows[0]);
@@ -415,7 +441,27 @@ export const getJobPost = async (req, res) => {
       return res.status(404).json({ message: "Job post not found" });
     }
 
-    return res.status(200).json(result.rows[0]);
+    const job = result.rows[0];
+
+    // Hide company info for anonymous job posts (unless viewed by the owning employer or admin)
+    if (job.is_anonymous) {
+      const isOwnerOrAdmin =
+        req.user?.role === "admin" ||
+        (req.user?.role === "employer" && req.user?.userId === job.employerid);
+
+      if (!isOwnerOrAdmin) {
+        job.company_name = null;
+        job.logo = null;
+        job.employer_description = null;
+        job.employer_industry = null;
+        job.employer_website = null;
+        job.employer_size = null;
+        job.employer_founded_year = null;
+        job.employerid = null;
+      }
+    }
+
+    return res.status(200).json(job);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
@@ -487,8 +533,9 @@ WHERE
     -- Industry
     AND ($8::text IS NULL OR jp.industry = $8)
 
-    -- Status
+    -- Status (exclude Deleted by default)
     AND ($9::job_status IS NULL OR jp.status = $9)
+    AND ($9::job_status IS NOT NULL OR jp.status != 'Deleted')
 
 ORDER BY
 
@@ -528,11 +575,24 @@ OFFSET $12;
 
     const total = result.rows.length ? result.rows[0].total : 0;
 
+    // Hide company info for anonymous job posts in list
+    const jobs = result.rows.map((job) => {
+      if (job.is_anonymous) {
+        return {
+          ...job,
+          company_name: null,
+          logo: null,
+          employer_id: null,
+        };
+      }
+      return job;
+    });
+
     res.json({
       total,
       page,
       limit,
-      jobs: result.rows,
+      jobs,
     });
   } catch (error) {
     console.error(error);

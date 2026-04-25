@@ -162,5 +162,6 @@
   "Native": "لغة أم",
   "linkedinPlaceholder": "أدخل ملفك الشخصي على LinkedIn",
   "githubPlaceholder": "أدخل ملفك الشخصي على GitHub",
-  "portfolioPlaceholder": "أدخل موقعك الشخصي"
+  "portfolioPlaceholder": "أدخل موقعك الشخصي",
+  "anonymousCompany": "شركة مجهولة"
 }

@@ -1,13 +1,29 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, MapPin, Clock, Building2, Briefcase, GraduationCap } from "lucide-react";
 import { useNavigate } from "react-router";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Textarea } from "@/components/ui/textarea";
 
-const JOB_STATUSES = ["Active", "In-review", "Pending", "Paused", "Rejected", "Expired", "Deleted"];
+const JOB_STATUSES = ["Active", "In-review", "Pending", "Paused", "Rejected", "Suspended", "Expired", "Deleted"];
 
 export default function JobPostDetails({ jobId }: { jobId: string }) {
   const navigate = useNavigate();
   const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  // Reason dialog state
+  const [reasonDialogOpen, setReasonDialogOpen] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState("");
+  const [statusReason, setStatusReason] = useState("");
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -27,7 +43,7 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
     fetchJob();
   }, [jobId]);
 
-  const handleStatusChange = async (newStatus: string) => {
+  const handleStatusChange = async (newStatus: string, reason?: string) => {
     try {
       await fetch(
         `http://localhost:5000/api/v1/admin/job-posts/${jobId}/status`,
@@ -35,13 +51,36 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ status: newStatus }),
+          body: JSON.stringify({ status: newStatus, status_reason: reason || null }),
         },
       );
-      setJob((prev: any) => ({ ...prev, status: newStatus }));
+      setJob((prev: any) => ({ ...prev, status: newStatus, status_reason: reason || null }));
     } catch (error) {
       console.error("Error updating status:", error);
     }
+  };
+
+  const onSelectChange = (newStatus: string) => {
+    if (newStatus === "Rejected" || newStatus === "Suspended") {
+      setPendingStatus(newStatus);
+      setStatusReason("");
+      setReasonDialogOpen(true);
+    } else {
+      handleStatusChange(newStatus);
+    }
+  };
+
+  const confirmReasonDialog = () => {
+    handleStatusChange(pendingStatus, statusReason);
+    setReasonDialogOpen(false);
+    setPendingStatus("");
+    setStatusReason("");
+  };
+
+  const cancelReasonDialog = () => {
+    setReasonDialogOpen(false);
+    setPendingStatus("");
+    setStatusReason("");
   };
 
   const statusColors: Record<string, string> = {
@@ -50,6 +89,7 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
     Pending: "bg-blue-50 text-blue-700 border-blue-200",
     Paused: "bg-gray-100 text-gray-700 border-gray-200",
     Rejected: "bg-red-50 text-red-700 border-red-200",
+    Suspended: "bg-red-50 text-red-700 border-red-200",
     Expired: "bg-orange-50 text-orange-700 border-orange-200",
     Deleted: "bg-red-100 text-red-800 border-red-300",
   };
@@ -110,7 +150,7 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
           </div>
           <select
             value={job.status}
-            onChange={(e) => handleStatusChange(e.target.value)}
+            onChange={(e) => onSelectChange(e.target.value)}
             className={`text-sm font-medium px-3 py-1.5 rounded-lg border cursor-pointer ${
               statusColors[job.status] || "bg-gray-100 text-gray-700 border-gray-200"
             }`}
@@ -121,6 +161,18 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
           </select>
         </div>
       </div>
+
+      {/* Status Reason Display */}
+      {(job.status === "Rejected" || job.status === "Suspended") && job.status_reason && (
+        <div className={`rounded-xl border p-4 text-sm ${
+          job.status === "Rejected"
+            ? "bg-red-50 border-red-200 text-red-700"
+            : "bg-red-50 border-red-200 text-red-700"
+        }`}>
+          <span className="font-semibold">Reason: </span>
+          {job.status_reason}
+        </div>
+      )}
 
       {/* Details Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -153,6 +205,42 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
           </div>
         </div>
       </div>
+
+      {/* Reason Dialog for Rejected / Suspended */}
+      <AlertDialog open={reasonDialogOpen} onOpenChange={setReasonDialogOpen}>
+        <AlertDialogContent className="bg-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {pendingStatus === "Rejected"
+                ? "Reject Job Post"
+                : "Suspend Job Post"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Provide a reason that will be visible to the employer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <Textarea
+            value={statusReason}
+            onChange={(e) => setStatusReason(e.target.value)}
+            placeholder="Enter reason..."
+            className="min-h-25 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          />
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={cancelReasonDialog}
+              className="bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300 transition-colors"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmReasonDialog}
+              className="bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors"
+            >
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

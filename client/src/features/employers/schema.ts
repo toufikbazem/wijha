@@ -28,7 +28,18 @@ export const jobPostSchema = z.object({
   number_of_positions: z.string().min(1, "Number of positions is required"),
   min_salary: z.string().optional(),
   max_salary: z.string().optional(),
-  deadline: z.date().min(new Date(), "Deadline must be in the future."),
+  deadline: z
+    .date()
+    .min(new Date(), "Deadline must be in the future.")
+    .refine(
+      (date) => {
+        const maxDate = new Date();
+        maxDate.setMonth(maxDate.getMonth() + 3);
+        return date <= maxDate;
+      },
+      { message: "Deadline cannot be more than 3 months from now." },
+    ),
+  is_anonymous: z.boolean().optional(),
 });
 
 export const jobPostsFilterSchema = z.object({
