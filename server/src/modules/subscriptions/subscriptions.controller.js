@@ -51,8 +51,27 @@ export const getMySubscription = async (req, res) => {
       [employerId],
     );
 
+    // Check for pending in-review subscription
+    const pendingResult = await db.query(
+      `SELECT
+         s.id,
+         sp.name AS plan_name
+       FROM subscriptions s
+       INNER JOIN subscription_plans sp ON s.plan_id = sp.id
+       WHERE s.employer_id = $1
+         AND s.status = 'in-review'
+         AND s.end_day >= CURRENT_DATE
+       ORDER BY s.created_at DESC
+       LIMIT 1`,
+      [employerId],
+    );
+
+    const pendingSubscription = pendingResult.rows.length > 0
+      ? { id: pendingResult.rows[0].id, plan_name: pendingResult.rows[0].plan_name }
+      : null;
+
     if (result.rows.length === 0) {
-      return res.status(200).json({ subscription: null });
+      return res.status(200).json({ subscription: null, pendingSubscription });
     }
 
     const sub = result.rows[0];
@@ -80,6 +99,7 @@ export const getMySubscription = async (req, res) => {
         profile_access_used: Number(sub.profile_access_used),
         profile_access_limit: profileAccessLimit,
       },
+      pendingSubscription,
     });
   } catch (error) {
     console.error("Error fetching subscription:", error);
@@ -98,7 +118,7 @@ export const subscribe = async (req, res) => {
 
   try {
     const employerResult = await db.query(
-      "SELECT id FROM employers WHERE user_id = $1",
+      "SELECT id, status FROM employers WHERE user_id = $1",
       [userId],
     );
 
@@ -106,7 +126,15 @@ export const subscribe = async (req, res) => {
       return res.status(404).json({ message: "Employer not found" });
     }
 
-    const employerId = employerResult.rows[0].id;
+    const employer = employerResult.rows[0];
+    const employerId = employer.id;
+
+    // Only employers with "active" or "unverified" status can request a subscription
+    if (!["active", "unverified"].includes(employer.status)) {
+      return res.status(403).json({
+        message: "Your account status does not allow subscription requests. Only active or unverified accounts can request a subscription.",
+      });
+    }
 
     // Fetch the plan
     const planResult = await db.query(
@@ -120,27 +148,27 @@ export const subscribe = async (req, res) => {
 
     const plan = planResult.rows[0];
 
-    // Check for existing active subscription
+    // Check for existing in-review subscription
     const existing = await db.query(
       `SELECT id FROM subscriptions
-       WHERE employer_id = $1 AND status = 'active' AND end_day >= CURRENT_DATE`,
+       WHERE employer_id = $1 AND status = 'in-review' AND end_day >= CURRENT_DATE`,
       [employerId],
     );
 
     if (existing.rows.length > 0) {
       return res
         .status(409)
-        .json({ message: "You already have an active subscription" });
+        .json({ message: "You already have a subscription request under review" });
     }
 
-    // Create subscription
+    // Create subscription with "in-review" status
     const startDay = new Date();
     const endDay = new Date();
     endDay.setDate(endDay.getDate() + plan.duration);
 
     const subResult = await db.query(
       `INSERT INTO subscriptions (employer_id, plan_id, start_day, end_day, status)
-       VALUES ($1, $2, $3, $4, 'active')
+       VALUES ($1, $2, $3, $4, 'in-review')
        RETURNING *`,
       [employerId, plan_id, startDay, endDay],
     );
@@ -155,7 +183,7 @@ export const subscribe = async (req, res) => {
     );
 
     return res.status(201).json({
-      message: "Subscription created successfully",
+      message: "Subscription request submitted successfully. It is now under review.",
       subscription: {
         ...subscription,
         plan_name: plan.name,

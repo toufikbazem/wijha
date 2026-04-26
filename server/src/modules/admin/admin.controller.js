@@ -71,13 +71,13 @@ export const getJobSeekers = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const conditions = ["u.role = 'jobseeker'"];
+    const conditions = [];
     const values = [];
     let index = 1;
 
     if (search) {
       conditions.push(
-        `(js.first_name ILIKE $${index} OR js.last_name ILIKE $${index} OR u.email ILIKE $${index})`,
+        `(js.first_name ILIKE $${index} OR js.last_name ILIKE $${index} OR COALESCE(u.email, js.user_email) ILIKE $${index})`,
       );
       values.push(`%${search}%`);
       index++;
@@ -89,22 +89,27 @@ export const getJobSeekers = async (req, res) => {
       index++;
     }
 
-    const whereClause = conditions.join(" AND ");
+    const whereClause = conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";
     const limitIdx = index++;
     const offsetIdx = index++;
     values.push(Number(limit), offset);
 
     const result = await db.query(
       `SELECT
-         u.id, u.email, u.role, u.created_at, u.is_email_verified,
-         js.id AS jobseeker_id, js.first_name, js.last_name,
+         js.id AS jobseeker_id,
+         js.first_name, js.last_name,
          js.professional_title, js.phone_number, js.address, js.status,
-         js.profile_image,
+         js.profile_image, js.user_email,
+         js.user_id,
+         COALESCE(u.email, js.user_email) AS email,
+         u.role, u.is_email_verified,
+         COALESCE(u.created_at, js.created_at) AS created_at,
+         CASE WHEN js.user_id IS NULL THEN true ELSE false END AS is_admin_created,
          COUNT(*) OVER() AS total
-       FROM users u
-       INNER JOIN job_seeker js ON u.id = js.user_id
-       WHERE ${whereClause}
-       ORDER BY u.created_at DESC
+       FROM job_seeker js
+       LEFT JOIN users u ON js.user_id = u.id
+       ${whereClause}
+       ORDER BY COALESCE(u.created_at, js.created_at) DESC
        LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
       values,
     );
@@ -123,27 +128,34 @@ export const getJobSeekerDetails = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await db.query(
-      `SELECT u.id, u.email, u.role, u.created_at, u.is_email_verified,
-         js.*
-       FROM users u
-       INNER JOIN job_seeker js ON u.id = js.user_id
-       WHERE u.id = $1`,
+    const result = await db.query(
+      `SELECT
+         js.*,
+         COALESCE(u.email, js.user_email) AS email,
+         u.role, u.is_email_verified,
+         COALESCE(u.created_at, js.created_at) AS account_created_at,
+         CASE WHEN js.user_id IS NULL THEN true ELSE false END AS is_admin_created
+       FROM job_seeker js
+       LEFT JOIN users u ON js.user_id = u.id
+       WHERE js.id = $1`,
       [id],
     );
 
-    if (user.rows.length === 0) {
+    if (result.rows.length === 0) {
       return res.status(404).json({ message: "Job seeker not found" });
     }
 
+    const profile = result.rows[0];
+    const userId = profile.user_id;
+
     const [experiences, educations, languages] = await Promise.all([
-      db.query("SELECT * FROM experiences WHERE user_id = $1", [id]),
-      db.query("SELECT * FROM educations WHERE user_id = $1", [id]),
-      db.query("SELECT * FROM languages WHERE user_id = $1", [id]),
+      userId ? db.query("SELECT * FROM experiences WHERE user_id = $1", [userId]) : { rows: [] },
+      userId ? db.query("SELECT * FROM educations WHERE user_id = $1", [userId]) : { rows: [] },
+      userId ? db.query("SELECT * FROM languages WHERE user_id = $1", [userId]) : { rows: [] },
     ]);
 
     return res.status(200).json({
-      ...user.rows[0],
+      ...profile,
       experiences: experiences.rows,
       educations: educations.rows,
       languages: languages.rows,
@@ -154,17 +166,54 @@ export const getJobSeekerDetails = async (req, res) => {
   }
 };
 
+export const createJobSeekerProfile = async (req, res) => {
+  const { first_name, last_name, user_email, professional_title, phone_number, address, gender, cv, status = "unverified" } = req.body;
+
+  if (!first_name || !last_name || !user_email) {
+    return res.status(400).json({ message: "first_name, last_name, and user_email are required" });
+  }
+
+  const validStatuses = ["active", "deactivated", "unverified", "suspended"];
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
+  }
+
+  try {
+    const existing = await db.query(
+      "SELECT id FROM job_seeker WHERE user_email = $1",
+      [user_email],
+    );
+    if (existing.rows.length > 0) {
+      return res.status(409).json({ message: "A profile with this email already exists" });
+    }
+
+    const result = await db.query(
+      `INSERT INTO job_seeker (first_name, last_name, user_email, professional_title, phone_number, address, gender, cv, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       RETURNING *`,
+      [first_name, last_name, user_email, professional_title || null, phone_number || null, address || null, gender || null, cv || null, status],
+    );
+
+    return res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error creating job seeker profile:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const changeJobSeekerStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
-  if (!status || !["active", "desactivated"].includes(status)) {
-    return res.status(400).json({ message: "Invalid status. Must be 'active' or 'desactivated'" });
+  const validStatuses = ["active", "deactivated", "unverified", "suspended"];
+  if (!status || !validStatuses.includes(status)) {
+    return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
   }
 
   try {
+    // Support lookup by jobseeker_id (for admin-created profiles) or user_id
     const result = await db.query(
-      "UPDATE job_seeker SET status = $1 WHERE user_id = $2 RETURNING *",
+      "UPDATE job_seeker SET status = $1 WHERE id = $2 RETURNING *",
       [status, id],
     );
 
@@ -183,12 +232,21 @@ export const deleteJobSeeker = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await db.query("SELECT id FROM users WHERE id = $1 AND role = 'jobseeker'", [id]);
-    if (user.rows.length === 0) {
+    // id here is jobseeker_id (js.id), not user_id
+    const js = await db.query("SELECT id, user_id FROM job_seeker WHERE id = $1", [id]);
+    if (js.rows.length === 0) {
       return res.status(404).json({ message: "Job seeker not found" });
     }
 
-    await db.query("DELETE FROM users WHERE id = $1", [id]);
+    const { user_id } = js.rows[0];
+
+    // Delete the job_seeker record first
+    await db.query("DELETE FROM job_seeker WHERE id = $1", [id]);
+
+    // If there's a linked user account, delete it too
+    if (user_id) {
+      await db.query("DELETE FROM users WHERE id = $1", [user_id]);
+    }
 
     return res.status(200).json({ message: "Job seeker deleted successfully" });
   } catch (error) {
@@ -278,8 +336,9 @@ export const changeEmployerStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
-  if (!status || !["active", "desactivated"].includes(status)) {
-    return res.status(400).json({ message: "Invalid status. Must be 'active' or 'desactivated'" });
+  const validStatuses = ["active", "suspended", "unverified", "deactivated"];
+  if (!status || !validStatuses.includes(status)) {
+    return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
   }
 
   try {
@@ -363,12 +422,12 @@ export const getJobPosts = async (req, res) => {
 
     const result = await db.query(
       `SELECT
-         jp.id, jp.title, jp.status, jp.location, jp.job_type, jp.job_mode,
+         jp.id, jp.title, jp.status, jp.status_reason, jp.location, jp.job_type, jp.job_mode,
          jp.experience_level, jp.created_at, jp.deadline, jp.applicants,
          e.company_name, e.logo, e.user_id AS employer_user_id,
          COUNT(*) OVER() AS total
        FROM job_post jp
-       INNER JOIN employers e ON jp.employer_id = e.id
+       LEFT JOIN employers e ON jp.employer_id = e.id
        WHERE ${whereClause}
        ORDER BY
          CASE WHEN $${sortByIdx} = 'newest' THEN jp.created_at END DESC,
@@ -422,10 +481,15 @@ export const changeJobPostStatus = async (req, res) => {
     return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
   }
 
+  const requiresReason = ["Pending", "Suspended"];
+  if (requiresReason.includes(status) && !status_reason?.trim()) {
+    return res.status(400).json({ message: "A reason is required when setting status to Pending or Suspended" });
+  }
+
   try {
     const result = await db.query(
       "UPDATE job_post SET status = $1, status_reason = $2 WHERE id = $3 RETURNING *",
-      [status, (status === "Rejected" || status === "Suspended") ? (status_reason || null) : null, id],
+      [status, requiresReason.includes(status) ? status_reason.trim() : null, id],
     );
 
     if (result.rows.length === 0) {
@@ -435,6 +499,79 @@ export const changeJobPostStatus = async (req, res) => {
     return res.status(200).json({ message: "Status updated", jobPost: result.rows[0] });
   } catch (error) {
     console.error("Error changing job post status:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const createAdminJobPost = async (req, res) => {
+  const {
+    employer_id,
+    is_anonymous,
+    title,
+    description,
+    location,
+    job_type,
+    job_mode,
+    industry,
+    experience_level,
+    education_level,
+    number_of_positions,
+    min_salary,
+    max_salary,
+    deadline,
+  } = req.body;
+
+  if (!title) {
+    return res.status(400).json({ message: "title is required" });
+  }
+
+  if (!is_anonymous && !employer_id) {
+    return res.status(400).json({ message: "Either employer_id or is_anonymous must be provided" });
+  }
+
+  try {
+    if (employer_id) {
+      const emp = await db.query("SELECT id FROM employers WHERE id = $1", [employer_id]);
+      if (emp.rows.length === 0) {
+        return res.status(404).json({ message: "Employer not found" });
+      }
+    }
+
+    const columns = ["title", "status", "created_by"];
+    const values = [title, "Active", req.user.userId];
+
+    const optionalFields = {
+      description, location, job_type, job_mode, industry,
+      experience_level, education_level, number_of_positions,
+      min_salary, max_salary, deadline,
+    };
+
+    for (const [col, val] of Object.entries(optionalFields)) {
+      if (val !== undefined && val !== null && val !== "") {
+        columns.push(col);
+        values.push(val);
+      }
+    }
+
+    if (employer_id && !is_anonymous) {
+      columns.push("employer_id");
+      values.push(employer_id);
+    }
+
+    if (is_anonymous) {
+      columns.push("is_anonymous");
+      values.push(true);
+    }
+
+    const placeholders = values.map((_, i) => `$${i + 1}`).join(", ");
+    const result = await db.query(
+      `INSERT INTO job_post (${columns.join(", ")}) VALUES (${placeholders}) RETURNING *`,
+      values,
+    );
+
+    return res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error creating admin job post:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -603,8 +740,9 @@ export const changeSubscriptionStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
-  if (!status || !["active", "cancelled", "expired"].includes(status)) {
-    return res.status(400).json({ message: "Invalid status. Must be 'active', 'cancelled', or 'expired'" });
+  const validStatuses = ["in-review", "active", "suspended", "paused", "cancelled"];
+  if (!status || !validStatuses.includes(status)) {
+    return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
   }
 
   try {

@@ -4,6 +4,7 @@ import {
   getDashboardStats,
   getJobSeekers,
   getJobSeekerDetails,
+  createJobSeekerProfile,
   changeJobSeekerStatus,
   deleteJobSeeker,
   getEmployers,
@@ -13,6 +14,7 @@ import {
   getJobPosts,
   getJobPostDetails,
   changeJobPostStatus,
+  createAdminJobPost,
   getPlans,
   createPlan,
   updatePlan,
@@ -34,6 +36,7 @@ router.get("/dashboard", getDashboardStats);
 
 // Job Seekers
 router.get("/job-seekers", getJobSeekers);
+router.post("/job-seekers", createJobSeekerProfile);
 router.get("/job-seekers/:id", getJobSeekerDetails);
 router.patch("/job-seekers/:id/status", changeJobSeekerStatus);
 router.delete("/job-seekers/:id", deleteJobSeeker);
@@ -46,6 +49,7 @@ router.delete("/employers/:id", deleteEmployer);
 
 // Job Posts
 router.get("/job-posts", getJobPosts);
+router.post("/job-posts", createAdminJobPost);
 router.get("/job-posts/:id", getJobPostDetails);
 router.patch("/job-posts/:id/status", changeJobPostStatus);
 

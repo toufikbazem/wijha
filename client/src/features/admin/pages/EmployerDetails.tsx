@@ -99,11 +99,17 @@ export default function EmployerDetails({ userId }: { userId: string }) {
             className={`text-sm font-medium px-3 py-1.5 rounded-lg border cursor-pointer ${
               profile.status === "active"
                 ? "bg-green-50 text-green-700 border-green-200"
+                : profile.status === "unverified"
+                ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+                : profile.status === "suspended"
+                ? "bg-orange-50 text-orange-700 border-orange-200"
                 : "bg-red-50 text-red-700 border-red-200"
             }`}
           >
             <option value="active">Active</option>
-            <option value="desactivated">Deactivated</option>
+            <option value="unverified">Unverified</option>
+            <option value="suspended">Suspended</option>
+            <option value="deactivated">Deactivated</option>
           </select>
         </div>
       </div>

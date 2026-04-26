@@ -76,10 +76,34 @@ const register = async (req, res) => {
         [newUser.rows[0].id, firstName, lastName, professionalTitle, address, phoneNumber],
       );
     } else if (role === "employer") {
-      await db.query(
-        "INSERT INTO employers (user_id, company_name, industry, size, address, phone_number) VALUES ($1, $2, $3, $4, $5, $6)",
+      const employerResult = await db.query(
+        "INSERT INTO employers (user_id, company_name, industry, size, address, phone_number) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
         [newUser.rows[0].id, companyName, industry, size, address, phoneNumber],
       );
+
+      // Auto-assign Free plan to new employer
+      const freePlan = await db.query(
+        "SELECT id, duration FROM subscription_plans WHERE type = 'free' LIMIT 1",
+      );
+
+      if (freePlan.rows.length > 0) {
+        const startDay = new Date();
+        const endDay = new Date();
+        endDay.setDate(endDay.getDate() + freePlan.rows[0].duration);
+
+        const subscription = await db.query(
+          `INSERT INTO subscriptions (employer_id, plan_id, start_day, end_day, status)
+           VALUES ($1, $2, $3, $4, 'active')
+           RETURNING id`,
+          [employerResult.rows[0].id, freePlan.rows[0].id, startDay, endDay],
+        );
+
+        await db.query(
+          `INSERT INTO subscription_usage (subscription_id, job_post_used, profile_access_used)
+           VALUES ($1, 0, 0)`,
+          [subscription.rows[0].id],
+        );
+      }
     }
     res.status(201).json({ message: "User registered successfully." });
   } catch (error) {
@@ -113,10 +137,15 @@ const login = async (req, res) => {
         .json({ message: "Password or email is incorrect." });
     }
 
-    if (user.rows[0].status === "desactivated") {
-      res
-        .status(403)
-        .json({ message: "Account desactivated, contact support" });
+    if (user.rows[0].role === "employer") {
+      const emp = await db.query("SELECT status FROM employers WHERE user_id = $1", [user.rows[0].id]);
+      const empStatus = emp.rows[0]?.status;
+      if (empStatus === "deactivated") {
+        return res.status(403).json({ message: "Account deactivated, contact support" });
+      }
+      if (empStatus === "suspended") {
+        return res.status(403).json({ message: "Account suspended, contact support" });
+      }
     }
 
     if (user.rows[0].role === "jobseeker") {

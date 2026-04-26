@@ -1,37 +1,28 @@
-i want to create about us page that provide information about the website
+Implement the following enhancements for the Job Management (Admin Dashboard):
 
-- the website contain this information
-  -provide their traduction with arabic, frensh, and english
-- provide professional modern and clean design
-  ✦ About Us | من نحن
+1. Job Status Reason Handling
+   When the admin updates a job post status to:
+   "pending" or "suspended"
+   A required input field (modal or form) must appear to enter a reason.
+   This reason should be:
+   Stored in the database field: status_reason
+   Updated every time the status changes to one of these values
+   Ensure:
+   Validation: reason cannot be empty
+   UI feedback (error message if empty)
+   Display:
+   Add a tooltip or info icon in the job table to show status_reason when status is "pending" or "suspended"
 
-في عالم مليء بالخيارات والتحديات، يجد الكثير من الشباب أنفسهم في حالة من التردد والضياع المهني، بين طموحات كبيرة وواقع غير واضح المعالم.
-هنا جاءت وجهة لتكون أكثر من مجرد منصة… بل نقطة انطلاق حقيقية نحو المستقبل.
+2. Admin Job Post Creation
 
-وجهة هي منصة رقمية تهدف إلى ربط الشباب الطموح بالفرص المناسبة، من خلال الجمع بين التوظيف، التوجيه، وبناء مجتمع مهني فعّال. نحن نؤمن أن كل شخص يمتلك إمكانيات عظيمة، لكنه يحتاج فقط إلى الاتجاه الصحيح.
+Add a "Create Job Post" feature in the admin dashboard:
 
-✦ رؤيتنا
+a. Company Selection
+Admin can:
+Select an existing company (dropdown or search)
+Or enable "Anonymous Company" option
+d. Backend Handling
+If employer exist: store employer_id and created_by(admin_id)
+else if is_anonymouse store just created_by
 
-أن نكون المنصة الأولى عربيًا في توجيه الشباب نحو مساراتهم المهنية بوعي وفعالية، ومرافقتهم في رحلتهم من التعلم إلى العمل.
-
-✦ رسالتنا
-
-تمكين الشباب من:
-
-اكتشاف قدراتهم وتحديد أهدافهم
-الوصول إلى فرص عمل وتدريب حقيقية
-بناء شبكة علاقات مهنية قوية
-اتخاذ قرارات مدروسة لمستقبلهم
-✦ ماذا نقدم؟
-🔹 فرص عمل وتدريب من شركات موثوقة
-🔹 محتوى توجيهي يساعدك على فهم سوق العمل
-🔹 مجتمع مهني لتبادل الخبرات والفرص
-🔹 أدوات تساعدك على تطوير مهاراتك ومسارك
-✦ لماذا "وجهة"؟
-
-لأننا لا نساعدك فقط في إيجاد عمل…
-بل نساعدك في اختيار الطريق الصحيح.
-
-✦ فلسفتنا
-
-النجاح ليس في الوصول السريع… بل في الوصول إلى الوجهة الصحيحة.s
+explain implementation approach, do not write any code.

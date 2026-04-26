@@ -111,9 +111,11 @@ export default function SubscriptionsList() {
   };
 
   const statusColors: Record<string, string> = {
+    "in-review": "bg-yellow-50 text-yellow-700",
     active: "bg-green-50 text-green-700",
-    cancelled: "bg-red-50 text-red-700",
-    expired: "bg-orange-50 text-orange-700",
+    suspended: "bg-red-50 text-red-700",
+    paused: "bg-blue-50 text-blue-700",
+    cancelled: "bg-gray-100 text-gray-600",
   };
 
   const totalPages = Math.ceil(total / limit);
@@ -142,9 +144,11 @@ export default function SubscriptionsList() {
           className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
         >
           <option value="">All Status</option>
+          <option value="in-review">In Review</option>
           <option value="active">Active</option>
+          <option value="suspended">Suspended</option>
+          <option value="paused">Paused</option>
           <option value="cancelled">Cancelled</option>
-          <option value="expired">Expired</option>
         </select>
       </div>
 
@@ -197,9 +201,11 @@ export default function SubscriptionsList() {
                           statusColors[sub.status] || "bg-gray-100 text-gray-700"
                         }`}
                       >
+                        <option value="in-review">In Review</option>
                         <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="paused">Paused</option>
                         <option value="cancelled">Cancelled</option>
-                        <option value="expired">Expired</option>
                       </select>
                     </td>
                     <td className="px-4 py-3 text-gray-600 text-xs">

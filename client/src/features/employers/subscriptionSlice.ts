@@ -40,8 +40,14 @@ interface Invoice {
   profile_access_used: number;
 }
 
+interface PendingSubscription {
+  id: string;
+  plan_name: string;
+}
+
 interface SubscriptionState {
   subscription: Subscription | null;
+  pendingSubscription: PendingSubscription | null;
   plans: Plan[];
   invoices: Invoice[];
   loading: boolean;
@@ -50,6 +56,7 @@ interface SubscriptionState {
 
 const initialState: SubscriptionState = {
   subscription: null,
+  pendingSubscription: null,
   plans: [],
   invoices: [],
   loading: false,
@@ -65,7 +72,7 @@ export const fetchMySubscription = createAsyncThunk(
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      return data.subscription;
+      return { subscription: data.subscription, pendingSubscription: data.pendingSubscription };
     } catch (err: any) {
       return rejectWithValue(err.message);
     }
@@ -134,7 +141,8 @@ const subscriptionSlice = createSlice({
       })
       .addCase(fetchMySubscription.fulfilled, (state, action) => {
         state.loading = false;
-        state.subscription = action.payload;
+        state.subscription = action.payload.subscription;
+        state.pendingSubscription = action.payload.pendingSubscription;
       })
       .addCase(fetchMySubscription.rejected, (state, action) => {
         state.loading = false;

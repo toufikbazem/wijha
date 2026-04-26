@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 
 export default function DashSubPlans() {
   const dispatch = useDispatch<any>();
-  const { plans, subscription, loading } = useSelector(
+  const { plans, subscription, pendingSubscription, loading } = useSelector(
     (state: any) => state.subscription,
   );
   const { t } = useTranslation("employer");
@@ -25,7 +25,7 @@ export default function DashSubPlans() {
   const handleSubscribe = async (planId: string) => {
     const result = await dispatch(subscribeToPlan(planId));
     if (subscribeToPlan.fulfilled.match(result)) {
-      toast.success(t("subscriptionActivated"));
+      toast.success(t("subscriptionRequestSent"));
       dispatch(fetchMySubscription());
     } else {
       toast.error(result.payload || t("failedSubscribe"));
@@ -46,7 +46,8 @@ export default function DashSubPlans() {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {plans.map((plan: any) => {
         const isCurrentPlan = subscription?.plan_name === plan.name;
-        const hasActiveSubscription = !!subscription;
+        const isPendingPlan = pendingSubscription?.plan_name === plan.name;
+        const hasPendingRequest = !!pendingSubscription;
 
         return (
           <div
@@ -54,13 +55,20 @@ export default function DashSubPlans() {
             className={`bg-white rounded-xl border p-6 flex flex-col ${
               isCurrentPlan
                 ? "border-[#008CBA] ring-2 ring-[#008CBA]/20"
-                : "border-gray-200"
+                : isPendingPlan
+                  ? "border-yellow-400 ring-2 ring-yellow-400/20"
+                  : "border-gray-200"
             }`}
           >
             {/* Plan Badge */}
             {isCurrentPlan && (
               <span className="self-start text-xs font-medium px-2.5 py-1 rounded-full bg-[#008CBA] text-white mb-3">
                 {t("currentPlan")}
+              </span>
+            )}
+            {isPendingPlan && (
+              <span className="self-start text-xs font-medium px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-700 mb-3">
+                {t("inReview")}
               </span>
             )}
 
@@ -113,20 +121,20 @@ export default function DashSubPlans() {
             {/* Action */}
             <button
               onClick={() => handleSubscribe(plan.id)}
-              disabled={isCurrentPlan || (hasActiveSubscription && !isCurrentPlan) || loading}
+              disabled={isCurrentPlan || hasPendingRequest || loading}
               className={`cursor-pointer w-full py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                isCurrentPlan
+                isCurrentPlan || hasPendingRequest
                   ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  : hasActiveSubscription
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-[#008CBA] text-white hover:bg-[#007399]"
+                  : "bg-[#008CBA] text-white hover:bg-[#007399]"
               }`}
             >
               {isCurrentPlan
                 ? t("currentPlan")
-                : hasActiveSubscription
-                  ? t("alreadySubscribed")
-                  : t("subscribe")}
+                : isPendingPlan
+                  ? t("inReview")
+                  : hasPendingRequest
+                    ? t("pendingRequest")
+                    : t("subscribe")}
             </button>
           </div>
         );

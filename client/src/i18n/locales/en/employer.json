@@ -210,5 +210,8 @@
     "subscription": "Subscription",
     "settings": "Settings"
   },
-  "employerInactive": "Your account is inactive. Please contact support for more information."
+  "employerInactive": "Your account is inactive. Please contact support for more information.",
+  "subscriptionRequestSent": "Subscription request submitted successfully. It is now under review.",
+  "inReview": "In Review",
+  "pendingRequest": "Request Pending"
 }

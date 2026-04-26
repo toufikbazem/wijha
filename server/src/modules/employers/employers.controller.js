@@ -20,7 +20,7 @@ export const getEmployerProfile = async (req, res) => {
         [id],
       );
 
-      if (user.rows[0].status === "desactivated") {
+      if (user.rows[0].status === "deactivated" || user.rows[0].status === "suspended") {
         return res
           .status(403)
           .json({ message: "Employer account is not active, contact support" });
@@ -44,7 +44,7 @@ export const getEmployerProfile = async (req, res) => {
         FROM users 
         INNER JOIN employers 
         ON users.id = employers.user_id 
-        WHERE users.id = $1 AND employers.status = 'active' AND users.is_email_verified = true `,
+        WHERE users.id = $1 AND employers.status IN ('active', 'unverified') AND users.is_email_verified = true`,
         [id],
       );
     }

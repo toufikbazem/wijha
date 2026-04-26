@@ -24,6 +24,7 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
   const [reasonDialogOpen, setReasonDialogOpen] = useState(false);
   const [pendingStatus, setPendingStatus] = useState("");
   const [statusReason, setStatusReason] = useState("");
+  const [reasonError, setReasonError] = useState("");
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -61,9 +62,10 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
   };
 
   const onSelectChange = (newStatus: string) => {
-    if (newStatus === "Rejected" || newStatus === "Suspended") {
+    if (newStatus === "Pending" || newStatus === "Suspended") {
       setPendingStatus(newStatus);
       setStatusReason("");
+      setReasonError("");
       setReasonDialogOpen(true);
     } else {
       handleStatusChange(newStatus);
@@ -71,16 +73,22 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
   };
 
   const confirmReasonDialog = () => {
+    if (!statusReason.trim()) {
+      setReasonError("Reason is required.");
+      return;
+    }
     handleStatusChange(pendingStatus, statusReason);
     setReasonDialogOpen(false);
     setPendingStatus("");
     setStatusReason("");
+    setReasonError("");
   };
 
   const cancelReasonDialog = () => {
     setReasonDialogOpen(false);
     setPendingStatus("");
     setStatusReason("");
+    setReasonError("");
   };
 
   const statusColors: Record<string, string> = {
@@ -163,10 +171,10 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
       </div>
 
       {/* Status Reason Display */}
-      {(job.status === "Rejected" || job.status === "Suspended") && job.status_reason && (
+      {(job.status === "Pending" || job.status === "Suspended") && job.status_reason && (
         <div className={`rounded-xl border p-4 text-sm ${
-          job.status === "Rejected"
-            ? "bg-red-50 border-red-200 text-red-700"
+          job.status === "Pending"
+            ? "bg-blue-50 border-blue-200 text-blue-700"
             : "bg-red-50 border-red-200 text-red-700"
         }`}>
           <span className="font-semibold">Reason: </span>
@@ -211,8 +219,8 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
         <AlertDialogContent className="bg-white">
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {pendingStatus === "Rejected"
-                ? "Reject Job Post"
+              {pendingStatus === "Pending"
+                ? "Set Job Post to Pending"
                 : "Suspend Job Post"}
             </AlertDialogTitle>
             <AlertDialogDescription>
@@ -221,10 +229,11 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
           </AlertDialogHeader>
           <Textarea
             value={statusReason}
-            onChange={(e) => setStatusReason(e.target.value)}
+            onChange={(e) => { setStatusReason(e.target.value); setReasonError(""); }}
             placeholder="Enter reason..."
-            className="min-h-25 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className={`min-h-25 text-sm border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent ${reasonError ? "border-red-400" : "border-gray-300"}`}
           />
+          {reasonError && <p className="text-xs text-red-500 mt-1">{reasonError}</p>}
           <AlertDialogFooter>
             <AlertDialogCancel
               onClick={cancelReasonDialog}

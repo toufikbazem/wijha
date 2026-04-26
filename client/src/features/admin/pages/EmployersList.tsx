@@ -100,7 +100,9 @@ export default function EmployersList() {
         >
           <option value="">All Status</option>
           <option value="active">Active</option>
-          <option value="desactivated">Deactivated</option>
+          <option value="unverified">Unverified</option>
+          <option value="suspended">Suspended</option>
+          <option value="deactivated">Deactivated</option>
         </select>
       </div>
 
@@ -161,11 +163,17 @@ export default function EmployersList() {
                         className={`text-xs font-medium px-2 py-1 rounded border-0 cursor-pointer ${
                           emp.status === "active"
                             ? "bg-green-50 text-green-700"
+                            : emp.status === "unverified"
+                            ? "bg-yellow-50 text-yellow-700"
+                            : emp.status === "suspended"
+                            ? "bg-orange-50 text-orange-700"
                             : "bg-red-50 text-red-700"
                         }`}
                       >
                         <option value="active">Active</option>
-                        <option value="desactivated">Deactivated</option>
+                        <option value="unverified">Unverified</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="deactivated">Deactivated</option>
                       </select>
                     </td>
                     <td className="px-4 py-3 text-gray-500">

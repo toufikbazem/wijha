@@ -198,5 +198,8 @@
     "profileAccess": "Accès aux profils",
     "subscription": "Abonnement",
     "settings": "Paramètres"
-  }
+  },
+  "subscriptionRequestSent": "Demande d'abonnement envoyée avec succès. Elle est maintenant en cours de révision.",
+  "inReview": "En révision",
+  "pendingRequest": "Demande en attente"
 }

@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Mail, Phone, MapPin, Calendar, Briefcase } from "lucide-react";
+import { ArrowLeft, Mail, Phone, MapPin, Briefcase, Calendar, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router";
+
+const STATUS_COLORS: Record<string, string> = {
+  active: "bg-green-50 text-green-700 border-green-200",
+  deactivated: "bg-red-50 text-red-700 border-red-200",
+  unverified: "bg-yellow-50 text-yellow-700 border-yellow-200",
+  suspended: "bg-orange-50 text-orange-700 border-orange-200",
+};
+
+const VALID_STATUSES = ["active", "deactivated", "unverified", "suspended"];
 
 export default function JobSeekerDetails({ userId }: { userId: string }) {
   const navigate = useNavigate();
@@ -61,6 +70,8 @@ export default function JobSeekerDetails({ userId }: { userId: string }) {
     );
   }
 
+  const displayEmail = profile.email || profile.user_email;
+
   return (
     <div className="p-6 space-y-6">
       {/* Back */}
@@ -68,7 +79,7 @@ export default function JobSeekerDetails({ userId }: { userId: string }) {
         onClick={() => navigate("/admin?tab=job-seekers")}
         className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
       >
-        <ArrowLeft className="w-4 h-4" /> Back to Job Seekers
+        <ArrowLeft className="w-4 h-4" /> Back to Users
       </button>
 
       {/* Header */}
@@ -82,14 +93,24 @@ export default function JobSeekerDetails({ userId }: { userId: string }) {
             </div>
           )}
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-gray-900">
-              {profile.first_name} {profile.last_name}
-            </h1>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-2xl font-bold text-gray-900">
+                {profile.first_name} {profile.last_name}
+              </h1>
+              {profile.is_admin_created && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-purple-50 text-purple-700">
+                  <UserPlus className="w-3 h-3" />
+                  Admin Created
+                </span>
+              )}
+            </div>
             {profile.professional_title && (
               <p className="text-gray-500 mt-1">{profile.professional_title}</p>
             )}
             <div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-600">
-              <span className="flex items-center gap-1"><Mail className="w-4 h-4" /> {profile.email}</span>
+              {displayEmail && (
+                <span className="flex items-center gap-1"><Mail className="w-4 h-4" /> {displayEmail}</span>
+              )}
               {profile.phone_number && (
                 <span className="flex items-center gap-1"><Phone className="w-4 h-4" /> {profile.phone_number}</span>
               )}
@@ -103,13 +124,14 @@ export default function JobSeekerDetails({ userId }: { userId: string }) {
               value={profile.status}
               onChange={(e) => handleStatusChange(e.target.value)}
               className={`text-sm font-medium px-3 py-1.5 rounded-lg border cursor-pointer ${
-                profile.status === "active"
-                  ? "bg-green-50 text-green-700 border-green-200"
-                  : "bg-red-50 text-red-700 border-red-200"
+                STATUS_COLORS[profile.status] || "bg-gray-50 text-gray-700 border-gray-200"
               }`}
             >
-              <option value="active">Active</option>
-              <option value="desactivated">Deactivated</option>
+              {VALID_STATUSES.map((s) => (
+                <option key={s} value={s}>
+                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -131,8 +153,12 @@ export default function JobSeekerDetails({ userId }: { userId: string }) {
           <div className="space-y-3 text-sm">
             <InfoRow label="Gender" value={profile.gender} />
             <InfoRow label="Experience" value={profile.experience_years ? `${profile.experience_years} years` : undefined} />
-            <InfoRow label="Email Verified" value={profile.is_email_verified ? "Yes" : "No"} />
-            <InfoRow label="Joined" value={new Date(profile.created_at).toLocaleDateString()} />
+            {profile.is_admin_created ? (
+              <InfoRow label="Account Type" value="Admin Created (No Account)" />
+            ) : (
+              <InfoRow label="Email Verified" value={profile.is_email_verified ? "Yes" : "No"} />
+            )}
+            <InfoRow label="Joined" value={new Date(profile.account_created_at || profile.created_at).toLocaleDateString()} />
             {profile.skills && profile.skills.length > 0 && (
               <div>
                 <span className="text-gray-500">Skills</span>
@@ -153,7 +179,7 @@ export default function JobSeekerDetails({ userId }: { userId: string }) {
             <InfoRow label="LinkedIn" value={profile.linkedin} />
             <InfoRow label="GitHub" value={profile.github} />
             <InfoRow label="Portfolio" value={profile.portfolio} />
-            <InfoRow label="CV" value={profile.CV ? "Uploaded" : "Not uploaded"} />
+            <InfoRow label="CV" value={profile.cv ? "Uploaded" : "Not uploaded"} />
           </div>
         </div>
 
