@@ -14,6 +14,7 @@ import {
   getJobPosts,
   getJobPostDetails,
   changeJobPostStatus,
+  deleteJobPost,
   createAdminJobPost,
   getPlans,
   createPlan,
@@ -52,6 +53,7 @@ router.get("/job-posts", getJobPosts);
 router.post("/job-posts", createAdminJobPost);
 router.get("/job-posts/:id", getJobPostDetails);
 router.patch("/job-posts/:id/status", changeJobPostStatus);
+router.delete("/job-posts/:id", deleteJobPost);
 
 // Subscription Plans
 router.get("/plans", getPlans);

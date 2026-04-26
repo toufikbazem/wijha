@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/popover";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/i18n";
 
 function DashJobPostsFilterBar({
   form,
@@ -79,8 +80,8 @@ function DashJobPostsFilterBar({
 
       {/* Drawer */}
       <div
-        className={`z-[49] fixed top-0 right-0 h-full w-96 bg-white shadow-lg transform transition-transform duration-300 flex flex-col
-        ${open ? "translate-x-0" : "translate-x-full"}`}
+        className={`z-[49] fixed top-0 ltr:right-0 rtl:left-0 h-full w-96 bg-white shadow-lg transform transition-transform duration-300 flex flex-col
+        ${open ? "ltr:translate-x-0 rtl:-translate-x-0" : "ltr:translate-x-full rtl:-translate-x-full"}`}
       >
         {/* Header */}
         <div className="flex items-start justify-between px-5 py-5 border-b border-gray-100">
@@ -111,11 +112,10 @@ function DashJobPostsFilterBar({
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">{t("location")}</FieldLabel>
                 <div className="relative">
-                  <MapPin className="input-icon-filter" size={16} />
                   <Input
-                    placeholder="Location..."
+                    placeholder={t("enterLocation")}
                     type="text"
-                    className="input-filter"
+                    className="input-filter rtl:pr-2.5! ltr:pl-2.5!"
                     {...field}
                   />
                 </div>
@@ -134,13 +134,13 @@ function DashJobPostsFilterBar({
               <Field className="flex-1" data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">{t("industry")}</FieldLabel>
                 <div className="relative">
-                  <Mail className="input-icon-filter h-4 w-4" />
                   <Select
+                    dir={i18n.dir()}
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="input-filter">
-                      <SelectValue placeholder="Select Industry" />
+                    <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
+                      <SelectValue placeholder={t("selectIndustry")} />
                     </SelectTrigger>
                     <SelectContent className="p-2 border-gray-300 bg-white">
                       {industries.map((item, index) => {
@@ -150,7 +150,7 @@ function DashJobPostsFilterBar({
                             className="hover:bg-blue-50"
                             value={item}
                           >
-                            {item}
+                            {t(item)}
                           </SelectItem>
                         );
                       })}
@@ -172,13 +172,13 @@ function DashJobPostsFilterBar({
               <Field className="flex-1" data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">{t("jobType")}</FieldLabel>
                 <div className="relative">
-                  <Mail className="input-icon-filter h-4 w-4" />
                   <Select
+                    dir={i18n.dir()}
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="input-filter">
-                      <SelectValue placeholder="Select Industry" />
+                    <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
+                      <SelectValue placeholder={t("selectJobType")} />
                     </SelectTrigger>
                     <SelectContent className="p-2 border-gray-300 bg-white">
                       {jobTypes.map((item, index) => {
@@ -188,7 +188,7 @@ function DashJobPostsFilterBar({
                             className="hover:bg-blue-50"
                             value={item}
                           >
-                            {item}
+                            {t(item)}
                           </SelectItem>
                         );
                       })}
@@ -210,13 +210,13 @@ function DashJobPostsFilterBar({
               <Field className="flex-1" data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">{t("jobMode")}</FieldLabel>
                 <div className="relative">
-                  <Mail className="input-icon-filter h-4 w-4" />
                   <Select
+                    dir={i18n.dir()}
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="input-filter">
-                      <SelectValue placeholder="Select Industry" />
+                    <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
+                      <SelectValue placeholder={t("selectJobMode")} />
                     </SelectTrigger>
                     <SelectContent className="p-2 border-gray-300 bg-white">
                       {jobModes.map((item, index) => {
@@ -226,7 +226,7 @@ function DashJobPostsFilterBar({
                             className="hover:bg-blue-50"
                             value={item}
                           >
-                            {item}
+                            {t(item)}
                           </SelectItem>
                         );
                       })}
@@ -246,25 +246,27 @@ function DashJobPostsFilterBar({
             control={form.control}
             render={({ field, fieldState }) => (
               <Field className="flex-1" data-invalid={fieldState.invalid}>
-                <FieldLabel className="input-label">{t("educationLevel")}</FieldLabel>
+                <FieldLabel className="input-label">
+                  {t("educationLevel")}
+                </FieldLabel>
                 <div className="relative">
-                  <Mail className="input-icon-filter h-4 w-4" />
                   <Select
+                    dir={i18n.dir()}
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="input-filter">
-                      <SelectValue placeholder="Select Industry" />
+                    <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
+                      <SelectValue placeholder={t("selectEducationLevel")} />
                     </SelectTrigger>
                     <SelectContent className="p-2 border-gray-300 bg-white">
-                      {industries.map((item, index) => {
+                      {educationLevels.map((item, index) => {
                         return (
                           <SelectItem
                             key={index}
                             className="hover:bg-blue-50"
                             value={item}
                           >
-                            {item}
+                            {t(item)}
                           </SelectItem>
                         );
                       })}
@@ -288,13 +290,13 @@ function DashJobPostsFilterBar({
                   {t("experienceLevel")}
                 </FieldLabel>
                 <div className="relative">
-                  <Mail className="input-icon-filter h-4 w-4" />
                   <Select
+                    dir={i18n.dir()}
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="input-filter">
-                      <SelectValue placeholder="Select Industry" />
+                    <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
+                      <SelectValue placeholder={t("selectExperienceLevel")} />
                     </SelectTrigger>
                     <SelectContent className="p-2 border-gray-300 bg-white">
                       {experienceLevels.map((item, index) => {
@@ -304,7 +306,7 @@ function DashJobPostsFilterBar({
                             className="hover:bg-blue-50"
                             value={item}
                           >
-                            {item}
+                            {t(item)}
                           </SelectItem>
                         );
                       })}
@@ -326,38 +328,35 @@ function DashJobPostsFilterBar({
               <Field className="flex-1" data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">{t("status")}</FieldLabel>
                 <div className="relative">
-                  <Mail className="input-icon-filter h-4 w-4" />
                   <Select
+                    dir={i18n.dir()}
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="input-filter">
-                      <SelectValue placeholder="Select Industry" />
+                    <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
+                      <SelectValue placeholder={t("selectStatus")} />
                     </SelectTrigger>
                     <SelectContent className="p-2 border-gray-300 bg-white">
                       <SelectItem value="Draft" key={1}>
-                        Draft
+                        {t("Draft")}
                       </SelectItem>
                       <SelectItem value="In-review" key={2}>
-                        In-review
+                        {t("In-review")}
                       </SelectItem>
                       <SelectItem value="Active" key={3}>
-                        Active
+                        {t("Active")}
                       </SelectItem>
                       <SelectItem value="Pending" key={4}>
-                        Pending
+                        {t("Pending")}
                       </SelectItem>
                       <SelectItem value="Paused" key={5}>
-                        Paused
+                        {t("Paused")}
                       </SelectItem>
                       <SelectItem value="Rejected" key={6}>
-                        Rejected
+                        {t("Rejected")}
                       </SelectItem>
                       <SelectItem value="Expired" key={7}>
-                        Expired
-                      </SelectItem>
-                      <SelectItem value="Deleted" key={8}>
-                        Deleted
+                        {t("Expired")}
                       </SelectItem>
                     </SelectContent>
                   </Select>

@@ -29,6 +29,7 @@ import {
 import { useState } from "react";
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
+import addressData from "@/utils/address.json";
 
 function DashJobItem({
   job,
@@ -38,7 +39,15 @@ function DashJobItem({
   onStatusChange: () => void;
 }) {
   const [loadingState, setLoadingState] = useState(false);
-  const { t } = useTranslation("employer");
+  const { t, i18n } = useTranslation("employer");
+
+  const translateLocation = (location: string) => {
+    if (i18n.language !== "ar") return location;
+    const entry = addressData.find(
+      (a) => a.label.toLowerCase() === location.toLowerCase(),
+    );
+    return entry ? entry.labelAr : location;
+  };
 
   const handleChangeStatus = async (jobId: string, newStatus: string) => {
     setLoadingState(true);
@@ -93,8 +102,8 @@ function DashJobItem({
     if (job.status === "Rejected") {
       return job.status_reason || t("statusRejectedReason");
     }
-    if (job.status === "Suspended") {
-      return job.status_reason || t("statusSuspendedReason");
+    if (job.status === "Pending") {
+      return job.status_reason || t("statusPendingReason");
     }
     return null;
   };
@@ -105,7 +114,9 @@ function DashJobItem({
         {/* job title and location */}
         <td className="px-6 py-4">
           <div className="font-medium text-gray-900">{job.title}</div>
-          <div className="text-sm text-gray-500">{job.location}</div>
+          <div className="text-sm text-gray-500">
+            {translateLocation(job.location)}
+          </div>
         </td>
 
         {/* job status */}
@@ -114,9 +125,9 @@ function DashJobItem({
             <span
               className={`px-3 py-1 rounded-full text-xs font-medium ${statusBadgeClass()}`}
             >
-              {job.status}
+              {t(job.status)}
             </span>
-            {(job.status === "Rejected" || job.status === "Suspended") && (
+            {(job.status === "Rejected" || job.status === "Pending") && (
               <Popover>
                 <PopoverTrigger asChild>
                   <button
@@ -169,7 +180,7 @@ function DashJobItem({
               <Button
                 onClick={() => handleChangeStatus(job.id, "In-review")}
                 className="cursor-pointer p-2 text-gray-600 hover:text-[#008CBA] hover:bg-blue-50 rounded-lg transition-colors"
-                title="Submit for review"
+                title={t("submitForReview")}
               >
                 <Upload className="w-4 h-4" />
               </Button>
@@ -180,7 +191,7 @@ function DashJobItem({
               <Button
                 onClick={() => handleChangeStatus(job.id, "Paused")}
                 className="cursor-pointer p-2 text-gray-600 hover:text-[#008CBA] hover:bg-blue-50 rounded-lg transition-colors"
-                title="Pause"
+                title={t("pause")}
               >
                 <Pause className="w-4 h-4" />
               </Button>
@@ -191,7 +202,7 @@ function DashJobItem({
               <Button
                 onClick={() => handleChangeStatus(job.id, "In-review")}
                 className="cursor-pointer p-2 text-gray-600 hover:text-[#008CBA] hover:bg-blue-50 rounded-lg transition-colors"
-                title="Resume"
+                title={t("resume")}
               >
                 <Play className="w-4 h-4" />
               </Button>
@@ -200,7 +211,7 @@ function DashJobItem({
             {/* VIEW BUTTON */}
             <Button
               className="cursor-pointer p-2 text-gray-600 hover:text-[#008CBA] hover:bg-blue-50 rounded-lg transition-colors"
-              title="View"
+              title={t("view")}
             >
               <Link target="_blank" to={`/jobPost/${job.id}`}>
                 <Eye className="w-4 h-4" />
@@ -210,7 +221,7 @@ function DashJobItem({
             {/* EDIT BUTTON */}
             <Button
               className="cursor-pointer p-2 text-gray-600 hover:text-[#008CBA] hover:bg-blue-50 rounded-lg transition-colors"
-              title="Edit"
+              title={t("edit")}
             >
               <Link to={`/dashboard?tab=editJobPost&jobPost=${job.id}`}>
                 <Edit2 className="w-4 h-4" />
@@ -220,7 +231,7 @@ function DashJobItem({
             {/* APPLICANTS BUTTON */}
             <Button
               className="cursor-pointer p-2 text-gray-600 hover:text-[#008CBA] hover:bg-blue-50 rounded-lg transition-colors"
-              title="Applicants"
+              title={t("applicants")}
             >
               <Link to={`/dashboard?tab=applicants&jobPost=${job.id}`}>
                 <Users className="w-4 h-4" />
@@ -233,7 +244,7 @@ function DashJobItem({
                 <AlertDialogTrigger asChild>
                   <Button
                     className="cursor-pointer p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Delete"
+                    title={t("delete")}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>

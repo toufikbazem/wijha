@@ -119,16 +119,14 @@ export default function DashCompanyProfile() {
           body: JSON.stringify(data),
         },
       );
-
-      const resData = await res.json();
+      const updatedData = await res.json();
 
       if (res.ok) {
         setEditMode(false);
-        const updatedData = await res.json();
         toast.success(t("profileEditedSuccess"));
         setCompanyInfo(updatedData);
       } else {
-        if (resData && resData.error_code === "EMPLOYER_INACTIVE") {
+        if (updatedData && updatedData.error_code === "EMPLOYER_INACTIVE") {
           toast.error(t("employerInactive"));
         } else {
           toast.error(t("errorOccurred"));

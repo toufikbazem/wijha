@@ -39,6 +39,7 @@ import { Controller } from "react-hook-form";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/i18n";
 
 function JobPostForm({
   form,
@@ -75,11 +76,12 @@ function JobPostForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">{t("jobTitle")}</FieldLabel>
+
                 <Input
                   {...field}
-                  placeholder="e.g., Senior Software Engineer"
+                  placeholder={t("jobTitlePlaceholder")}
                   type="text"
-                  className="input pl-4!"
+                  className="input ltr:pl-4! rtl:pr-4!"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -119,9 +121,9 @@ function JobPostForm({
                 <Input
                   {...field}
                   disabled
-                  placeholder="e.g., Acme Corp"
+                  placeholder={t("companyNamePlaceholder")}
                   type="text"
-                  className="input pl-4!"
+                  className="input ltr:pl-4! rtl:pr-4!"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -181,6 +183,7 @@ function JobPostForm({
                     {t("jobType")}
                   </FieldLabel>
                   <Select
+                    dir={i18n.dir()}
                     name={field.name}
                     value={field.value}
                     onValueChange={field.onChange}
@@ -188,9 +191,9 @@ function JobPostForm({
                   >
                     <SelectTrigger
                       aria-invalid={fieldState.invalid}
-                      className="input pl-4!"
+                      className="input ltr:pl-4! rtl:pr-4!"
                     >
-                      <SelectValue placeholder="Select Job Type" />
+                      <SelectValue placeholder={t("selectJobType")} />
                     </SelectTrigger>
                     <SelectContent className="p-3" position="item-aligned">
                       {jobTypes.map((type, index) => {
@@ -200,7 +203,7 @@ function JobPostForm({
                             value={type}
                             className="hover:bg-gray-50"
                           >
-                            {type}
+                            {t(type)}
                           </SelectItem>
                         );
                       })}
@@ -224,6 +227,7 @@ function JobPostForm({
                   </FieldLabel>
 
                   <Select
+                    dir={i18n.dir()}
                     name={field.name}
                     value={field.value}
                     onValueChange={field.onChange}
@@ -231,9 +235,9 @@ function JobPostForm({
                   >
                     <SelectTrigger
                       aria-invalid={fieldState.invalid}
-                      className="input pl-4!"
+                      className="input ltr:pl-4! rtl:pr-4!"
                     >
-                      <SelectValue placeholder="Select Industry" />
+                      <SelectValue placeholder={t("selectIndustry")} />
                     </SelectTrigger>
                     <SelectContent className="p-3" position="item-aligned">
                       {industries.map((industry, index) => {
@@ -243,7 +247,7 @@ function JobPostForm({
                             value={industry}
                             className="hover:bg-gray-50"
                           >
-                            {industry}
+                            {t(industry)}
                           </SelectItem>
                         );
                       })}
@@ -264,6 +268,7 @@ function JobPostForm({
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">{t("jobMode")}</FieldLabel>
                 <Select
+                  dir={i18n.dir()}
                   name={field.name}
                   value={field.value}
                   onValueChange={field.onChange}
@@ -308,6 +313,7 @@ function JobPostForm({
                   </FieldLabel>
 
                   <Select
+                    dir={i18n.dir()}
                     name={field.name}
                     value={field.value}
                     onValueChange={field.onChange}
@@ -315,9 +321,9 @@ function JobPostForm({
                   >
                     <SelectTrigger
                       aria-invalid={fieldState.invalid}
-                      className="input pl-4!"
+                      className="input ltr:pl-4! rtl:pr-4!"
                     >
-                      <SelectValue placeholder="Select Experience Level" />
+                      <SelectValue placeholder={t("selectExperienceLevel")} />
                     </SelectTrigger>
                     <SelectContent className="p-3" position="item-aligned">
                       {experienceLevels.map((level, index) => {
@@ -327,7 +333,7 @@ function JobPostForm({
                             value={level}
                             className="hover:bg-gray-50"
                           >
-                            {level}
+                            {t(level)}
                           </SelectItem>
                         );
                       })}
@@ -351,6 +357,7 @@ function JobPostForm({
                   </FieldLabel>
 
                   <Select
+                    dir={i18n.dir()}
                     name={field.name}
                     value={field.value}
                     onValueChange={field.onChange}
@@ -358,9 +365,9 @@ function JobPostForm({
                   >
                     <SelectTrigger
                       aria-invalid={fieldState.invalid}
-                      className="input pl-4!"
+                      className="input ltr:pl-4! rtl:pr-4!"
                     >
-                      <SelectValue placeholder="Select Education Level" />
+                      <SelectValue placeholder={t("selectEducationLevel")} />
                     </SelectTrigger>
                     <SelectContent className="p-3" position="item-aligned">
                       {educationLevels.map((level, index) => {
@@ -370,7 +377,7 @@ function JobPostForm({
                             value={level}
                             className="hover:bg-gray-50"
                           >
-                            {level}
+                            {t(level)}
                           </SelectItem>
                         );
                       })}
@@ -395,9 +402,9 @@ function JobPostForm({
                   </FieldLabel>
                   <Input
                     {...field}
-                    placeholder="e.g., 50000"
+                    placeholder={t("e.g.,") + " 50000"}
                     type="text"
-                    className="input pl-4!"
+                    className="input ltr:pl-4! rtl:pr-4!"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -405,6 +412,7 @@ function JobPostForm({
                 </Field>
               )}
             />
+
             <Controller
               name="max_salary"
               control={form.control}
@@ -415,9 +423,9 @@ function JobPostForm({
                   </FieldLabel>
                   <Input
                     {...field}
-                    placeholder="e.g., 100000"
+                    placeholder={t("e.g.,") + " 100000"}
                     type="text"
-                    className="input pl-4!"
+                    className="input ltr:pl-4! rtl:pr-4!"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -438,9 +446,9 @@ function JobPostForm({
                 </FieldLabel>
                 <Input
                   {...field}
-                  placeholder="e.g., 5"
+                  placeholder={t("e.g.,") + " 5"}
                   type="text"
-                  className="input pl-4!"
+                  className="input ltr:pl-4! rtl:pr-4!"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -524,11 +532,11 @@ Requirements (Qualifications & Skills)
                   {t("applicationDeadline")}
                 </FieldLabel>
                 <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
+                  <PopoverTrigger dir={i18n.dir()} asChild>
                     <div className="w-full">
                       <Button
                         type="button"
-                        className="input pl-4! justify-start cursor-pointer"
+                        className="input ltr:pl-4! rtl:pr-4! justify-start cursor-pointer"
                         variant={"outline"}
                       >
                         {field.value ? (
@@ -544,6 +552,7 @@ Requirements (Qualifications & Skills)
                     align="start"
                   >
                     <Calendar
+                      dir={i18n.dir()}
                       mode="single"
                       selected={field.value ?? undefined}
                       onSelect={(date) => {

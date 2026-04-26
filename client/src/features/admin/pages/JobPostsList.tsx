@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Search, ChevronLeft, ChevronRight, Eye, Info, Plus, X } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Eye, Info, Plus, X, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router";
 import {
   AlertDialog,
@@ -14,7 +14,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { industries, jobTypes, jobModes, experienceLevels, educationLevels } from "@/utils/data";
 
-const JOB_STATUSES = ["Active", "In-review", "Pending", "Paused", "Rejected", "Suspended", "Expired"];
+const JOB_STATUSES = ["Draft", "Active", "In-review", "Pending", "Paused", "Rejected", "Expired", "Deleted"];
 
 const EMPTY_FORM = {
   title: "",
@@ -43,12 +43,12 @@ export default function JobPostsList() {
 
   // Reason dialog state
   const [reasonDialogOpen, setReasonDialogOpen] = useState(false);
-  const [pendingStatusChange, setPendingStatusChange] = useState<{
-    jobId: string;
-    status: string;
-  } | null>(null);
+  const [pendingStatusChange, setPendingStatusChange] = useState<{ jobId: string; status: string } | null>(null);
   const [statusReason, setStatusReason] = useState("");
   const [reasonError, setReasonError] = useState("");
+
+  // Permanent delete confirm state
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   // Create job post modal state
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -67,10 +67,7 @@ export default function JobPostsList() {
       if (search) params.set("search", search);
       if (statusFilter) params.set("status", statusFilter);
 
-      const res = await fetch(
-        `http://localhost:5000/api/v1/admin/job-posts?${params}`,
-        { credentials: "include" },
-      );
+      const res = await fetch(`http://localhost:5000/api/v1/admin/job-posts?${params}`, { credentials: "include" });
       const data = await res.json();
       setJobPosts(data.jobPosts || []);
       setTotal(data.total || 0);
@@ -81,9 +78,7 @@ export default function JobPostsList() {
     }
   };
 
-  useEffect(() => {
-    fetchJobPosts();
-  }, [page, statusFilter]);
+  useEffect(() => { fetchJobPosts(); }, [page, statusFilter]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,15 +88,12 @@ export default function JobPostsList() {
 
   const handleStatusChange = async (jobId: string, newStatus: string, reason?: string) => {
     try {
-      await fetch(
-        `http://localhost:5000/api/v1/admin/job-posts/${jobId}/status`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ status: newStatus, status_reason: reason || null }),
-        },
-      );
+      await fetch(`http://localhost:5000/api/v1/admin/job-posts/${jobId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ status: newStatus, status_reason: reason || null }),
+      });
       fetchJobPosts();
     } catch (error) {
       console.error("Error updating status:", error);
@@ -109,7 +101,7 @@ export default function JobPostsList() {
   };
 
   const onSelectChange = (jobId: string, newStatus: string) => {
-    if (newStatus === "Pending" || newStatus === "Suspended") {
+    if (newStatus === "Pending" || newStatus === "Rejected") {
       setPendingStatusChange({ jobId, status: newStatus });
       setStatusReason("");
       setReasonError("");
@@ -139,6 +131,19 @@ export default function JobPostsList() {
     setStatusReason("");
     setReasonError("");
     fetchJobPosts();
+  };
+
+  const handlePermanentDelete = async (jobId: string) => {
+    try {
+      await fetch(`http://localhost:5000/api/v1/admin/job-posts/${jobId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      setDeleteConfirmId(null);
+      fetchJobPosts();
+    } catch (error) {
+      console.error("Error deleting job post:", error);
+    }
   };
 
   // Employer search for create modal
@@ -173,25 +178,14 @@ export default function JobPostsList() {
 
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!createForm.title.trim()) {
-      setCreateError("Title is required.");
-      return;
-    }
-    if (!isAnonymous && !selectedEmployer) {
-      setCreateError("Select a company or enable Anonymous Company.");
-      return;
-    }
+    if (!createForm.title.trim()) { setCreateError("Title is required."); return; }
+    if (!isAnonymous && !selectedEmployer) { setCreateError("Select a company or enable Anonymous Company."); return; }
     setCreateLoading(true);
     setCreateError("");
     try {
       const body: any = { ...createForm, is_anonymous: isAnonymous };
-      if (!isAnonymous && selectedEmployer) {
-        body.employer_id = selectedEmployer.employer_id;
-      }
-      // Remove empty strings
-      for (const key of Object.keys(body)) {
-        if (body[key] === "") delete body[key];
-      }
+      if (!isAnonymous && selectedEmployer) body.employer_id = selectedEmployer.employer_id;
+      for (const key of Object.keys(body)) { if (body[key] === "") delete body[key]; }
       const res = await fetch("http://localhost:5000/api/v1/admin/job-posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -214,13 +208,14 @@ export default function JobPostsList() {
   };
 
   const statusColors: Record<string, string> = {
+    Draft: "bg-gray-50 text-gray-600",
     Active: "bg-green-50 text-green-700",
     "In-review": "bg-yellow-50 text-yellow-700",
     Pending: "bg-blue-50 text-blue-700",
     Paused: "bg-gray-100 text-gray-700",
     Rejected: "bg-red-50 text-red-700",
-    Suspended: "bg-red-50 text-red-700",
     Expired: "bg-orange-50 text-orange-700",
+    Deleted: "bg-red-100 text-red-700",
   };
 
   const totalPages = Math.ceil(total / limit);
@@ -258,9 +253,7 @@ export default function JobPostsList() {
           className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
         >
           <option value="">All Status</option>
-          {JOB_STATUSES.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
+          {JOB_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
       </div>
 
@@ -292,13 +285,11 @@ export default function JobPostsList() {
                 ))
               ) : jobPosts.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
-                    No job posts found
-                  </td>
+                  <td colSpan={7} className="px-4 py-8 text-center text-gray-500">No job posts found</td>
                 </tr>
               ) : (
                 jobPosts.map((job) => (
-                  <tr key={job.id} className="border-b border-gray-50 hover:bg-gray-50">
+                  <tr key={job.id} className={`border-b border-gray-50 hover:bg-gray-50 ${job.status === "Deleted" ? "opacity-60" : ""}`}>
                     <td className="px-4 py-3 font-medium text-gray-900">{job.title}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
@@ -319,16 +310,11 @@ export default function JobPostsList() {
                         <select
                           value={job.status}
                           onChange={(e) => onSelectChange(job.id, e.target.value)}
-                          className={`text-xs font-medium px-2 py-1 rounded border-0 cursor-pointer ${
-                            statusColors[job.status] || "bg-gray-100 text-gray-700"
-                          }`}
+                          className={`text-xs font-medium px-2 py-1 rounded border-0 cursor-pointer ${statusColors[job.status] || "bg-gray-100 text-gray-700"}`}
                         >
-                          {JOB_STATUSES.map((s) => (
-                            <option key={s} value={s}>{s}</option>
-                          ))}
-                          <option value="Deleted">Delete</option>
+                          {JOB_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                         </select>
-                        {(job.status === "Pending" || job.status === "Suspended") && job.status_reason && (
+                        {(job.status === "Pending" || job.status === "Rejected") && job.status_reason && (
                           <span title={job.status_reason} className="cursor-help text-gray-400 hover:text-gray-600">
                             <Info className="w-3.5 h-3.5" />
                           </span>
@@ -339,12 +325,23 @@ export default function JobPostsList() {
                       {new Date(job.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3">
-                      <button
-                        onClick={() => navigate(`/admin?tab=job-details&id=${job.id}`)}
-                        className="p-1.5 text-gray-500 hover:text-primary-500 hover:bg-primary-50 rounded-lg transition-colors"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => navigate(`/admin?tab=job-details&id=${job.id}`)}
+                          className="p-1.5 text-gray-500 hover:text-primary-500 hover:bg-primary-50 rounded-lg transition-colors"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        {job.status === "Deleted" && (
+                          <button
+                            onClick={() => setDeleteConfirmId(job.id)}
+                            className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Delete permanently"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -373,14 +370,12 @@ export default function JobPostsList() {
         )}
       </div>
 
-      {/* Reason Dialog for Pending / Suspended */}
+      {/* Reason Dialog for Pending / Rejected */}
       <AlertDialog open={reasonDialogOpen} onOpenChange={setReasonDialogOpen}>
         <AlertDialogContent className="bg-white">
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {pendingStatusChange?.status === "Pending"
-                ? "Set Job Post to Pending"
-                : "Suspend Job Post"}
+              {pendingStatusChange?.status === "Pending" ? "Set Job Post to Pending" : "Reject Job Post"}
             </AlertDialogTitle>
             <AlertDialogDescription>
               Provide a reason that will be visible to the employer.
@@ -394,17 +389,34 @@ export default function JobPostsList() {
           />
           {reasonError && <p className="text-xs text-red-500 mt-1">{reasonError}</p>}
           <AlertDialogFooter>
-            <AlertDialogCancel
-              onClick={cancelReasonDialog}
-              className="bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300 transition-colors"
-            >
+            <AlertDialogCancel onClick={cancelReasonDialog} className="bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300 transition-colors">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmReasonDialog} className="bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors">
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Permanent Delete Confirm Dialog */}
+      <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}>
+        <AlertDialogContent className="bg-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Permanently Delete Job Post</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. The job post and all its data will be permanently removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300 transition-colors">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={confirmReasonDialog}
+              onClick={() => deleteConfirmId && handlePermanentDelete(deleteConfirmId)}
               className="bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors"
             >
-              Confirm
+              Delete Permanently
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -416,10 +428,7 @@ export default function JobPostsList() {
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
             <div className="flex items-center justify-between p-5 border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-900">Create Job Post</h2>
-              <button
-                onClick={() => setCreateModalOpen(false)}
-                className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-              >
+              <button onClick={() => setCreateModalOpen(false)} className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -428,18 +437,13 @@ export default function JobPostsList() {
               {/* Company Section */}
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Company</h3>
-
                 <label className="flex items-center gap-2 cursor-pointer w-fit">
                   <input
                     type="checkbox"
                     checked={isAnonymous}
                     onChange={(e) => {
                       setIsAnonymous(e.target.checked);
-                      if (e.target.checked) {
-                        setSelectedEmployer(null);
-                        setEmployerSearch("");
-                        setEmployerResults([]);
-                      }
+                      if (e.target.checked) { setSelectedEmployer(null); setEmployerSearch(""); setEmployerResults([]); }
                     }}
                     className="w-4 h-4 rounded accent-primary-600"
                   />
@@ -452,10 +456,7 @@ export default function JobPostsList() {
                       type="text"
                       placeholder="Search company by name or email..."
                       value={selectedEmployer ? selectedEmployer.company_name : employerSearch}
-                      onChange={(e) => {
-                        setSelectedEmployer(null);
-                        setEmployerSearch(e.target.value);
-                      }}
+                      onChange={(e) => { setSelectedEmployer(null); setEmployerSearch(e.target.value); }}
                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                     {employerResults.length > 0 && !selectedEmployer && (
@@ -464,11 +465,7 @@ export default function JobPostsList() {
                           <li key={emp.employer_id}>
                             <button
                               type="button"
-                              onClick={() => {
-                                setSelectedEmployer(emp);
-                                setEmployerResults([]);
-                                setEmployerSearch("");
-                              }}
+                              onClick={() => { setSelectedEmployer(emp); setEmployerResults([]); setEmployerSearch(""); }}
                               className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center gap-3"
                             >
                               {emp.logo ? (
@@ -513,116 +510,60 @@ export default function JobPostsList() {
                       className="w-full text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 min-h-[80px]"
                     />
                   </div>
-                  <input
-                    type="text"
-                    placeholder="Location"
-                    value={createForm.location}
+                  <input type="text" placeholder="Location" value={createForm.location}
                     onChange={(e) => setCreateForm((f) => ({ ...f, location: e.target.value }))}
-                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  />
-                  <select
-                    value={createForm.industry}
-                    onChange={(e) => setCreateForm((f) => ({ ...f, industry: e.target.value }))}
-                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  >
+                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                  <select value={createForm.industry} onChange={(e) => setCreateForm((f) => ({ ...f, industry: e.target.value }))}
+                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                     <option value="">Industry</option>
-                    {industries.map((i) => (
-                      <option key={i} value={i}>{i}</option>
-                    ))}
+                    {industries.map((i) => <option key={i} value={i}>{i}</option>)}
                   </select>
-                  <select
-                    value={createForm.job_type}
-                    onChange={(e) => setCreateForm((f) => ({ ...f, job_type: e.target.value }))}
-                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  >
+                  <select value={createForm.job_type} onChange={(e) => setCreateForm((f) => ({ ...f, job_type: e.target.value }))}
+                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                     <option value="">Job Type</option>
-                    {jobTypes.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
+                    {jobTypes.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
-                  <select
-                    value={createForm.job_mode}
-                    onChange={(e) => setCreateForm((f) => ({ ...f, job_mode: e.target.value }))}
-                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  >
+                  <select value={createForm.job_mode} onChange={(e) => setCreateForm((f) => ({ ...f, job_mode: e.target.value }))}
+                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                     <option value="">Job Mode</option>
-                    {jobModes.map((m) => (
-                      <option key={m} value={m}>{m}</option>
-                    ))}
+                    {jobModes.map((m) => <option key={m} value={m}>{m}</option>)}
                   </select>
-                  <select
-                    value={createForm.experience_level}
-                    onChange={(e) => setCreateForm((f) => ({ ...f, experience_level: e.target.value }))}
-                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  >
+                  <select value={createForm.experience_level} onChange={(e) => setCreateForm((f) => ({ ...f, experience_level: e.target.value }))}
+                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                     <option value="">Experience Level</option>
-                    {experienceLevels.map((l) => (
-                      <option key={l} value={l}>{l}</option>
-                    ))}
+                    {experienceLevels.map((l) => <option key={l} value={l}>{l}</option>)}
                   </select>
-                  <select
-                    value={createForm.education_level}
-                    onChange={(e) => setCreateForm((f) => ({ ...f, education_level: e.target.value }))}
-                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  >
+                  <select value={createForm.education_level} onChange={(e) => setCreateForm((f) => ({ ...f, education_level: e.target.value }))}
+                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
                     <option value="">Education Level</option>
-                    {educationLevels.map((l) => (
-                      <option key={l} value={l}>{l}</option>
-                    ))}
+                    {educationLevels.map((l) => <option key={l} value={l}>{l}</option>)}
                   </select>
-                  <input
-                    type="number"
-                    placeholder="Number of positions"
-                    value={createForm.number_of_positions}
+                  <input type="number" placeholder="Number of positions" value={createForm.number_of_positions}
                     onChange={(e) => setCreateForm((f) => ({ ...f, number_of_positions: e.target.value }))}
-                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    min={1}
-                  />
-                  <input
-                    type="date"
-                    placeholder="Deadline"
-                    value={createForm.deadline}
+                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" min={1} />
+                  <input type="date" value={createForm.deadline}
                     onChange={(e) => setCreateForm((f) => ({ ...f, deadline: e.target.value }))}
-                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  />
-                  <input
-                    type="number"
-                    placeholder="Min salary (DZD)"
-                    value={createForm.min_salary}
+                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                  <input type="number" placeholder="Min salary (DZD)" value={createForm.min_salary}
                     onChange={(e) => setCreateForm((f) => ({ ...f, min_salary: e.target.value }))}
-                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    min={0}
-                  />
-                  <input
-                    type="number"
-                    placeholder="Max salary (DZD)"
-                    value={createForm.max_salary}
+                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" min={0} />
+                  <input type="number" placeholder="Max salary (DZD)" value={createForm.max_salary}
                     onChange={(e) => setCreateForm((f) => ({ ...f, max_salary: e.target.value }))}
-                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    min={0}
-                  />
+                    className="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" min={0} />
                 </div>
               </div>
 
               {createError && (
-                <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-                  {createError}
-                </p>
+                <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{createError}</p>
               )}
 
               <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setCreateModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                >
+                <button type="button" onClick={() => setCreateModalOpen(false)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  disabled={createLoading}
-                  className="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-60 transition-colors"
-                >
+                <button type="submit" disabled={createLoading}
+                  className="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-60 transition-colors">
                   {createLoading ? "Creating..." : "Create Job Post"}
                 </button>
               </div>

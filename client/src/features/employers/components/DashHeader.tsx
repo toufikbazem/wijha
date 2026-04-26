@@ -27,6 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { logout } from "@/features/auth/userSlice";
+import i18n from "@/i18n/i18n";
 
 export default function DashHeader({
   sidebarOpen,
@@ -35,7 +36,7 @@ export default function DashHeader({
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 }) {
-  const dispatch = useDispatch(0);
+  const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const { user } = useSelector((state: any) => state.user);
@@ -74,14 +75,14 @@ export default function DashHeader({
 
         {/* Center: Search */}
         <form onSubmit={() => navigate(`/jobSearch?search=${search}`)}>
-          <div className="max-w-md">
+          <div className="sm:min-w-xs">
             <div className="relative">
               <Search className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 onChange={(e) => setSearch(e.target.value)}
                 type="text"
                 placeholder={t("searchJobs") + "..."}
-                className="w-full ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 py-2 text-sm border border-gray-300 rounded-lg
+                className="sm:w-full w-fit ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 py-2 text-sm border border-gray-300 rounded-lg
                      focus:outline-none focus:ring-2 focus:ring-[#008CBA] focus:border-transparent"
               />
             </div>
@@ -95,13 +96,13 @@ export default function DashHeader({
             <span className="absolute top-1 ltr:right-1 rtl:left-1 w-2 h-2 bg-red-500 rounded-full" />
           </button> */}
 
-          <DropdownMenu>
+          <DropdownMenu dir={i18n.dir()}>
             <DropdownMenuTrigger asChild>
               <div className="flex items-center gap-3 cursor-pointer">
                 <div className="w-9 h-9 bg-[#008CBA] rounded-full flex items-center justify-center">
                   {user?.logo ? (
                     <img
-                      src={user?.profileImage}
+                      src={user?.logo}
                       alt="Profile"
                       className="w-full h-full rounded-full object-cover"
                     />
@@ -113,7 +114,7 @@ export default function DashHeader({
                   <div className="text-sm font-medium text-gray-900">
                     {user.company_name}
                   </div>
-                  <div className="text-xs text-gray-500 truncate max-w-[160px]">
+                  <div className="text-xs text-gray-500 truncate max-w-40">
                     {user?.email}
                   </div>
                 </div>

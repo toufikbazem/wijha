@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import {
-  Briefcase,
-  Users,
-  Play,
-  Plus,
-  Eye,
-  MapPin,
-  Clock,
-} from "lucide-react";
+import { Briefcase, Users, Play, Plus, MapPin } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "react-i18next";
+import addressData from "@/utils/address.json";
 
 interface RecentJob {
   id: string;
@@ -47,8 +40,16 @@ export default function DashMain() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const navigate = useNavigate();
   const { user } = useSelector((state: any) => state.user);
-  const { t } = useTranslation("employer");
+  const { t, i18n } = useTranslation("employer");
   const { t: tc } = useTranslation("common");
+
+  const translateLocation = (location: string) => {
+    if (i18n.language !== "ar") return location;
+    const entry = addressData.find(
+      (a) => a.label.toLowerCase() === location.toLowerCase(),
+    );
+    return entry ? entry.labelAr : location;
+  };
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -123,7 +124,9 @@ export default function DashMain() {
         {/* Header */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">{tc("dashboard")}</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              {tc("dashboard")}
+            </h1>
             <p className="mt-1 text-gray-600">
               {t("welcome")} {user?.company_name}
             </p>
@@ -178,9 +181,7 @@ export default function DashMain() {
               </button>
             </div>
             {stats?.recentJobs.length === 0 ? (
-              <p className="text-gray-500 text-sm py-4">
-                {t("noJobPostsYet")}
-              </p>
+              <p className="text-gray-500 text-sm py-4">{t("noJobPostsYet")}</p>
             ) : (
               <div className="space-y-4">
                 {stats?.recentJobs.map((job) => (
@@ -195,7 +196,7 @@ export default function DashMain() {
                       <div className="flex items-center gap-3 mt-1">
                         <span className="flex items-center text-xs text-gray-500">
                           <MapPin className="w-3 h-3 ltr:mr-1 rtl:ml-1" />
-                          {job.location}
+                          {translateLocation(job.location)}
                         </span>
                         <span className="flex items-center text-xs text-gray-500">
                           <Users className="w-3 h-3 ltr:mr-1 rtl:ml-1" />
@@ -214,7 +215,7 @@ export default function DashMain() {
                               : "bg-gray-100 text-gray-700"
                       }`}
                     >
-                      {job.status}
+                      {t(job.status)}
                     </span>
                   </div>
                 ))}

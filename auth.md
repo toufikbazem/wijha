@@ -2,7 +2,7 @@ Implement the following enhancements for the Job Management (Admin Dashboard):
 
 1. Job Status Reason Handling
    When the admin updates a job post status to:
-   "pending" or "suspended"
+   "Pending" or "Rejected"
    A required input field (modal or form) must appear to enter a reason.
    This reason should be:
    Stored in the database field: status_reason

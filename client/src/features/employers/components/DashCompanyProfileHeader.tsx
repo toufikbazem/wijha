@@ -25,17 +25,37 @@ import {
 
 type ProfileStatus = "active" | "unverified" | "suspended" | "deactivated";
 
-const statusConfig: Record<ProfileStatus, { icon: React.ElementType; className: string; key: string }> = {
-  active: { icon: CheckCircle2, className: "bg-green-50 text-green-700 border border-green-200", key: "statusActive" },
-  unverified: { icon: ShieldAlert, className: "bg-yellow-50 text-yellow-700 border border-yellow-200", key: "statusUnverified" },
-  suspended: { icon: XCircle, className: "bg-red-50 text-red-700 border border-red-200", key: "statusSuspended" },
-  deactivated: { icon: ShieldOff, className: "bg-gray-100 text-gray-500 border border-gray-200", key: "statusDeactivated" },
+const statusConfig: Record<
+  ProfileStatus,
+  { icon: React.ElementType; className: string; key: string }
+> = {
+  active: {
+    icon: CheckCircle2,
+    className: "bg-green-50 text-green-700 border border-green-200",
+    key: "statusActive",
+  },
+  unverified: {
+    icon: ShieldAlert,
+    className: "bg-yellow-50 text-yellow-700 border border-yellow-200",
+    key: "statusUnverified",
+  },
+  suspended: {
+    icon: XCircle,
+    className: "bg-red-50 text-red-700 border border-red-200",
+    key: "statusSuspended",
+  },
+  deactivated: {
+    icon: ShieldOff,
+    className: "bg-gray-100 text-gray-500 border border-gray-200",
+    key: "statusDeactivated",
+  },
 };
 import { useRef, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslation } from "react-i18next";
 import { companySize, industries } from "@/utils/data";
 import { supabase } from "@/lib/supabaseClient";
+import i18n from "@/i18n/i18n";
 
 function DashCompanyProfileHeader({
   companyInfo,
@@ -222,13 +242,12 @@ function DashCompanyProfileHeader({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <div className="relative">
-                      <Building2 className="input-icon-filter h-4 w-4" />
                       <Input
                         {...field}
                         type="text"
-                        className="input-filter text-3xl font-bold"
+                        className="input-filter ltr:pl-2.5! rtl:pr-2.5! text-3xl font-bold"
                         aria-invalid={fieldState.invalid}
-                        placeholder="Company Name"
+                        placeholder={t("companyName")}
                       />
                     </div>
                     {fieldState.invalid && (
@@ -238,21 +257,25 @@ function DashCompanyProfileHeader({
                 )}
               />
             ) : (
-              <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex flex-col sm:flex-row items-center gap-3 flex-wrap">
                 <h2 className="text-2xl font-bold text-gray-900">
                   {companyInfo.company_name}
                 </h2>
-                {companyInfo.status && (() => {
-                  const cfg = statusConfig[companyInfo.status as ProfileStatus];
-                  if (!cfg) return null;
-                  const Icon = cfg.icon;
-                  return (
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${cfg.className}`}>
-                      <Icon size={12} />
-                      {t(cfg.key)}
-                    </span>
-                  );
-                })()}
+                {companyInfo.status &&
+                  (() => {
+                    const cfg =
+                      statusConfig[companyInfo.status as ProfileStatus];
+                    if (!cfg) return null;
+                    const Icon = cfg.icon;
+                    return (
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${cfg.className}`}
+                      >
+                        <Icon size={12} />
+                        {t(cfg.key)}
+                      </span>
+                    );
+                  })()}
               </div>
             )}
 
@@ -264,12 +287,12 @@ function DashCompanyProfileHeader({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <div className="relative">
-                      <Mail className="input-icon-filter h-4 w-4" />
                       <Select
+                        dir={i18n.dir()}
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        <SelectTrigger className="input-filter">
+                        <SelectTrigger className="input-filter ltr:pl-2.5! rtl:pr-2.5!">
                           <SelectValue placeholder="Select Industry" />
                         </SelectTrigger>
                         <SelectContent className="p-2 border-gray-300 bg-white">
@@ -280,7 +303,7 @@ function DashCompanyProfileHeader({
                                 className="hover:bg-blue-50"
                                 value={industry}
                               >
-                                {industry}
+                                {t(industry)}
                               </SelectItem>
                             );
                           })}
@@ -335,13 +358,13 @@ function DashCompanyProfileHeader({
                   render={({ field, fieldState }) => (
                     <Field className="flex-1" data-invalid={fieldState.invalid}>
                       <div className="relative">
-                        <Mail className="input-icon-filter h-4 w-4" />
                         <Select
+                          dir={i18n.dir()}
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
-                          <SelectTrigger className="input-filter">
-                            <SelectValue placeholder="Select Industry" />
+                          <SelectTrigger className="input-filter ltr:pl-2.5! rtl:pr-2.5!">
+                            <SelectValue placeholder={t("selectSize")} />
                           </SelectTrigger>
                           <SelectContent className="p-2 border-gray-300 bg-white">
                             {companySize.map((size, index) => {
@@ -365,7 +388,7 @@ function DashCompanyProfileHeader({
                   )}
                 />
               ) : (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center justify-center gap-1">
                   <Users className="w-4 h-4" />
                   <span>{companyInfo.size}</span>
                 </div>
@@ -379,13 +402,12 @@ function DashCompanyProfileHeader({
                   render={({ field, fieldState }) => (
                     <Field className="flex-1" data-invalid={fieldState.invalid}>
                       <div className="relative">
-                        <Calendar className="input-icon-filter w-4 h-4" />
                         <Input
                           {...field}
                           type="text"
-                          className="input-filter"
+                          className="input-filter ltr:pl-2.5! rtl:pr-2.5!"
                           aria-invalid={fieldState.invalid}
-                          placeholder=""
+                          placeholder={t("foundingYear")}
                         />
                       </div>
                       {fieldState.invalid && (
@@ -397,9 +419,11 @@ function DashCompanyProfileHeader({
               )}
 
               {companyInfo.founding_year && !editMode && (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center justify-center gap-1">
                   <Calendar className="w-4 h-4" />
-                  <span>{t("founded")} {companyInfo.founding_year}</span>
+                  <span>
+                    {t("founded")} {companyInfo.founding_year}
+                  </span>
                 </div>
               )}
             </div>

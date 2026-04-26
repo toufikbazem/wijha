@@ -16,7 +16,9 @@ export const getDashboardStats = async (req, res) => {
       db.query("SELECT COUNT(*) AS count FROM users WHERE role != 'admin'"),
       db.query("SELECT COUNT(*) AS count FROM employers"),
       db.query("SELECT COUNT(*) AS count FROM job_seeker"),
-      db.query("SELECT COUNT(*) AS count FROM job_post WHERE status != 'Deleted'"),
+      db.query(
+        "SELECT COUNT(*) AS count FROM job_post WHERE status != 'Deleted'",
+      ),
       db.query(
         `SELECT status, COUNT(*) AS count FROM job_post
          WHERE status != 'Deleted'
@@ -89,7 +91,8 @@ export const getJobSeekers = async (req, res) => {
       index++;
     }
 
-    const whereClause = conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";
+    const whereClause =
+      conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";
     const limitIdx = index++;
     const offsetIdx = index++;
     values.push(Number(limit), offset);
@@ -117,7 +120,9 @@ export const getJobSeekers = async (req, res) => {
     const total = result.rows.length > 0 ? Number(result.rows[0].total) : 0;
     const jobSeekers = result.rows.map(({ total: _, ...row }) => row);
 
-    return res.status(200).json({ total, page: Number(page), limit: Number(limit), jobSeekers });
+    return res
+      .status(200)
+      .json({ total, page: Number(page), limit: Number(limit), jobSeekers });
   } catch (error) {
     console.error("Error fetching job seekers:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -149,9 +154,15 @@ export const getJobSeekerDetails = async (req, res) => {
     const userId = profile.user_id;
 
     const [experiences, educations, languages] = await Promise.all([
-      userId ? db.query("SELECT * FROM experiences WHERE user_id = $1", [userId]) : { rows: [] },
-      userId ? db.query("SELECT * FROM educations WHERE user_id = $1", [userId]) : { rows: [] },
-      userId ? db.query("SELECT * FROM languages WHERE user_id = $1", [userId]) : { rows: [] },
+      userId
+        ? db.query("SELECT * FROM experiences WHERE user_id = $1", [userId])
+        : { rows: [] },
+      userId
+        ? db.query("SELECT * FROM educations WHERE user_id = $1", [userId])
+        : { rows: [] },
+      userId
+        ? db.query("SELECT * FROM languages WHERE user_id = $1", [userId])
+        : { rows: [] },
     ]);
 
     return res.status(200).json({
@@ -167,15 +178,31 @@ export const getJobSeekerDetails = async (req, res) => {
 };
 
 export const createJobSeekerProfile = async (req, res) => {
-  const { first_name, last_name, user_email, professional_title, phone_number, address, gender, cv, status = "unverified" } = req.body;
+  const {
+    first_name,
+    last_name,
+    user_email,
+    professional_title,
+    phone_number,
+    address,
+    gender,
+    cv,
+    status = "unverified",
+  } = req.body;
 
   if (!first_name || !last_name || !user_email) {
-    return res.status(400).json({ message: "first_name, last_name, and user_email are required" });
+    return res
+      .status(400)
+      .json({ message: "first_name, last_name, and user_email are required" });
   }
 
   const validStatuses = ["active", "deactivated", "unverified", "suspended"];
   if (!validStatuses.includes(status)) {
-    return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
+    return res
+      .status(400)
+      .json({
+        message: `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
+      });
   }
 
   try {
@@ -184,14 +211,26 @@ export const createJobSeekerProfile = async (req, res) => {
       [user_email],
     );
     if (existing.rows.length > 0) {
-      return res.status(409).json({ message: "A profile with this email already exists" });
+      return res
+        .status(409)
+        .json({ message: "A profile with this email already exists" });
     }
 
     const result = await db.query(
       `INSERT INTO job_seeker (first_name, last_name, user_email, professional_title, phone_number, address, gender, cv, status)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
-      [first_name, last_name, user_email, professional_title || null, phone_number || null, address || null, gender || null, cv || null, status],
+      [
+        first_name,
+        last_name,
+        user_email,
+        professional_title || null,
+        phone_number || null,
+        address || null,
+        gender || null,
+        cv || null,
+        status,
+      ],
     );
 
     return res.status(201).json(result.rows[0]);
@@ -207,7 +246,11 @@ export const changeJobSeekerStatus = async (req, res) => {
 
   const validStatuses = ["active", "deactivated", "unverified", "suspended"];
   if (!status || !validStatuses.includes(status)) {
-    return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
+    return res
+      .status(400)
+      .json({
+        message: `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
+      });
   }
 
   try {
@@ -221,7 +264,9 @@ export const changeJobSeekerStatus = async (req, res) => {
       return res.status(404).json({ message: "Job seeker not found" });
     }
 
-    return res.status(200).json({ message: "Status updated", jobSeeker: result.rows[0] });
+    return res
+      .status(200)
+      .json({ message: "Status updated", jobSeeker: result.rows[0] });
   } catch (error) {
     console.error("Error changing job seeker status:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -233,7 +278,10 @@ export const deleteJobSeeker = async (req, res) => {
 
   try {
     // id here is jobseeker_id (js.id), not user_id
-    const js = await db.query("SELECT id, user_id FROM job_seeker WHERE id = $1", [id]);
+    const js = await db.query(
+      "SELECT id, user_id FROM job_seeker WHERE id = $1",
+      [id],
+    );
     if (js.rows.length === 0) {
       return res.status(404).json({ message: "Job seeker not found" });
     }
@@ -301,7 +349,9 @@ export const getEmployers = async (req, res) => {
     const total = result.rows.length > 0 ? Number(result.rows[0].total) : 0;
     const employers = result.rows.map(({ total: _, ...row }) => row);
 
-    return res.status(200).json({ total, page: Number(page), limit: Number(limit), employers });
+    return res
+      .status(200)
+      .json({ total, page: Number(page), limit: Number(limit), employers });
   } catch (error) {
     console.error("Error fetching employers:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -338,7 +388,11 @@ export const changeEmployerStatus = async (req, res) => {
 
   const validStatuses = ["active", "suspended", "unverified", "deactivated"];
   if (!status || !validStatuses.includes(status)) {
-    return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
+    return res
+      .status(400)
+      .json({
+        message: `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
+      });
   }
 
   try {
@@ -351,7 +405,9 @@ export const changeEmployerStatus = async (req, res) => {
       return res.status(404).json({ message: "Employer not found" });
     }
 
-    return res.status(200).json({ message: "Status updated", employer: result.rows[0] });
+    return res
+      .status(200)
+      .json({ message: "Status updated", employer: result.rows[0] });
   } catch (error) {
     console.error("Error changing employer status:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -362,7 +418,10 @@ export const deleteEmployer = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await db.query("SELECT id FROM users WHERE id = $1 AND role = 'employer'", [id]);
+    const user = await db.query(
+      "SELECT id FROM users WHERE id = $1 AND role = 'employer'",
+      [id],
+    );
     if (user.rows.length === 0) {
       return res.status(404).json({ message: "Employer not found" });
     }
@@ -390,7 +449,7 @@ export const getJobPosts = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
-    const conditions = ["jp.status != 'Deleted'"];
+    const conditions = [];
     const values = [];
     let index = 1;
 
@@ -414,11 +473,12 @@ export const getJobPosts = async (req, res) => {
       index++;
     }
 
-    const whereClause = conditions.join(" AND ");
-    const sortByIdx = index++;
+    conditions.unshift("jp.status != 'Deleted'");
+    const whereClause = "WHERE " + conditions.join(" AND ");
+    const orderClause = sortBy === "oldest" ? "jp.created_at ASC" : "jp.created_at DESC";
     const limitIdx = index++;
     const offsetIdx = index++;
-    values.push(sortBy, Number(limit), offset);
+    values.push(Number(limit), offset);
 
     const result = await db.query(
       `SELECT
@@ -428,10 +488,8 @@ export const getJobPosts = async (req, res) => {
          COUNT(*) OVER() AS total
        FROM job_post jp
        LEFT JOIN employers e ON jp.employer_id = e.id
-       WHERE ${whereClause}
-       ORDER BY
-         CASE WHEN $${sortByIdx} = 'newest' THEN jp.created_at END DESC,
-         CASE WHEN $${sortByIdx} = 'oldest' THEN jp.created_at END ASC
+       ${whereClause}
+       ORDER BY ${orderClause}
        LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
       values,
     );
@@ -439,7 +497,9 @@ export const getJobPosts = async (req, res) => {
     const total = result.rows.length > 0 ? Number(result.rows[0].total) : 0;
     const jobPosts = result.rows.map(({ total: _, ...row }) => row);
 
-    return res.status(200).json({ total, page: Number(page), limit: Number(limit), jobPosts });
+    return res
+      .status(200)
+      .json({ total, page: Number(page), limit: Number(limit), jobPosts });
   } catch (error) {
     console.error("Error fetching job posts:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -455,7 +515,7 @@ export const getJobPostDetails = async (req, res) => {
          e.company_name, e.logo, e.user_id AS employer_user_id,
          e.industry AS employer_industry, e.size AS employer_size
        FROM job_post jp
-       INNER JOIN employers e ON jp.employer_id = e.id
+       LEFT JOIN employers e ON jp.employer_id = e.id
        WHERE jp.id = $1`,
       [id],
     );
@@ -475,30 +535,50 @@ export const changeJobPostStatus = async (req, res) => {
   const { id } = req.params;
   const { status, status_reason } = req.body;
 
-  const validStatuses = ["Active", "Paused", "Rejected", "Pending", "In-review", "Deleted", "Suspended"];
+  const validStatuses = ["Draft", "Active", "In-review", "Pending", "Paused", "Rejected", "Expired", "Deleted"];
 
   if (!status || !validStatuses.includes(status)) {
     return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
   }
 
-  const requiresReason = ["Pending", "Suspended"];
+  const requiresReason = ["Pending", "Rejected"];
   if (requiresReason.includes(status) && !status_reason?.trim()) {
-    return res.status(400).json({ message: "A reason is required when setting status to Pending or Suspended" });
+    return res.status(400).json({ message: "A reason is required when setting status to Pending or Rejected" });
   }
 
   try {
     const result = await db.query(
       "UPDATE job_post SET status = $1, status_reason = $2 WHERE id = $3 RETURNING *",
-      [status, requiresReason.includes(status) ? status_reason.trim() : null, id],
+      [
+        status,
+        requiresReason.includes(status) ? status_reason.trim() : null,
+        id,
+      ],
     );
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: "Job post not found" });
     }
 
-    return res.status(200).json({ message: "Status updated", jobPost: result.rows[0] });
+    return res
+      .status(200)
+      .json({ message: "Status updated", jobPost: result.rows[0] });
   } catch (error) {
     console.error("Error changing job post status:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const deleteJobPost = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await db.query("DELETE FROM job_post WHERE id = $1 RETURNING id", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Job post not found" });
+    }
+    return res.status(200).json({ message: "Job post permanently deleted" });
+  } catch (error) {
+    console.error("Error deleting job post:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -526,12 +606,16 @@ export const createAdminJobPost = async (req, res) => {
   }
 
   if (!is_anonymous && !employer_id) {
-    return res.status(400).json({ message: "Either employer_id or is_anonymous must be provided" });
+    return res
+      .status(400)
+      .json({ message: "Either employer_id or is_anonymous must be provided" });
   }
 
   try {
     if (employer_id) {
-      const emp = await db.query("SELECT id FROM employers WHERE id = $1", [employer_id]);
+      const emp = await db.query("SELECT id FROM employers WHERE id = $1", [
+        employer_id,
+      ]);
       if (emp.rows.length === 0) {
         return res.status(404).json({ message: "Employer not found" });
       }
@@ -541,9 +625,17 @@ export const createAdminJobPost = async (req, res) => {
     const values = [title, "Active", req.user.userId];
 
     const optionalFields = {
-      description, location, job_type, job_mode, industry,
-      experience_level, education_level, number_of_positions,
-      min_salary, max_salary, deadline,
+      description,
+      location,
+      job_type,
+      job_mode,
+      industry,
+      experience_level,
+      education_level,
+      number_of_positions,
+      min_salary,
+      max_salary,
+      deadline,
     };
 
     for (const [col, val] of Object.entries(optionalFields)) {
@@ -579,7 +671,9 @@ export const createAdminJobPost = async (req, res) => {
 // ─── Subscription Plans ──────────────────────────────────────
 export const getPlans = async (req, res) => {
   try {
-    const result = await db.query("SELECT * FROM subscription_plans ORDER BY price ASC");
+    const result = await db.query(
+      "SELECT * FROM subscription_plans ORDER BY price ASC",
+    );
     return res.status(200).json(result.rows);
   } catch (error) {
     console.error("Error fetching plans:", error);
@@ -588,10 +682,13 @@ export const getPlans = async (req, res) => {
 };
 
 export const createPlan = async (req, res) => {
-  const { name, type, duration, price, job_post_limit, profile_access_limit } = req.body;
+  const { name, type, duration, price, job_post_limit, profile_access_limit } =
+    req.body;
 
   if (!name || !type || !duration || price === undefined) {
-    return res.status(400).json({ message: "name, type, duration, and price are required" });
+    return res
+      .status(400)
+      .json({ message: "name, type, duration, and price are required" });
   }
 
   try {
@@ -599,7 +696,14 @@ export const createPlan = async (req, res) => {
       `INSERT INTO subscription_plans (name, type, duration, price, job_post_limit, profile_access_limit)
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING *`,
-      [name, type, duration, price, job_post_limit || null, profile_access_limit || null],
+      [
+        name,
+        type,
+        duration,
+        price,
+        job_post_limit || null,
+        profile_access_limit || null,
+      ],
     );
 
     return res.status(201).json(result.rows[0]);
@@ -611,19 +715,38 @@ export const createPlan = async (req, res) => {
 
 export const updatePlan = async (req, res) => {
   const { id } = req.params;
-  const { name, type, duration, price, job_post_limit, profile_access_limit } = req.body;
+  const { name, type, duration, price, job_post_limit, profile_access_limit } =
+    req.body;
 
   try {
     const updates = [];
     const values = [];
     let index = 1;
 
-    if (name !== undefined) { updates.push(`name = $${index++}`); values.push(name); }
-    if (type !== undefined) { updates.push(`type = $${index++}`); values.push(type); }
-    if (duration !== undefined) { updates.push(`duration = $${index++}`); values.push(duration); }
-    if (price !== undefined) { updates.push(`price = $${index++}`); values.push(price); }
-    if (job_post_limit !== undefined) { updates.push(`job_post_limit = $${index++}`); values.push(job_post_limit); }
-    if (profile_access_limit !== undefined) { updates.push(`profile_access_limit = $${index++}`); values.push(profile_access_limit); }
+    if (name !== undefined) {
+      updates.push(`name = $${index++}`);
+      values.push(name);
+    }
+    if (type !== undefined) {
+      updates.push(`type = $${index++}`);
+      values.push(type);
+    }
+    if (duration !== undefined) {
+      updates.push(`duration = $${index++}`);
+      values.push(duration);
+    }
+    if (price !== undefined) {
+      updates.push(`price = $${index++}`);
+      values.push(price);
+    }
+    if (job_post_limit !== undefined) {
+      updates.push(`job_post_limit = $${index++}`);
+      values.push(job_post_limit);
+    }
+    if (profile_access_limit !== undefined) {
+      updates.push(`profile_access_limit = $${index++}`);
+      values.push(profile_access_limit);
+    }
 
     if (updates.length === 0) {
       return res.status(400).json({ message: "No fields provided to update" });
@@ -657,10 +780,15 @@ export const deletePlan = async (req, res) => {
     );
 
     if (parseInt(activeSubs.rows[0].count) > 0) {
-      return res.status(409).json({ message: "Cannot delete plan with active subscriptions" });
+      return res
+        .status(409)
+        .json({ message: "Cannot delete plan with active subscriptions" });
     }
 
-    const result = await db.query("DELETE FROM subscription_plans WHERE id = $1 RETURNING *", [id]);
+    const result = await db.query(
+      "DELETE FROM subscription_plans WHERE id = $1 RETURNING *",
+      [id],
+    );
 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: "Plan not found" });
@@ -701,7 +829,8 @@ export const getSubscriptions = async (req, res) => {
       index++;
     }
 
-    const whereClause = conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";
+    const whereClause =
+      conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";
     const limitIdx = index++;
     const offsetIdx = index++;
     values.push(Number(limit), offset);
@@ -729,7 +858,9 @@ export const getSubscriptions = async (req, res) => {
     const total = result.rows.length > 0 ? Number(result.rows[0].total) : 0;
     const subscriptions = result.rows.map(({ total: _, ...row }) => row);
 
-    return res.status(200).json({ total, page: Number(page), limit: Number(limit), subscriptions });
+    return res
+      .status(200)
+      .json({ total, page: Number(page), limit: Number(limit), subscriptions });
   } catch (error) {
     console.error("Error fetching subscriptions:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -740,9 +871,19 @@ export const changeSubscriptionStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
-  const validStatuses = ["in-review", "active", "suspended", "paused", "cancelled"];
+  const validStatuses = [
+    "in-review",
+    "active",
+    "suspended",
+    "paused",
+    "cancelled",
+  ];
   if (!status || !validStatuses.includes(status)) {
-    return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(", ")}` });
+    return res
+      .status(400)
+      .json({
+        message: `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
+      });
   }
 
   try {
@@ -755,7 +896,9 @@ export const changeSubscriptionStatus = async (req, res) => {
       return res.status(404).json({ message: "Subscription not found" });
     }
 
-    return res.status(200).json({ message: "Status updated", subscription: result.rows[0] });
+    return res
+      .status(200)
+      .json({ message: "Status updated", subscription: result.rows[0] });
   } catch (error) {
     console.error("Error changing subscription status:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -783,7 +926,12 @@ export const extendSubscription = async (req, res) => {
       return res.status(404).json({ message: "Subscription not found" });
     }
 
-    return res.status(200).json({ message: `Subscription extended by ${days} days`, subscription: result.rows[0] });
+    return res
+      .status(200)
+      .json({
+        message: `Subscription extended by ${days} days`,
+        subscription: result.rows[0],
+      });
   } catch (error) {
     console.error("Error extending subscription:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -809,7 +957,9 @@ export const assignCustomPlan = async (req, res) => {
       return res.status(404).json({ message: "Subscription not found" });
     }
 
-    return res.status(200).json({ message: "Custom plan assigned", subscription: result.rows[0] });
+    return res
+      .status(200)
+      .json({ message: "Custom plan assigned", subscription: result.rows[0] });
   } catch (error) {
     console.error("Error assigning custom plan:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -818,7 +968,13 @@ export const assignCustomPlan = async (req, res) => {
 
 // ─── Profile Access Monitoring ───────────────────────────────
 export const getProfileAccessRecords = async (req, res) => {
-  const { employer_id, jobseeker_id, status: accessStatus, page = 1, limit = 10 } = req.query;
+  const {
+    employer_id,
+    jobseeker_id,
+    status: accessStatus,
+    page = 1,
+    limit = 10,
+  } = req.query;
   const offset = (page - 1) * limit;
 
   try {
@@ -844,7 +1000,8 @@ export const getProfileAccessRecords = async (req, res) => {
       conditions.push("pa.expire_at <= NOW()");
     }
 
-    const whereClause = conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";
+    const whereClause =
+      conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";
     const limitIdx = index++;
     const offsetIdx = index++;
     values.push(Number(limit), offset);
@@ -869,7 +1026,9 @@ export const getProfileAccessRecords = async (req, res) => {
     const total = result.rows.length > 0 ? Number(result.rows[0].total) : 0;
     const records = result.rows.map(({ total: _, ...row }) => row);
 
-    return res.status(200).json({ total, page: Number(page), limit: Number(limit), records });
+    return res
+      .status(200)
+      .json({ total, page: Number(page), limit: Number(limit), records });
   } catch (error) {
     console.error("Error fetching profile access records:", error);
     return res.status(500).json({ message: "Internal server error" });
