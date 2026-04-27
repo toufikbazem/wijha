@@ -12,6 +12,31 @@ const STATUS_COLORS: Record<string, string> = {
 
 const VALID_STATUSES = ["active", "deactivated", "unverified", "suspended"];
 
+const EXPERIENCE_LEVELS = [
+  { value: "without_experience", label: "Sans expérience" },
+  { value: "0-1_junior", label: "0–1 ans Junior" },
+  { value: "1-3_junior_confirme", label: "1–3 ans Junior confirmé" },
+  { value: "3-5_confirme", label: "3–5 ans Confirmé" },
+  { value: "5-10_senior", label: "5–10 ans Senior" },
+  { value: "10+_expert", label: "10+ ans Expert" },
+];
+
+const EDUCATION_LEVELS = [
+  { value: "sans_diplome", label: "Sans diplôme" },
+  { value: "primaire", label: "Niveau Primaire" },
+  { value: "moyen_bem", label: "Niveau Moyen (BEM)" },
+  { value: "secondaire_lycee", label: "Niveau Secondaire (Lycée)" },
+  { value: "bac", label: "Bac" },
+  { value: "bac+1", label: "Bac +1" },
+  { value: "bac+2", label: "Bac +2 (TS / BTS / DUT)" },
+  { value: "bac+3", label: "Bac +3 (Licence)" },
+  { value: "bac+4", label: "Bac +4" },
+  { value: "bac+5", label: "Bac +5 (Master / Ingénieur)" },
+  { value: "bac+6+", label: "Bac +6+ (Post-Master / Spécialisation)" },
+  { value: "doctorat", label: "Doctorat" },
+  { value: "formation_professionnelle", label: "Formation professionnelle" },
+];
+
 const defaultCreateForm = {
   first_name: "",
   last_name: "",
@@ -20,6 +45,8 @@ const defaultCreateForm = {
   phone_number: "",
   address: "",
   gender: "",
+  experience_level: "",
+  education_level: "",
   status: "unverified",
   cv: "",
 };
@@ -458,6 +485,34 @@ export default function JobSeekersList() {
                   onChange={(e) => setCreateForm({ ...createForm, address: e.target.value })}
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Experience Level</label>
+                  <select
+                    value={createForm.experience_level}
+                    onChange={(e) => setCreateForm({ ...createForm, experience_level: e.target.value })}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  >
+                    <option value="">Select level</option>
+                    {EXPERIENCE_LEVELS.map((lvl) => (
+                      <option key={lvl.value} value={lvl.value}>{lvl.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Education Level</label>
+                  <select
+                    value={createForm.education_level}
+                    onChange={(e) => setCreateForm({ ...createForm, education_level: e.target.value })}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  >
+                    <option value="">Select level</option>
+                    {EDUCATION_LEVELS.map((lvl) => (
+                      <option key={lvl.value} value={lvl.value}>{lvl.label}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">CV (PDF)</label>

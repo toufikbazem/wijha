@@ -186,6 +186,8 @@ export const createJobSeekerProfile = async (req, res) => {
     phone_number,
     address,
     gender,
+    experience_level,
+    education_level,
     cv,
     status = "unverified",
   } = req.body;
@@ -217,8 +219,8 @@ export const createJobSeekerProfile = async (req, res) => {
     }
 
     const result = await db.query(
-      `INSERT INTO job_seeker (first_name, last_name, user_email, professional_title, phone_number, address, gender, cv, status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      `INSERT INTO job_seeker (first_name, last_name, user_email, professional_title, phone_number, address, gender, experience_level, education_level, cv, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
        RETURNING *`,
       [
         first_name,
@@ -228,6 +230,8 @@ export const createJobSeekerProfile = async (req, res) => {
         phone_number || null,
         address || null,
         gender || null,
+        experience_level || null,
+        education_level || null,
         cv || null,
         status,
       ],
