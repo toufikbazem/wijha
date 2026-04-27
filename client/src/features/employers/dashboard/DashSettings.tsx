@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-  Bell,
   Lock,
   Globe,
   Eye,
@@ -167,12 +166,22 @@ export default function SettingsPage() {
                             placeholder="**********"
                           />
                           {showCurrentPassword ? (
-                            <EyeOff className="input-icon-right" size={20} onClick={() => setShowCurrentPassword(false)} />
+                            <EyeOff
+                              className="input-icon-right"
+                              size={20}
+                              onClick={() => setShowCurrentPassword(false)}
+                            />
                           ) : (
-                            <Eye className="input-icon-right" size={20} onClick={() => setShowCurrentPassword(true)} />
+                            <Eye
+                              className="input-icon-right"
+                              size={20}
+                              onClick={() => setShowCurrentPassword(true)}
+                            />
                           )}
                         </div>
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
@@ -194,12 +203,22 @@ export default function SettingsPage() {
                             placeholder="**********"
                           />
                           {showNewPassword ? (
-                            <EyeOff className="input-icon-right" size={20} onClick={() => setShowNewPassword(false)} />
+                            <EyeOff
+                              className="input-icon-right"
+                              size={20}
+                              onClick={() => setShowNewPassword(false)}
+                            />
                           ) : (
-                            <Eye className="input-icon-right" size={20} onClick={() => setShowNewPassword(true)} />
+                            <Eye
+                              className="input-icon-right"
+                              size={20}
+                              onClick={() => setShowNewPassword(true)}
+                            />
                           )}
                         </div>
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
@@ -221,12 +240,22 @@ export default function SettingsPage() {
                             placeholder="**********"
                           />
                           {showConfirmNewPassword ? (
-                            <EyeOff className="input-icon-right" size={20} onClick={() => setShowConfirmNewPassword(false)} />
+                            <EyeOff
+                              className="input-icon-right"
+                              size={20}
+                              onClick={() => setShowConfirmNewPassword(false)}
+                            />
                           ) : (
-                            <Eye className="input-icon-right" size={20} onClick={() => setShowConfirmNewPassword(true)} />
+                            <Eye
+                              className="input-icon-right"
+                              size={20}
+                              onClick={() => setShowConfirmNewPassword(true)}
+                            />
                           )}
                         </div>
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
                       </Field>
                     )}
                   />
@@ -272,7 +301,12 @@ export default function SettingsPage() {
                   <label className="input-label">{t("currentEmail")}</label>
                   <div className="relative">
                     <Mail className="input-icon" size={16} />
-                    <Input type="email" value={user?.email} readOnly className="input" />
+                    <Input
+                      type="email"
+                      value={user?.email}
+                      readOnly
+                      className="input"
+                    />
                     {user?.is_email_verified ? (
                       <span className="absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs font-medium text-green-600 bg-green-50 rounded-full px-2 py-0.5">
                         <CheckCircle2 size={12} />
@@ -291,21 +325,44 @@ export default function SettingsPage() {
                   control={changeEmailForm.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel className="input-label">{t("newEmail")}</FieldLabel>
+                      <FieldLabel className="input-label">
+                        {t("newEmail")}
+                      </FieldLabel>
                       <div className="relative">
                         <Mail className="input-icon" size={20} />
-                        <Input type="email" className="input" {...field} aria-invalid={fieldState.invalid} placeholder="example@email.com" />
+                        <Input
+                          type="email"
+                          className="input"
+                          {...field}
+                          aria-invalid={fieldState.invalid}
+                          placeholder="example@email.com"
+                        />
                       </div>
-                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
                     </Field>
                   )}
                 />
                 <div className="flex justify-end gap-3 pt-1">
-                  <button type="button" className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                  <button
+                    type="button"
+                    className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
                     {tc("cancel")}
                   </button>
-                  <button type="submit" disabled={loadingEmail} className="px-6 py-2.5 text-sm font-medium text-white rounded-lg transition-colors flex items-center gap-2 bg-[#008CBA] hover:bg-[#007a9e]">
-                    {loadingEmail ? (<><Spinner /> {t("updating")}</>) : (<>{t("saveChanges")}</>)}
+                  <button
+                    type="submit"
+                    disabled={loadingEmail}
+                    className="px-6 py-2.5 text-sm font-medium text-white rounded-lg transition-colors flex items-center gap-2 bg-[#008CBA] hover:bg-[#007a9e]"
+                  >
+                    {loadingEmail ? (
+                      <>
+                        <Spinner /> {t("updating")}
+                      </>
+                    ) : (
+                      <>{t("saveChanges")}</>
+                    )}
                   </button>
                 </div>
               </div>
@@ -320,8 +377,12 @@ export default function SettingsPage() {
                   <Globe className="text-[#008CBA]" size={20} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">{t("language")}</h2>
-                  <p className="text-sm text-gray-500">{t("preferredLanguage")}</p>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    {t("language")}
+                  </h2>
+                  <p className="text-sm text-gray-500">
+                    {t("preferredLanguage")}
+                  </p>
                 </div>
               </div>
             </div>
@@ -332,8 +393,15 @@ export default function SettingsPage() {
                 </label>
                 <div className="relative">
                   <Globe className="input-icon" size={20} />
-                  <Select value={language} onValueChange={setLanguage}>
-                    <SelectTrigger aria-label={t("preferredLanguage")} className="input">
+                  <Select
+                    dir={i18n.dir()}
+                    value={language}
+                    onValueChange={setLanguage}
+                  >
+                    <SelectTrigger
+                      aria-label={t("preferredLanguage")}
+                      className="input"
+                    >
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="p-3" position="item-aligned">
@@ -345,7 +413,10 @@ export default function SettingsPage() {
                 </div>
               </div>
               <div className="mt-6 flex justify-end">
-                <button onClick={handleSaveLanguage} className="cursor-pointer px-6 py-2.5 bg-[#008CBA] text-white rounded-lg hover:bg-[#007a9e] transition-colors font-medium">
+                <button
+                  onClick={handleSaveLanguage}
+                  className="cursor-pointer px-6 py-2.5 bg-[#008CBA] text-white rounded-lg hover:bg-[#007a9e] transition-colors font-medium"
+                >
                   {t("saveLanguage")}
                 </button>
               </div>

@@ -56,6 +56,7 @@
   --color-primary-900: oklch(0.32 0.08 220);
 
   --animate-marquee: marquee 30s linear infinite;
+  --animate-marquee-rtl: marquee-rtl 30s linear infinite;
 
   @keyframes marquee {
     0% {
@@ -63,6 +64,15 @@
     }
     100% {
       transform: translateX(-50%);
+    }
+  }
+
+  @keyframes marquee-rtl {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
     }
   }
 }

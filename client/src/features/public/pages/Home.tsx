@@ -26,6 +26,7 @@ import Header from "../components/Header";
 import ScrollReveal from "scrollreveal";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
+import moment from "moment/min/moment-with-locales";
 
 interface JobPost {
   id: string;
@@ -42,7 +43,8 @@ interface JobPost {
 
 export default function JobSearchLanding() {
   const navigate = useNavigate();
-  const { t } = useTranslation("public");
+  const { t, i18n: i18nInstance } = useTranslation("public");
+  const isRTL = i18nInstance.dir() === "rtl";
 
   const [jobPosts, setJobPosts] = useState<JobPost[]>([]);
   const [jobsLoading, setJobsLoading] = useState(true);
@@ -178,21 +180,24 @@ export default function JobSearchLanding() {
       <Header />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-cyan-50"></div>
+      <section
+        dir={isRTL ? "rtl" : "ltr"}
+        className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-linear-to-br from-blue-50 via-white to-cyan-50"></div>
         <div className="absolute top-20 right-10 w-72 h-72 bg-[#008CBA]/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 left-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
 
         <div className="max-w-7xl mx-auto relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="left-reveal">
-              <h1 className="text-6xl font-bold text-gray-900 mb-6 leading-tight text-center lg:text-left">
+              <h1 className="text-6xl font-bold text-gray-900 mb-6 leading-tight text-center rtl:lg:text-right ltr:lg:text-left">
                 {t("yourCareer")}{" "}
                 <span className="lg:block bg-[#008CBA] bg-clip-text text-transparent">
                   {t("startHere")}
                 </span>
               </h1>
-              <p className="text-center lg:text-left text-xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-center rtl:lg:text-right ltr:lg:text-left text-xl text-gray-600 mb-8 leading-relaxed">
                 {t("heroText")}
               </p>
               <div className="flex flex-col sm:justify-center lg:justify-start sm:flex-row gap-4">
@@ -203,7 +208,7 @@ export default function JobSearchLanding() {
                   {t("exploreJobs")}
                 </button>
                 <button
-                  onClick={() => navigate("/jobSearch")}
+                  onClick={() => navigate("/dashboard?dash=profileAccess")}
                   className="cursor-pointer hover:text-white box-border hover:bg-[#008CBA] text-[#008CBA] border-2 border-[#008CBA] rounded-xl px-4 py-2 font-medium transition"
                 >
                   {t("forEmployers")}
@@ -279,7 +284,7 @@ export default function JobSearchLanding() {
       </section>
 
       {/* Featured Jobs */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-20 bg-linear-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bottom-reveal text-center mb-16">
             <div className="inline-block bg-[#008CBA]/10 text-[#008CBA] px-4 py-2 rounded-full text-sm font-semibold mb-4">
@@ -328,7 +333,7 @@ export default function JobSearchLanding() {
                 return (
                   <div
                     key={job.id}
-                    onClick={() => navigate(`/job-posts/${job.id}`)}
+                    onClick={() => navigate(`/jobPost/${job.id}`)}
                     className="right-reveal group bg-white rounded-2xl p-6 border-2 border-gray-100 hover:border-[#008CBA] hover:shadow-2xl transition-all duration-300 cursor-pointer"
                   >
                     <div className="flex items-center gap-3 mb-4">
@@ -339,7 +344,7 @@ export default function JobSearchLanding() {
                           className="w-10 h-10 rounded-lg object-contain border border-gray-100"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#008CBA] to-[#005F7F] flex items-center justify-center text-white font-bold text-sm">
+                        <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#008CBA] to-[#005F7F] flex items-center justify-center text-white font-bold text-sm">
                           {job.company_name?.charAt(0) ?? "?"}
                         </div>
                       )}
@@ -363,24 +368,31 @@ export default function JobSearchLanding() {
                       )}
                       <div className="flex items-center text-sm text-gray-600">
                         <Clock className="w-4 h-4 mr-2 text-[#008CBA]" />
-                        {t("jobPosted")} {formatDate(job.created_at)}
+                        {t("jobPosted")}{" "}
+                        {moment(job.created_at)
+                          .locale(i18nInstance.language)
+                          .fromNow()}
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2 mb-4">
-                      <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium">
-                        {job.job_type}
-                      </span>
-                      <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium">
-                        {job.job_mode}
-                      </span>
+                      {job.job_type && (
+                        <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium">
+                          {t(job.job_type)}
+                        </span>
+                      )}
+                      {job.job_mode && (
+                        <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium">
+                          {t(job.job_mode)}
+                        </span>
+                      )}
                     </div>
                     <div className="pt-4 border-t border-gray-100 flex justify-end">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/job-posts/${job.id}`);
+                          navigate(`/jobPost/${job.id}`);
                         }}
-                        className="px-4 py-2 bg-gradient-to-r from-[#008CBA] to-[#005F7F] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#008CBA]/30 transition-all transform hover:scale-105"
+                        className="px-4 py-2 bg-linear-to-r from-[#008CBA] to-[#005F7F] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#008CBA]/30 transition-all transform hover:scale-105"
                       >
                         {t("jobApply")}
                       </button>
@@ -430,13 +442,16 @@ export default function JobSearchLanding() {
           </div>
         </div>
         {/* Infinite marquee strip */}
-        <div className="relative w-full">
-          {/* Left fade */}
-          <div className="pointer-events-none absolute left-0 top-0 h-full w-24 z-10 bg-gradient-to-r from-white to-transparent" />
-          {/* Right fade */}
-          <div className="pointer-events-none absolute right-0 top-0 h-full w-24 z-10 bg-gradient-to-l from-white to-transparent" />
-
-          <div className="flex gap-6 w-max animate-marquee">
+        <div dir={isRTL ? "rtl" : "ltr"} className="relative w-full">
+          <div
+            className={`pointer-events-none absolute inset-s-0 top-0 h-full w-24 z-10 ${isRTL ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white to-transparent`}
+          />
+          <div
+            className={`pointer-events-none absolute inset-e-0 top-0 h-full w-24 z-10 ${isRTL ? "bg-gradient-to-r" : "bg-gradient-to-l"} from-white to-transparent`}
+          />
+          <div
+            className={`flex gap-6 min-w-max ${isRTL ? "animate-marquee-rtl" : "animate-marquee"}`}
+          >
             {[
               img8,
               img3,

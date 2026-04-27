@@ -6,7 +6,6 @@ import {
   User,
   User2Icon,
 } from "lucide-react";
-import { useState } from "react";
 import img from "@/assets/logo.png";
 import img1 from "@/assets/logo1.png";
 import { Link, useLocation, useNavigate } from "react-router";
@@ -21,9 +20,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/features/auth/userSlice";
 import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/i18n";
 
 function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user } = useSelector((state: any) => state.user);
@@ -32,9 +31,6 @@ function Header() {
 
   const navLinkClass = (path: string) =>
     `${pathname === path ? "text-[#008CBA]" : "text-gray-700"} hover:text-[#008CBA] transition font-medium`;
-
-  const mobileNavLinkClass = (path: string) =>
-    `block ${pathname === path ? "text-[#008CBA]" : "text-gray-700"} hover:text-[#008CBA] transition font-medium`;
 
   const handleLogOut = async () => {
     try {
@@ -61,90 +57,193 @@ function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-2 cursor-pointer"
             onClick={() => navigate("/")}
           >
             <img src={img} alt="Logo" className="h-16" />
             <img src={img1} alt="Logo" className="w-20" />
           </div>
           <div className="hidden lg:flex space-x-8">
-            <Link to="/" className={navLinkClass("/")}>{t("home")}</Link>
-            <Link to="/jobSearch" className={navLinkClass("/jobSearch")}>{t("navFindJobs")}</Link>
-            <Link to="/contacts" className={navLinkClass("/contacts")}>{t("navContacts")}</Link>
-            <Link to="/about" className={navLinkClass("/about")}>{t("navAbout")}</Link>
+            <Link to="/" className={navLinkClass("/")}>
+              {t("home")}
+            </Link>
+            {user?.role === "employer" ? (
+              <Link
+                to="/dashboard?tab=profileAccess"
+                className={navLinkClass("/dashboard?tab=profileAccess")}
+              >
+                {t("navFindProfiles")}
+              </Link>
+            ) : (
+              <Link to="/jobSearch" className={navLinkClass("/jobSearch")}>
+                {t("navFindJobs")}
+              </Link>
+            )}
+            <Link to="/contacts" className={navLinkClass("/contacts")}>
+              {t("navContacts")}
+            </Link>
+            <Link to="/about" className={navLinkClass("/about")}>
+              {t("navAbout")}
+            </Link>
           </div>
           {user ? (
-            <DropdownMenu>
+            <DropdownMenu dir={i18n.dir()}>
               <DropdownMenuTrigger asChild>
                 <div className="flex items-center gap-3 cursor-pointer">
-                  <div className="w-9 h-9 bg-[#008CBA] rounded-full flex items-center justify-center">
-                    {user.role === "jobseeker" ? (
-                      <User className="w-5 h-5 text-white" />
-                    ) : (
-                      <Building className="w-5 h-5 text-white" />
-                    )}
-                  </div>
-
-                  {/* Hidden on mobile */}
-                  <div className="hidden md:block">
-                    <div className="text-sm font-medium text-gray-900">
-                      {user.role === "jobseeker" ? (
-                        <>
-                          {user.first_name} {user.last_name}
-                        </>
-                      ) : (
-                        user.company_name
-                      )}
-                    </div>
-                    <div className="text-xs text-gray-500 truncate max-w-[160px]">
-                      {user.email}
-                    </div>
-                  </div>
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-44 p-2 shadow bg-white border-gray-200">
-                <DropdownMenuLabel className="md:hidden mb-2">
-                  <div className="text-sm font-medium text-gray-900">
-                    {user.role === "jobseeker" ? (
+                  {user?.role === "employer" &&
+                    (user?.logo ? (
                       <>
-                        {user.first_name} {user.last_name}
+                        <div className="w-9 h-9 bg-[#008CBA] rounded-full flex items-center justify-center">
+                          <img
+                            src={user?.logo}
+                            alt="Profile"
+                            className="w-full h-full rounded-full object-cover"
+                          />
+                        </div>
+                        <div className="hidden md:block">
+                          <div className="text-sm font-medium text-gray-900">
+                            {user?.company_name}
+                          </div>
+                          <div className="text-xs text-gray-500 truncate max-w-40">
+                            {user?.email}
+                          </div>
+                        </div>
                       </>
                     ) : (
-                      <>{user.company_name}</>
-                    )}
+                      <>
+                        <div className="w-9 h-9 bg-[#008CBA] rounded-full flex items-center justify-center">
+                          <Building className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="hidden md:block">
+                          <div className="text-sm font-medium text-gray-900">
+                            {user?.company_name}
+                          </div>
+                          <div className="text-xs text-gray-500 truncate max-w-40">
+                            {user?.email}
+                          </div>
+                        </div>
+                      </>
+                    ))}
+                  {user?.role === "jobseeker" &&
+                    (user?.profile_image ? (
+                      <>
+                        <div className="w-9 h-9 bg-[#008CBA] rounded-full flex items-center justify-center">
+                          <img
+                            src={user?.profile_image}
+                            alt="Profile"
+                            className="w-full h-full rounded-full object-cover"
+                          />
+                        </div>
+                        <div className="hidden md:block">
+                          <div className="text-sm font-medium text-gray-900">
+                            {user?.first_name} {user?.last_name}
+                          </div>
+                          <div className="text-xs text-gray-500 truncate max-w-40">
+                            {user?.email}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="w-9 h-9 bg-[#008CBA] rounded-full flex items-center justify-center">
+                          <User className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="hidden md:block">
+                          <div className="text-sm font-medium text-gray-900">
+                            {user?.first_name} {user?.last_name}
+                          </div>
+                          <div className="text-xs text-gray-500 truncate max-w-40">
+                            {user?.email}
+                          </div>
+                        </div>
+                      </>
+                    ))}
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-52 p-2 shadow bg-white border-gray-200">
+                <DropdownMenuLabel className="md:hidden mb-2">
+                  <div className="text-sm font-medium text-gray-900">
+                    {user?.role === "employer"
+                      ? user?.company_name
+                      : `${user?.first_name} ${user?.last_name}`}
                   </div>
                   <div className="text-xs text-gray-500 truncate max-w-[160px]">
-                    {user.email}
+                    {user?.email}
                   </div>
                 </DropdownMenuLabel>
+                <div className="lg:hidden">
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/"
+                      className="flex items-center hover:bg-gray-100 rounded-md cursor-pointer p-2 w-full"
+                    >
+                      {t("home")}
+                    </Link>
+                  </DropdownMenuItem>
+                  {user?.role === "employer" ? (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        to="/dashboard?tab=profileAccess"
+                        className="flex items-center hover:bg-gray-100 rounded-md cursor-pointer p-2 w-full"
+                      >
+                        {t("navFindProfiles")}
+                      </Link>
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        to="/jobSearch"
+                        className="flex items-center hover:bg-gray-100 rounded-md cursor-pointer p-2 w-full"
+                      >
+                        {t("navFindJobs")}
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/contacts"
+                      className="flex items-center hover:bg-gray-100 rounded-md cursor-pointer p-2 w-full"
+                    >
+                      {t("navContacts")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/about"
+                      className="flex items-center hover:bg-gray-100 rounded-md cursor-pointer p-2 w-full"
+                    >
+                      {t("navAbout")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-gray-200" />
+                </div>
                 <DropdownMenuItem
                   onClick={() => navigate("/dashboard?tab=dash")}
                   className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
                 >
-                  <Building className="w-4 h-4 mr-2" /> {t("navDashboard")}
+                  <Building className="w-4 h-4 ltr:mr-2 rtl:ml-2" />{" "}
+                  {t("dashboard")}
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() =>
-                    navigate(
-                      `/dashboard?tab=${user.role === "jobseeker" ? "profile" : "company"}`,
-                    )
-                  }
+                  onClick={() => navigate("/dashboard?tab=company")}
                   className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
                 >
-                  <User2Icon className="w-4 h-4 mr-2" /> {t("navProfile")}
+                  <User2Icon className="w-4 h-4 ltr:mr-2 rtl:ml-2" />{" "}
+                  {t("profile")}
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => navigate("/dashboard?tab=setting")}
+                  onClick={() => navigate("/dashboard?tab=settings")}
                   className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
                 >
-                  <Settings className="w-4 h-4 mr-2" /> {t("navSettings")}
+                  <Settings className="w-4 h-4 ltr:mr-2 rtl:ml-2" />{" "}
+                  {t("settings")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-gray-200" />
                 <DropdownMenuItem
-                  onClick={handleLogOut}
+                  onClick={() => handleLogOut()}
                   className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
                 >
-                  <LogOutIcon className="w-4 h-4 mr-2" />
+                  <LogOutIcon className="w-4 h-4 ltr:mr-2 rtl:ml-2" />
                   {t("logout")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -163,40 +262,64 @@ function Header() {
               >
                 {t("navGetStarted")}
               </button>
-              <button
-                className="lg:hidden p-2 rounded-lg hover:bg-gray-100 cursor-pointer"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                <Menu className="w-6 h-6 text-black" />
-              </button>
+              <DropdownMenu dir={i18n.dir()}>
+                <DropdownMenuTrigger asChild>
+                  <button className="lg:hidden p-2 rounded-lg hover:bg-gray-100 cursor-pointer">
+                    <Menu className="w-6 h-6 text-black" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-52 p-2 shadow bg-white border-gray-200 lg:hidden">
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/"
+                      className="flex items-center hover:bg-gray-100 rounded-md cursor-pointer p-2 w-full"
+                    >
+                      {t("home")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/jobSearch"
+                      className="flex items-center hover:bg-gray-100 rounded-md cursor-pointer p-2 w-full"
+                    >
+                      {t("navFindJobs")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/contacts"
+                      className="flex items-center hover:bg-gray-100 rounded-md cursor-pointer p-2 w-full"
+                    >
+                      {t("navContacts")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/about"
+                      className="flex items-center hover:bg-gray-100 rounded-md cursor-pointer p-2 w-full"
+                    >
+                      {t("navAbout")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-gray-200" />
+                  <DropdownMenuItem
+                    onClick={() => navigate("/login")}
+                    className="hover:bg-gray-100 rounded-md cursor-pointer p-2 text-[#008CBA] font-medium"
+                  >
+                    {t("login")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => navigate("/register")}
+                    className="hover:bg-[#00668C] bg-[#008CBA] rounded-md cursor-pointer p-2 text-white font-semibold mt-1"
+                  >
+                    {t("navGetStarted")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           )}
         </div>
       </div>
-      {isMenuOpen && !user && (
-        <div className="lg:hidden bg-white shadow-md border-t">
-          <div className="px-4 py-4 space-y-4">
-            <Link to="/" className={mobileNavLinkClass("/")} onClick={() => setIsMenuOpen(false)}>{t("home")}</Link>
-            <Link to="/jobSearch" className={mobileNavLinkClass("/jobSearch")} onClick={() => setIsMenuOpen(false)}>{t("navFindJobs")}</Link>
-            <Link to="/contacts" className={mobileNavLinkClass("/contacts")} onClick={() => setIsMenuOpen(false)}>{t("navContacts")}</Link>
-            <Link to="/about" className={mobileNavLinkClass("/about")} onClick={() => setIsMenuOpen(false)}>{t("navAbout")}</Link>
-            <div className="flex items-center flex-col gap-4 space-x-4">
-              <button
-                onClick={() => navigate("/login")}
-                className="hover:text-white box-border w-full hover:bg-[#008CBA] text-[#008CBA] border-2 border-[#008CBA] rounded-xl px-4 py-2 font-medium transition"
-              >
-                {t("login")}
-              </button>
-              <button
-                onClick={() => navigate("/register")}
-                className="px-4 py-2 rounded-xl text-white w-full font-semibold bg-[#008CBA] hover:bg-[#00668C] transition-all"
-              >
-                {t("navGetStarted")}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </nav>
   );
 }

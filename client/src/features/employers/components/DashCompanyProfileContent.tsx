@@ -290,9 +290,9 @@ function DashCompanyProfileContent({
                   <Link
                     to={companyInfo.linkedin}
                     target="_blank"
-                    className="block overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-gray-900"
+                    className="text-primary-500 hover:text-primary-600 block overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium"
                   >
-                    {companyInfo.linkedin}
+                    LinkedIn
                   </Link>
                 )}
               </div>
@@ -365,9 +365,9 @@ function DashCompanyProfileContent({
                   <Link
                     to={companyInfo.website}
                     target="_blank"
-                    className="block overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-gray-900"
+                    className="text-primary-500 hover:text-primary-600 block overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium"
                   >
-                    {companyInfo.website}
+                    Website
                   </Link>
                 )}
               </div>
