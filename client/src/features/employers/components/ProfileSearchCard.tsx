@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User, Briefcase, MapPin, Lock, Eye } from "lucide-react";
+import { User, Briefcase, MapPin, Lock, Eye, FileX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -54,25 +54,30 @@ function ProfileSearchCard({
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md hover:border-gray-300 transition-all duration-200 flex flex-col">
-      {/* Top: avatar + title */}
+      {/* Top: avatar + title + CV badge */}
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full bg-blue-50 text-[#008CBA] flex items-center justify-center shrink-0">
           <User className="w-5 h-5" />
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <h3 className="font-semibold text-gray-900 truncate">
             {profile.professional_title || t("untitledProfile")}
           </h3>
         </div>
+        {!profile.cv && (
+          <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-full text-xs font-medium">
+            <FileX className="w-3 h-3" />
+            {t("noCv")}
+          </span>
+        )}
       </div>
 
-      {/* Meta: experience + location */}
+      {/* Meta: experience level + location */}
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
-        {profile.experience_years != null && (
+        {profile.experience_level && (
           <span className="inline-flex items-center gap-1">
             <Briefcase className="w-3.5 h-3.5" />
-            {profile.experience_years}{" "}
-            {profile.experience_years === 1 ? "year" : "years"}
+            {t(profile.experience_level)}
           </span>
         )}
         {profile.address && (
@@ -109,7 +114,7 @@ function ProfileSearchCard({
             type="button"
             onClick={() =>
               navigate(
-                `/dashboard?tab=profileView&id=${profile.user_id || profile.id}`,
+                `/dashboard?tab=profileView&id=${profile.id}`,
               )
             }
             className="cursor-pointer w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#008CBA] text-white text-sm font-medium rounded-lg hover:bg-[#007399] transition-colors"

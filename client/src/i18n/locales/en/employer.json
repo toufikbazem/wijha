@@ -171,6 +171,7 @@
   "noProfileSelected": "No profile selected",
   "goBackProfileAccess": "Go back to Profile Access to select a profile.",
   "accessDenied": "Access Denied",
+  "noCv": "No CV",
   "downloadCV": "Download CV",
   "professionalSummary": "Professional Summary",
   "noSummary": "No professional summary available.",
@@ -264,5 +265,6 @@
   "selectStatus": "Select status",
   "jobTitlePlaceholder": "e.g. Software Engineer",
   "e.g.,": "e.g.,",
-  "foundingYear": "Founding Year"
+  "foundingYear": "Founding Year",
+  "email": "Email"
 }

@@ -36,9 +36,11 @@ import {
   unsaveJobPost,
 } from "@/features/auth/userSlice";
 import { useTranslation } from "react-i18next";
-import moment from "moment";
+import moment from "moment/min/moment-with-locales";
 import Footer from "@/features/public/components/Footer";
 import Header from "@/features/public/components/Header";
+import i18n from "@/i18n/i18n";
+import addressData from "@/utils/address.json";
 
 export default function JobPosts() {
   const { user } = useSelector((state: any) => state.user);
@@ -54,6 +56,14 @@ export default function JobPosts() {
   const { t } = useTranslation("jobs");
   const { t: tc } = useTranslation("common");
   const { id } = useParams();
+
+  const translateLocation = (location: string) => {
+    if (i18n.language !== "ar") return location;
+    const entry = addressData.find(
+      (a) => a.label.toLowerCase() === location.toLowerCase(),
+    );
+    return entry ? entry.labelAr : location;
+  };
 
   useEffect(() => {
     const getJobData = async () => {
@@ -286,7 +296,7 @@ export default function JobPosts() {
                           <span>{t("applying")}</span>
                         </>
                       ) : (
-                        <>Apply Now</>
+                        <>{t("applyNow")}</>
                       )}
                     </button>
                   )}
@@ -362,19 +372,19 @@ export default function JobPosts() {
                 <div className="flex flex-wrap gap-3">
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#008CBA] backdrop-blur-sm rounded-full text-white text-sm">
                     <MapPin size={14} />
-                    {data.location}
+                    {translateLocation(data.location)}
                   </span>
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#008CBA] backdrop-blur-sm rounded-full text-white text-sm">
                     <Briefcase size={14} />
-                    {data.job_type}
+                    {t(data.job_type)}
                   </span>
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#008CBA] backdrop-blur-sm rounded-full text-white text-sm">
                     <Clock size={14} />
-                    {data.job_mode}
+                    {t(data.job_mode)}
                   </span>
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#008CBA] backdrop-blur-sm rounded-full text-white text-sm">
                     <Calendar size={14} />
-                    {moment(data.created_at).fromNow()}
+                    {moment(data.created_at).locale(i18n.language).fromNow()}
                   </span>
                 </div>
               </div>
@@ -383,28 +393,25 @@ export default function JobPosts() {
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <button className="cursor-pointer px-8 py-3 bg-[#008CBA] text-white font-semibold rounded-xl hover:bg-[#0077A3] transition-colors shadow-md">
-                        Apply Now
+                        {t("applyNow")}
                       </button>
                     </AlertDialogTrigger>
                     <AlertDialogContent className="bg-white">
                       <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          You need to be logged in to apply
-                        </AlertDialogTitle>
+                        <AlertDialogTitle>{t("needsLogin")}</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Please log in or create an account to apply for this
-                          job.
+                          {t("loginOrCreate")}
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel className="bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300 transition-colors shadow-md">
-                          Cancel
+                          {tc("cancel")}
                         </AlertDialogCancel>
                         <AlertDialogAction
-                          onClick={() => navigate("/signIn")}
+                          onClick={() => navigate("/login")}
                           className="bg-[#008CBA] text-white font-semibold rounded-xl hover:bg-[#0077A3] transition-colors shadow-md"
                         >
-                          Continue
+                          {tc("continue")}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -418,10 +425,10 @@ export default function JobPosts() {
                     {applyLoading ? (
                       <>
                         <Spinner className="w-5 h-5 mr-2 animate-spin" />
-                        {t("applying")}
+                        <span>{t("applying")}</span>
                       </>
                     ) : (
-                      <>Apply Now</>
+                      <>{t("applyNow")}</>
                     )}
                   </button>
                 )}
@@ -435,25 +442,24 @@ export default function JobPosts() {
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <button className="cursor-pointer px-8 py-3 bg-[#008CBA] text-white font-semibold rounded-xl hover:bg-[#0077A3] transition-colors shadow-md">
-                        Apply Now
+                        {t("applyNow")}
                       </button>
                     </AlertDialogTrigger>
                     <AlertDialogContent className="bg-white">
                       <AlertDialogHeader>
                         <AlertDialogTitle>
-                          Employers cannot apply for job offers
+                          {t("employersCantApply")}
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                          Please log in with a job seeker account to apply for
-                          this job.
+                          {t("loginJobseeker")}
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel className="bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300 transition-colors shadow-md">
-                          Cancel
+                          {tc("cancel")}
                         </AlertDialogCancel>
-                        <AlertDialogAction className="bg-primary-500! text-white font-semibold rounded-xl hover:bg-primary-600 transition-colors shadow-md">
-                          Continue
+                        <AlertDialogAction className="bg-[#008CBA] text-white font-semibold rounded-xl hover:bg-[#0077A3] transition-colors shadow-md">
+                          {tc("continue")}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -496,7 +502,7 @@ export default function JobPosts() {
                     <div>
                       <p className="text-xs text-gray-500">{tc("industry")}</p>
                       <p className="text-sm font-semibold text-gray-900">
-                        {data.industry}
+                        {t(data.industry)}
                       </p>
                     </div>
                   </div>
@@ -509,7 +515,7 @@ export default function JobPosts() {
                         {tc("experienceLevel")}
                       </p>
                       <p className="text-sm font-semibold text-gray-900">
-                        {data.experience_level}
+                        {t(data.experience_level)}
                       </p>
                     </div>
                   </div>
@@ -522,7 +528,7 @@ export default function JobPosts() {
                         {tc("educationLevel")}
                       </p>
                       <p className="text-sm font-semibold text-gray-900">
-                        {data.education_level}
+                        {t(data.education_level)}
                       </p>
                     </div>
                   </div>
@@ -535,7 +541,10 @@ export default function JobPosts() {
                     <div>
                       <p className="text-xs text-gray-500">{t("deadline")}</p>
                       <p className="text-sm font-semibold text-gray-900">
-                        {data && moment(data.deadline).format("MMMM D, YYYY")}
+                        {data &&
+                          moment(data.deadline)
+                            .locale(i18n.language)
+                            .format("MMMM D, YYYY")}
                       </p>
                     </div>
                   </div>
@@ -624,7 +633,7 @@ export default function JobPosts() {
                       <div className="p-3 bg-gray-50 rounded-xl">
                         <p className="text-xs text-gray-500 mb-1">Industry</p>
                         <p className="whitespace-nowrap truncate font-semibold text-gray-900 text-sm">
-                          {data.employer_industry}
+                          {t(data.employer_industry)}
                         </p>
                       </div>
                       <div className="p-3 bg-gray-50 rounded-xl">

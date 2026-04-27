@@ -2,6 +2,7 @@ import img from "@/assets/logo.png";
 import img1 from "@/assets/logo1.png";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n/i18n";
+import { Link } from "react-router";
 
 const LANGUAGES = [
   { code: "en", label: "English" },
@@ -33,52 +34,80 @@ function Footer() {
             </p>
           </div>
           <div>
-            <h4 className="font-bold text-lg mb-4">{t("footerForJobSeekers")}</h4>
+            <h4 className="font-bold text-lg mb-4">
+              {t("footerForJobSeekers")}
+            </h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#008CBA] transition">
+                <Link
+                  to="/jobSearch"
+                  className="text-gray-400 hover:text-[#008CBA] transition"
+                >
                   {t("footerBrowseJobs")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#008CBA] transition">
+                <Link
+                  to="#"
+                  className="text-gray-400 hover:text-[#008CBA] transition"
+                >
                   {t("footerCareerAdvice")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#008CBA] transition">
+                <Link
+                  to="/dashboard?dash=profile"
+                  className="text-gray-400 hover:text-[#008CBA] transition"
+                >
                   {t("footerResumeBuilder")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#008CBA] transition">
+                <Link
+                  to="#"
+                  className="text-gray-400 hover:text-[#008CBA] transition"
+                >
                   {t("footerSalaryTools")}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
           <div>
-            <h4 className="font-bold text-lg mb-4">{t("footerForEmployers")}</h4>
+            <h4 className="font-bold text-lg mb-4">
+              {t("footerForEmployers")}
+            </h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#008CBA] transition">
+                <Link
+                  to="/dashboard?dash=createJobPost"
+                  className="text-gray-400 hover:text-[#008CBA] transition"
+                >
                   {t("footerPostJob")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#008CBA] transition">
+                <Link
+                  to="/dashboard?dash=subscriptions"
+                  className="text-gray-400 hover:text-[#008CBA] transition"
+                >
                   {t("footerPricing")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#008CBA] transition">
+                <Link
+                  to="/dashboard?dash=profileAccess"
+                  className="text-gray-400 hover:text-[#008CBA] transition"
+                >
                   {t("footerBrowseTalent")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#008CBA] transition">
+                <Link
+                  to="#"
+                  className="text-gray-400 hover:text-[#008CBA] transition"
+                >
                   {t("footerHiringResources")}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -86,24 +115,36 @@ function Footer() {
             <h4 className="font-bold text-lg mb-4">{t("footerCompany")}</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#008CBA] transition">
+                <Link
+                  to="/about"
+                  className="text-gray-400 hover:text-[#008CBA] transition"
+                >
                   {t("footerAboutUs")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#008CBA] transition">
+                <Link
+                  to="/contact"
+                  className="text-gray-400 hover:text-[#008CBA] transition"
+                >
                   {t("footerContact")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#008CBA] transition">
+                <Link
+                  to="/jobSearch"
+                  className="text-gray-400 hover:text-[#008CBA] transition"
+                >
                   {t("footerCareers")}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#008CBA] transition">
+                <Link
+                  to="#"
+                  className="text-gray-400 hover:text-[#008CBA] transition"
+                >
                   {t("footerPress")}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

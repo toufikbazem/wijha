@@ -162,6 +162,7 @@
   "noProfileSelected": "Aucun profil sélectionné",
   "goBackProfileAccess": "Retournez à l'accès aux profils pour sélectionner un profil.",
   "accessDenied": "Accès refusé",
+  "noCv": "Pas de CV",
   "downloadCV": "Télécharger le CV",
   "professionalSummary": "Résumé professionnel",
   "noSummary": "Aucun résumé professionnel disponible.",
@@ -252,5 +253,6 @@
   "selectStatus": "Sélectionner le statut",
   "jobTitlePlaceholder": "Entrez le titre du poste...",
   "e.g.,": "ex.",
-  "foundingYear": "Année de fondation"
+  "foundingYear": "Année de fondation",
+  "email": "Email"
 }

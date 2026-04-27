@@ -29,7 +29,7 @@ export default function ProfileSearch() {
     defaultValues: {
       professional_title: "",
       skills: "",
-      experience_years: "",
+      experience_level: "",
       address: "",
     },
   });
@@ -46,8 +46,8 @@ export default function ProfileSearch() {
       if (filters?.professional_title)
         params.set("professional_title", filters.professional_title);
       if (filters?.skills) params.set("skills", filters.skills);
-      if (filters?.experience_years)
-        params.set("experience_years", filters.experience_years);
+      if (filters?.experience_level)
+        params.set("experience_level", filters.experience_level);
       if (filters?.address) params.set("address", filters.address);
 
       const res = await fetch(
@@ -171,23 +171,29 @@ export default function ProfileSearch() {
             )}
           />
 
-          {/* Experience Years */}
+          {/* Experience Level */}
           <Controller
-            name="experience_years"
+            name="experience_level"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">
-                  {t("minExperience")}
+                  {t("experienceLevel")}
                 </FieldLabel>
                 <div className="relative">
                   <Briefcase className="input-icon-filter" size={16} />
-                  <Input
-                    placeholder="e.g. 3"
-                    type="number"
-                    className="input-filter"
-                    {...field}
-                  />
+                  <select
+                    className="input-filter w-full"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                  >
+                    <option value="">{t("selectExperienceLevel")}</option>
+                    <option value="Entry Level">{t("Entry Level")}</option>
+                    <option value="Mid Level">{t("Mid Level")}</option>
+                    <option value="Senior Level">{t("Senior Level")}</option>
+                    <option value="Director">{t("Director")}</option>
+                    <option value="Executive">{t("Executive")}</option>
+                  </select>
                 </div>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />

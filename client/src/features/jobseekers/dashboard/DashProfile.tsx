@@ -49,7 +49,8 @@ const DashProfile = () => {
     linkedin?: string;
     github?: string;
     portfolio?: string;
-    experience_years?: number;
+    experience_level?: string;
+    education_level?: string;
     skills?: string[];
     cv?: string;
     status?: "active" | "unverified" | "suspended" | "deactivated";
@@ -75,9 +76,12 @@ const DashProfile = () => {
       linkedin: profile?.linkedin ? profile?.linkedin : "",
       github: profile?.github ? profile?.github : "",
       portfolio: profile?.portfolio ? profile?.portfolio : "",
-      experience_years: profile?.experience_years
-        ? profile?.experience_years
-        : 0,
+      experience_level: profile?.experience_level
+        ? profile?.experience_level
+        : "",
+      education_level: profile?.education_level
+        ? profile?.education_level
+        : "",
       skills: profile?.skills ? profile?.skills : [],
       profile_image: profile?.profile_image ? profile?.profile_image : "",
       cv: profile?.cv ? profile?.cv : "",
@@ -113,7 +117,8 @@ const DashProfile = () => {
             linkedin: data.linkedin,
             github: data.github,
             portfolio: data.portfolio,
-            experience_years: data.experience_years,
+            experience_level: data.experience_level,
+            education_level: data.education_level,
             skills: data.skills,
             cv: data.cv,
             status: data.status,

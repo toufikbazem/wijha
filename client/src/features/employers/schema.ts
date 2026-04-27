@@ -76,7 +76,7 @@ export const changePasswordSchema = z
 export const profileSearchFilterSchema = z.object({
   professional_title: z.string().optional(),
   skills: z.string().optional(),
-  experience_years: z.string().optional(),
+  experience_level: z.string().optional(),
   address: z.string().optional(),
 });
 

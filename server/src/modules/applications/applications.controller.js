@@ -145,12 +145,12 @@ export const getApplicantsByJob = async (req, res) => {
          js.professional_summary,
          js.cv,
          js.skills,
-         js.experience_years,
-         u.email,
+         js.experience_level,
+         COALESCE(u.email, js.user_email) AS email,
          COUNT(*) OVER() AS total
        FROM applications
        INNER JOIN job_seeker js ON applications.jobseeker = js.id
-       INNER JOIN users u ON js.user_id = u.id
+       LEFT JOIN users u ON js.user_id = u.id
        WHERE applications.job_post = $1
        ORDER BY applications.created_at DESC
        LIMIT $2 OFFSET $3`,

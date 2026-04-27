@@ -162,6 +162,7 @@
   "noProfileSelected": "لم يتم اختيار ملف",
   "goBackProfileAccess": "عد إلى الوصول للملفات لاختيار ملف.",
   "accessDenied": "تم رفض الوصول",
+  "noCv": "لا يوجد سيرة ذاتية",
   "downloadCV": "تحميل السيرة الذاتية",
   "professionalSummary": "الملخص المهني",
   "noSummary": "لا يوجد ملخص مهني متاح.",
@@ -253,5 +254,6 @@
   "selectStatus": "اختر الحالة",
   "jobTitlePlaceholder": "مثال: مهندس برمجيات",
   "e.g.,": "مثال:",
-  "foundingYear": "سنة التأسيس"
+  "foundingYear": "سنة التأسيس",
+  "email": "البريد الإلكتروني"
 }

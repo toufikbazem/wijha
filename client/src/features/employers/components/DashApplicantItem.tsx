@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  FileText,
-  Mail,
-  User,
-  Briefcase,
-  Calendar,
-  Clock,
-} from "lucide-react";
+import { FileText, Mail, User, Briefcase, Calendar, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 function DashApplicantItem({ applicant }: { applicant: any }) {
@@ -49,13 +42,13 @@ function DashApplicantItem({ applicant }: { applicant: any }) {
         </div>
 
         {/* CV button */}
-        {applicant.CV ? (
+        {applicant.cv ? (
           <Button
             className="cursor-pointer shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#008CBA] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
             title="View CV"
             asChild
           >
-            <a href={applicant.CV} target="_blank" rel="noopener noreferrer">
+            <a href={applicant.cv} target="_blank" rel="noopener noreferrer">
               <FileText className="w-4 h-4" />
               CV
             </a>
@@ -79,16 +72,16 @@ function DashApplicantItem({ applicant }: { applicant: any }) {
 
       {/* Meta row: experience + applied date */}
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
-        {applicant.experience_years != null && (
+        {applicant.experience_level && (
           <span className="inline-flex items-center gap-1">
             <Briefcase className="w-3.5 h-3.5" />
-            {applicant.experience_years}{" "}
-            {applicant.experience_years === 1 ? t("yearExperience") : t("yearsExperience")}
+            {t(applicant.experience_level)}
           </span>
         )}
         <span className="inline-flex items-center gap-1">
           <Calendar className="w-3.5 h-3.5" />
-          {t("applied")} {new Date(applicant.applied_at).toLocaleDateString("en-GB")}
+          {t("applied")}{" "}
+          {new Date(applicant.applied_at).toLocaleDateString("en-GB")}
         </span>
       </div>
 

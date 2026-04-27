@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle, Sparkles } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  Send,
+  CheckCircle,
+  Sparkles,
+} from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -28,7 +36,9 @@ function ContactUs() {
     message: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "sending" | "success" | "error"
+  >("idle");
 
   const validate = (): FormErrors => {
     const errs: FormErrors = {};
@@ -36,14 +46,17 @@ function ContactUs() {
 
     if (!form.name.trim()) errs.name = t("contactRequired");
     if (!form.email.trim()) errs.email = t("contactRequired");
-    else if (!emailRegex.test(form.email)) errs.email = t("contactEmailInvalid");
+    else if (!emailRegex.test(form.email))
+      errs.email = t("contactEmailInvalid");
     if (!form.subject.trim()) errs.subject = t("contactRequired");
     if (!form.message.trim()) errs.message = t("contactRequired");
 
     return errs;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     if (errors[name as keyof FormErrors]) {
@@ -61,11 +74,14 @@ function ContactUs() {
 
     setStatus("sending");
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/contact`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/v1/contact`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        },
+      );
 
       if (res.ok) {
         setStatus("success");
@@ -79,10 +95,22 @@ function ContactUs() {
   };
 
   const infoItems = [
-    { icon: Mail, label: t("contactInfoEmail"), value: t("contactInfoEmailValue") },
-    { icon: Phone, label: t("contactInfoPhone"), value: t("contactInfoPhoneValue") },
-    { icon: MapPin, label: t("contactInfoLocation"), value: t("contactInfoLocationValue") },
-    { icon: Clock, label: t("contactInfoHours"), value: t("contactInfoHoursValue") },
+    {
+      icon: Mail,
+      label: t("contactInfoEmail"),
+      value: t("contactInfoEmailValue"),
+    },
+    {
+      icon: Phone,
+      label: t("contactInfoPhone"),
+      value: t("contactInfoPhoneValue"),
+    },
+    {
+      icon: MapPin,
+      label: t("contactInfoLocation"),
+      value: t("contactInfoLocationValue"),
+    },
+    // { icon: Clock, label: t("contactInfoHours"), value: t("contactInfoHoursValue") },
   ];
 
   const inputClass = (field: keyof FormErrors) =>
@@ -119,7 +147,6 @@ function ContactUs() {
       {/* Main content */}
       <section className="max-w-6xl mx-auto px-6 py-20">
         <div className="grid lg:grid-cols-5 gap-12 items-start">
-
           {/* Info panel */}
           <div className="lg:col-span-2 space-y-6">
             <div>
@@ -159,7 +186,9 @@ function ContactUs() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   {t("contactFormTitle")}
                 </h2>
-                <p className="text-gray-500 text-sm">{t("contactFormSubtitle")}</p>
+                <p className="text-gray-500 text-sm">
+                  {t("contactFormSubtitle")}
+                </p>
               </div>
 
               {status === "success" ? (
@@ -170,7 +199,9 @@ function ContactUs() {
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
                     {t("contactSuccessTitle")}
                   </h3>
-                  <p className="text-gray-500 max-w-xs">{t("contactSuccessText")}</p>
+                  <p className="text-gray-500 max-w-xs">
+                    {t("contactSuccessText")}
+                  </p>
                   <button
                     onClick={() => setStatus("idle")}
                     className="mt-6 text-sm text-[#008CBA] font-medium hover:underline"
@@ -184,7 +215,8 @@ function ContactUs() {
                   <div className="grid sm:grid-cols-2 gap-5">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                        {t("contactName")} <span className="text-red-500">*</span>
+                        {t("contactName")}{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -195,13 +227,16 @@ function ContactUs() {
                         className={inputClass("name")}
                       />
                       {errors.name && (
-                        <p className="mt-1.5 text-xs text-red-500">{errors.name}</p>
+                        <p className="mt-1.5 text-xs text-red-500">
+                          {errors.name}
+                        </p>
                       )}
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                        {t("contactEmail")} <span className="text-red-500">*</span>
+                        {t("contactEmail")}{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="email"
@@ -212,7 +247,9 @@ function ContactUs() {
                         className={inputClass("email")}
                       />
                       {errors.email && (
-                        <p className="mt-1.5 text-xs text-red-500">{errors.email}</p>
+                        <p className="mt-1.5 text-xs text-red-500">
+                          {errors.email}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -220,7 +257,8 @@ function ContactUs() {
                   {/* Subject */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                      {t("contactSubject")} <span className="text-red-500">*</span>
+                      {t("contactSubject")}{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -231,14 +269,17 @@ function ContactUs() {
                       className={inputClass("subject")}
                     />
                     {errors.subject && (
-                      <p className="mt-1.5 text-xs text-red-500">{errors.subject}</p>
+                      <p className="mt-1.5 text-xs text-red-500">
+                        {errors.subject}
+                      </p>
                     )}
                   </div>
 
                   {/* Message */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                      {t("contactMessage")} <span className="text-red-500">*</span>
+                      {t("contactMessage")}{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       name="message"
@@ -249,7 +290,9 @@ function ContactUs() {
                       className={`${inputClass("message")} resize-none`}
                     />
                     {errors.message && (
-                      <p className="mt-1.5 text-xs text-red-500">{errors.message}</p>
+                      <p className="mt-1.5 text-xs text-red-500">
+                        {errors.message}
+                      </p>
                     )}
                   </div>
 

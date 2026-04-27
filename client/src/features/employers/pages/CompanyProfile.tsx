@@ -10,10 +10,12 @@ import {
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useParams } from "react-router";
+import { useTranslation } from "react-i18next";
 import Header from "@/features/public/components/Header";
 import Footer from "@/features/public/components/Footer";
 
 export default function CompanyProfile() {
+  const { t } = useTranslation("employer");
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const [companyInfo, setCompanyInfo] = useState({
@@ -29,6 +31,7 @@ export default function CompanyProfile() {
     missions: [],
     founding_year: "",
     website: "",
+    linkedin: "",
   });
 
   useEffect(() => {
@@ -163,7 +166,7 @@ export default function CompanyProfile() {
                     </h2>
                     {/* industry */}
                     <span className="bg-[#008CBA] w-fit inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white">
-                      {companyInfo.industry}
+                      {t(companyInfo.industry)}
                     </span>
 
                     <div className="flex flex-col sm:flex-row gap-4 text-sm text-gray-600">
@@ -187,7 +190,9 @@ export default function CompanyProfile() {
                       <div className="flex items-center gap-1 justify-center">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
-                          <span>Founded {companyInfo.founding_year}</span>
+                          <span>
+                            {t("founded")} {companyInfo.founding_year}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -204,7 +209,7 @@ export default function CompanyProfile() {
                   {/* About Section */}
                   <div className="bg-white rounded-xl shadow-lg p-8">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                      About Us
+                      {t("aboutUs")}
                     </h2>
                     <p className="text-gray-700 leading-relaxed mb-4">
                       {companyInfo.description}
@@ -215,7 +220,7 @@ export default function CompanyProfile() {
                   <div className="bg-white rounded-xl shadow-lg p-8">
                     <div className="flex justify-between">
                       <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                        What We Do
+                        {t("whatWeDo")}
                       </h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -239,13 +244,15 @@ export default function CompanyProfile() {
                 {/* Contact Card */}
                 <div className="bg-white rounded-xl shadow-lg p-6">
                   <h3 className="text-lg font-bold text-gray-900 mb-4">
-                    Contact Information
+                    {t("contactInfo")}
                   </h3>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
                       <Mail className="w-5 h-5 mt-0.5 text-[#008CBA]" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-600 mb-0.5">Email</p>
+                        <p className="text-xs text-gray-600 mb-0.5">
+                          {t("email")}
+                        </p>
                         <p className="text-sm font-medium text-gray-900 truncate">
                           {companyInfo.email}
                         </p>
@@ -254,7 +261,9 @@ export default function CompanyProfile() {
                     <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
                       <Share2 className="w-5 h-5 mt-0.5 text-[#008CBA]" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-600 mb-0.5">LinkedIn</p>
+                        <p className="text-xs text-gray-600 mb-0.5">
+                          {t("linkedin")}
+                        </p>
                         <p className="text-sm font-medium text-gray-900">
                           {companyInfo.linkedin}
                         </p>
@@ -263,7 +272,9 @@ export default function CompanyProfile() {
                     <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group">
                       <Globe className="w-5 h-5 mt-0.5 text-[#008CBA]" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-600 mb-0.5">Website</p>
+                        <p className="text-xs text-gray-600 mb-0.5">
+                          {t("website")}
+                        </p>
                         <p className="text-sm font-medium text-gray-900">
                           {companyInfo.website}
                         </p>

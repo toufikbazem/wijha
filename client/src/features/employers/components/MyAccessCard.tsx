@@ -57,13 +57,13 @@ function MyAccessCard({ profile }: { profile: any }) {
         </div>
 
         {/* CV button */}
-        {profile.CV ? (
+        {profile.cv ? (
           <Button
             className="cursor-pointer shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-[#008CBA] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
             title="View CV"
             asChild
           >
-            <a href={profile.CV} target="_blank" rel="noopener noreferrer">
+            <a href={profile.cv} target="_blank" rel="noopener noreferrer">
               <FileText className="w-4 h-4" />
               CV
             </a>
@@ -85,13 +85,12 @@ function MyAccessCard({ profile }: { profile: any }) {
         <span className="truncate">{profile.email}</span>
       </div>
 
-      {/* Meta: experience + location */}
+      {/* Meta: experience level + location */}
       <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
-        {profile.experience_years != null && (
+        {profile.experience_level && (
           <span className="inline-flex items-center gap-1">
             <Briefcase className="w-3.5 h-3.5" />
-            {profile.experience_years}{" "}
-            {profile.experience_years === 1 ? t("yearExperience") : t("yearsExperience")}
+            {t(profile.experience_level)}
           </span>
         )}
         {profile.address && (
@@ -131,7 +130,7 @@ function MyAccessCard({ profile }: { profile: any }) {
         )}
         <Button
           onClick={() =>
-            navigate(`/dashboard?tab=profileView&id=${profile.user_id}`)
+            navigate(`/dashboard?tab=profileView&id=${profile.jobseeker_id}`)
           }
           className="cursor-pointer ltr:ml-auto rtl:mr-auto inline-flex items-center gap-1.5 px-4 py-2 bg-[#008CBA] text-white text-sm font-medium rounded-lg hover:bg-[#007399] transition-colors"
         >

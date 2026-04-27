@@ -162,11 +162,19 @@ export default function DashProfileView() {
                       <span className="text-sm">{profile.address}</span>
                     </div>
                   )}
-                  {profile.experience_years != null && (
+                  {profile.experience_level && (
                     <div className="flex items-center gap-2 text-gray-600">
                       <Briefcase className="w-4 h-4" />
                       <span className="text-sm">
-                        {profile.experience_years} {profile.experience_years === 1 ? t("yearExperience") : t("yearsExperience")}
+                        {t(profile.experience_level)}
+                      </span>
+                    </div>
+                  )}
+                  {profile.education_level && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <GraduationCap className="w-4 h-4" />
+                      <span className="text-sm">
+                        {t(profile.education_level)}
                       </span>
                     </div>
                   )}
@@ -174,14 +182,14 @@ export default function DashProfileView() {
               </div>
 
               {/* CV button */}
-              {profile.CV && (
+              {profile.cv && (
                 <div className="mt-4 md:mt-6">
                   <Button
                     className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-[#008CBA] bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                     asChild
                   >
                     <a
-                      href={profile.CV}
+                      href={profile.cv}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

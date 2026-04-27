@@ -4,7 +4,7 @@ export const searchProfiles = async (req, res) => {
   const {
     professional_title,
     skills,
-    experience_years,
+    experience_level,
     address,
     page = 1,
     limit = 10,
@@ -14,7 +14,13 @@ export const searchProfiles = async (req, res) => {
 
   try {
     const offset = (page - 1) * limit;
-    const conditions = ["js.status = 'active'"];
+    const conditions = [
+      "js.status = 'active'",
+      "js.professional_title IS NOT NULL AND js.professional_title != ''",
+      "js.experience_level IS NOT NULL AND js.experience_level != ''",
+      "js.education_level IS NOT NULL AND js.education_level != ''",
+      "js.gender IS NOT NULL",
+    ];
     const values = [];
     let index = 1;
 
@@ -28,9 +34,9 @@ export const searchProfiles = async (req, res) => {
       values.push(`%${skills}%`);
     }
 
-    if (experience_years) {
-      conditions.push(`js.experience_years >= $${index++}`);
-      values.push(Number(experience_years));
+    if (experience_level) {
+      conditions.push(`js.experience_level = $${index++}`);
+      values.push(experience_level);
     }
 
     if (address) {
@@ -64,14 +70,18 @@ export const searchProfiles = async (req, res) => {
          js.user_id,
          js.professional_title,
          js.skills,
-         js.experience_years,
+         js.experience_level,
+         js.education_level,
          js.address,
+         js.cv,
+         COALESCE(u.email, js.user_email) AS email,
          CASE
            WHEN pa.id IS NOT NULL AND pa.expire_at > NOW() THEN true
            ELSE false
          END AS has_access,
          COUNT(*) OVER() AS total
        FROM job_seeker js
+       LEFT JOIN users u ON js.user_id = u.id
        LEFT JOIN profile_access pa
          ON pa.job_seeker = js.id AND pa.employer = $${employerIdx}
        WHERE ${whereClause}
@@ -128,17 +138,18 @@ export const getMyAccess = async (req, res) => {
          js.professional_summary,
          js.cv,
          js.skills,
-         js.experience_years,
+         js.experience_level,
+         js.education_level,
          js.address,
          js.phone_number,
          js.linkedin,
          js.github,
          js.portfolio,
-         u.email,
+         COALESCE(u.email, js.user_email) AS email,
          COUNT(*) OVER() AS total
        FROM profile_access pa
        INNER JOIN job_seeker js ON pa.job_seeker = js.id
-       INNER JOIN users u ON js.user_id = u.id
+       LEFT JOIN users u ON js.user_id = u.id
        WHERE pa.employer = $1 AND pa.expire_at > NOW()
        ORDER BY pa.created_at DESC
        LIMIT $2 OFFSET $3`,

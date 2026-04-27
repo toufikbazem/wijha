@@ -27,6 +27,7 @@ import ScrollReveal from "scrollreveal";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import moment from "moment/min/moment-with-locales";
+import addressData from "@/utils/address.json";
 
 interface JobPost {
   id: string;
@@ -45,6 +46,14 @@ export default function JobSearchLanding() {
   const navigate = useNavigate();
   const { t, i18n: i18nInstance } = useTranslation("public");
   const isRTL = i18nInstance.dir() === "rtl";
+
+  const translateLocation = (location: string) => {
+    if (i18nInstance.language !== "ar") return location;
+    const entry = addressData.find(
+      (a) => a.label.toLowerCase() === location.toLowerCase(),
+    );
+    return entry ? entry.labelAr : location;
+  };
 
   const [jobPosts, setJobPosts] = useState<JobPost[]>([]);
   const [jobsLoading, setJobsLoading] = useState(true);
@@ -358,7 +367,7 @@ export default function JobSearchLanding() {
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center text-sm text-gray-600">
                         <MapPin className="w-4 h-4 mr-2 text-[#008CBA]" />
-                        {job.location}
+                        {translateLocation(job.location)}
                       </div>
                       {salary && (
                         <div className="flex items-center text-sm text-gray-600">
@@ -499,14 +508,14 @@ export default function JobSearchLanding() {
             </h2>
             <p className="text-xl text-gray-600">{t("testimonialsText")}</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <div
                 key={index}
                 className="left-reveal bg-white rounded-2xl p-8 shadow-lg"
               >
                 <div className="flex items-center mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#008CBA] to-[#005F7F] rounded-2xl flex items-center justify-center text-white font-bold text-xl mr-4">
+                  <div className="w-16 h-16 bg-linear-to-br from-[#008CBA] to-[#005F7F] rounded-2xl flex items-center justify-center text-white font-bold text-xl ltr:mr-4 rtl:ml-4">
                     {testimonial.image}
                   </div>
                   <div>

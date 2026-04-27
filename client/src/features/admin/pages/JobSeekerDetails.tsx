@@ -152,7 +152,8 @@ export default function JobSeekerDetails({ userId }: { userId: string }) {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Details</h2>
           <div className="space-y-3 text-sm">
             <InfoRow label="Gender" value={profile.gender} />
-            <InfoRow label="Experience" value={profile.experience_years ? `${profile.experience_years} years` : undefined} />
+            <InfoRow label="Experience Level" value={profile.experience_level} />
+            <InfoRow label="Education Level" value={profile.education_level} />
             {profile.is_admin_created ? (
               <InfoRow label="Account Type" value="Admin Created (No Account)" />
             ) : (

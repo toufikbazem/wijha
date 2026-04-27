@@ -2,15 +2,42 @@ import db from "../../config/db.js";
 
 export const getJobSeekerProfile = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
 
   if (!id) {
     return res.status(400).json({ message: "Job seeker ID is required" });
   }
 
-  // If the requester is an employer, verify they have active profile_access
-  if (req.user.role === "employer") {
-    try {
+  try {
+    // Resolve the job_seeker record: id can be job_seeker.id (from employers)
+    // or users.id (from jobseekers viewing their own profile)
+    let profileResult = await db.query(
+      `SELECT js.*, COALESCE(u.email, js.user_email) AS email
+       FROM job_seeker js
+       LEFT JOIN users u ON js.user_id = u.id
+       WHERE js.id = $1`,
+      [id],
+    );
+
+    // If not found by job_seeker.id, try by user_id (for jobseekers with accounts)
+    if (profileResult.rows.length === 0) {
+      profileResult = await db.query(
+        `SELECT js.*, COALESCE(u.email, js.user_email) AS email
+         FROM job_seeker js
+         LEFT JOIN users u ON js.user_id = u.id
+         WHERE js.user_id = $1`,
+        [id],
+      );
+    }
+
+    if (profileResult.rows.length === 0) {
+      return res.status(404).json({ message: "Job seeker not found" });
+    }
+
+    const jobSeekerProfile = profileResult.rows[0];
+    const jobSeekerId = jobSeekerProfile.id;
+
+    // If the requester is an employer, verify they have active profile_access
+    if (req.user.role === "employer") {
       const employerResult = await db.query(
         "SELECT id FROM employers WHERE user_id = $1",
         [req.user.userId],
@@ -20,20 +47,10 @@ export const getJobSeekerProfile = async (req, res) => {
         return res.status(403).json({ message: "Employer not found" });
       }
 
-      // Look up the job_seeker.id from users.id since profile_access stores job_seeker.id
-      const jobSeekerResult = await db.query(
-        "SELECT id FROM job_seeker WHERE user_id = $1",
-        [id],
-      );
-
-      if (jobSeekerResult.rows.length === 0) {
-        return res.status(404).json({ message: "Job seeker not found" });
-      }
-
       const accessResult = await db.query(
         `SELECT id FROM profile_access
          WHERE employer = $1 AND job_seeker = $2 AND expire_at > NOW()`,
-        [employerResult.rows[0].id, jobSeekerResult.rows[0].id],
+        [employerResult.rows[0].id, jobSeekerId],
       );
 
       if (accessResult.rows.length === 0) {
@@ -41,38 +58,14 @@ export const getJobSeekerProfile = async (req, res) => {
           .status(403)
           .json({ message: "You do not have access to this profile" });
       }
-    } catch (error) {
-      console.error("Error checking profile access:", error);
-      return res.status(500).json({ message: "Error checking profile access" });
-    }
-  }
-
-  try {
-    const user = await db.query(
-      "SELECT users.*, job_seeker.* FROM users INNER JOIN job_seeker ON users.id = job_seeker.user_id WHERE users.id = $1",
-      [id],
-    );
-
-    const experience = await db.query(
-      "SELECT * FROM experiences WHERE user_id = $1",
-      [user.rows[0].id],
-    );
-
-    const education = await db.query(
-      "SELECT * FROM educations WHERE user_id = $1",
-      [user.rows[0].id],
-    );
-
-    const languages = await db.query(
-      "SELECT * FROM languages WHERE user_id = $1",
-      [user.rows[0].id],
-    );
-
-    if (user.rows.length === 0) {
-      return res.status(404).json({ message: "Job seeker not found" });
     }
 
-    const jobSeekerProfile = user.rows[0];
+    const [experience, education, languages] = await Promise.all([
+      db.query("SELECT * FROM experiences WHERE user_id = $1", [jobSeekerId]),
+      db.query("SELECT * FROM educations WHERE user_id = $1", [jobSeekerId]),
+      db.query("SELECT * FROM languages WHERE user_id = $1", [jobSeekerId]),
+    ]);
+
     return res.status(200).json({
       ...jobSeekerProfile,
       experiences: experience.rows,
@@ -98,7 +91,8 @@ export const updateJobSeekerProfile = async (req, res) => {
     phone_number,
     profile_image,
     professional_summary,
-    experience_years,
+    experience_level,
+    education_level,
     cv,
     skills,
     linkedin,
@@ -166,9 +160,13 @@ export const updateJobSeekerProfile = async (req, res) => {
     updates.push(`professional_summary = $${index++}`);
     values.push(professional_summary);
   }
-  if (experience_years) {
-    updates.push(`experience_years = $${index++}`);
-    values.push(experience_years);
+  if (experience_level) {
+    updates.push(`experience_level = $${index++}`);
+    values.push(experience_level);
+  }
+  if (education_level) {
+    updates.push(`education_level = $${index++}`);
+    values.push(education_level);
   }
   if (cv) {
     updates.push(`cv = $${index++}`);
@@ -277,34 +275,67 @@ export const getDashboardStats = async (req, res) => {
 export const getJobSeekerProfiles = async (req, res) => {
   const {
     professional_title,
-    experience_years,
+    experience_level,
     skill,
     gender,
     languages,
-    study_degree,
+    education_level,
     page = 1,
     limit = 10,
   } = req.query;
 
   try {
     const offset = (page - 1) * limit;
+    const conditions = [
+      "js.status = 'active'",
+      "js.professional_title IS NOT NULL AND js.professional_title != ''",
+      "js.experience_level IS NOT NULL AND js.experience_level != ''",
+      "js.education_level IS NOT NULL AND js.education_level != ''",
+      "js.gender IS NOT NULL AND js.gender != ''",
+    ];
+    const values = [];
+    let index = 1;
+
+    if (professional_title) {
+      conditions.push(`js.professional_title ILIKE $${index++}`);
+      values.push(`%${professional_title}%`);
+    }
+    if (experience_level) {
+      conditions.push(`js.experience_level = $${index++}`);
+      values.push(experience_level);
+    }
+    if (skill) {
+      conditions.push(`js.skills::text ILIKE $${index++}`);
+      values.push(`%${skill}%`);
+    }
+    if (gender) {
+      conditions.push(`js.gender = $${index++}`);
+      values.push(gender);
+    }
+    if (languages) {
+      conditions.push(
+        `js.id IN (SELECT job_seeker_id FROM languages WHERE language ILIKE $${index++})`,
+      );
+      values.push(`%${languages}%`);
+    }
+    if (education_level) {
+      conditions.push(`js.education_level = $${index++}`);
+      values.push(education_level);
+    }
+
+    const whereClause = conditions.join(" AND ");
+    const limitIdx = index++;
+    const offsetIdx = index++;
+    values.push(Number(limit), offset);
+
     const result = await db.query(
-      `SELECT users.*, jobseeker.* 
-      FROM users 
-      INNER JOIN jobseeker 
-      ON users.id = jobseeker.user_id 
-      WHERE jobseeker.status = 'active' 
-      AND jobseeker.professional_title ILIKE $3 AND jobseeker.experience_years >= $4 AND jobseeker.skills ILIKE $5 AND jobseeker.gender = $6 AND jobseeker.languages ILIKE $7 AND jobseeker.study_degree ILIKE $8 ORDER BY users.created_at DESC LIMIT $1 OFFSET $2`,
-      [
-        limit,
-        offset,
-        `%${professional_title}%`,
-        experience_years,
-        `%${skill}%`,
-        gender,
-        `%${languages}%`,
-        `%${study_degree}%`,
-      ],
+      `SELECT js.*, COALESCE(u.email, js.user_email) AS email
+       FROM job_seeker js
+       LEFT JOIN users u ON js.user_id = u.id
+       WHERE ${whereClause}
+       ORDER BY js.created_at DESC
+       LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
+      values,
     );
     return res.status(200).json(result.rows);
   } catch (error) {

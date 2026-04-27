@@ -1,11 +1,20 @@
 import { saveJobPost, unsaveJobPost } from "@/features/auth/userSlice";
-import { Bookmark, Briefcase, Building2, Clock, Globe, MapPin } from "lucide-react";
+import {
+  Bookmark,
+  Briefcase,
+  Building2,
+  Clock,
+  Globe,
+  MapPin,
+} from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
-import moment from "moment";
+import moment from "moment/min/moment-with-locales";
 import { useTranslation } from "react-i18next";
+import i18n from "@/i18n/i18n";
+import addressData from "@/utils/address.json";
 
 function JobPostCard({ job }: { job: any }) {
   const navigate = useNavigate();
@@ -17,6 +26,14 @@ function JobPostCard({ job }: { job: any }) {
   );
   const { t } = useTranslation("jobs");
   const { t: tc } = useTranslation("common");
+
+  const translateLocation = (location: string) => {
+    if (i18n.language !== "ar") return location;
+    const entry = addressData.find(
+      (a) => a.label.toLowerCase() === location.toLowerCase(),
+    );
+    return entry ? entry.labelAr : location;
+  };
 
   const handleSave = async (job: any) => {
     setOnSaving(true);
@@ -138,26 +155,34 @@ function JobPostCard({ job }: { job: any }) {
 
       {/* Meta chips */}
       <div className="flex flex-wrap gap-2">
-        {[
-          { icon: MapPin, label: job.location },
-          { icon: Globe, label: job.job_mode },
-          { icon: Briefcase, label: job.job_type },
-        ].map(({ icon: Icon, label }) => (
-          <span
-            key={label}
-            className="inline-flex items-center gap-1.5 text-[12px] text-gray-500 bg-gray-50 rounded-md px-2.5 py-1"
-          >
-            <Icon className="w-3 h-3" />
-            {label}
-          </span>
-        ))}
+        <span
+          key={1}
+          className="inline-flex items-center gap-1.5 text-[12px] text-gray-500 bg-gray-50 rounded-md px-2.5 py-1"
+        >
+          <MapPin className="w-3 h-3" />
+          {translateLocation(job.location)}
+        </span>
+        <span
+          key={2}
+          className="inline-flex items-center gap-1.5 text-[12px] text-gray-500 bg-gray-50 rounded-md px-2.5 py-1"
+        >
+          <Globe className="w-3 h-3" />
+          {t(job.job_mode)}
+        </span>
+        <span
+          key={3}
+          className="inline-flex items-center gap-1.5 text-[12px] text-gray-500 bg-gray-50 rounded-md px-2.5 py-1"
+        >
+          <Briefcase className="w-3 h-3" />
+          {t(job.job_type)}
+        </span>
       </div>
 
       {/* Footer */}
       <div className="flex items-center justify-between pt-3 border-t border-gray-100">
         <span className="flex items-center text-[12px] font-medium text-sky-700 bg-sky-50 rounded-md px-2.5 py-1">
           <Clock className="w-3 h-3 inline-block ltr:mr-2 rtl:ml-2" />
-          {moment(job.created_at).fromNow()}
+          {moment(job.created_at).locale(i18n.language).fromNow()}
         </span>
         <button
           onClick={() => navigate(`/jobPost/${job.id}`)}
