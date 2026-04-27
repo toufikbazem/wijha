@@ -29,7 +29,7 @@ export default function PlansList() {
 
   const fetchPlans = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/v1/admin/plans", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/plans`, {
         credentials: "include",
       });
       const data = await res.json();
@@ -77,14 +77,14 @@ export default function PlansList() {
 
     try {
       if (editingId) {
-        await fetch(`http://localhost:5000/api/v1/admin/plans/${editingId}`, {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/plans/${editingId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify(payload),
         });
       } else {
-        await fetch("http://localhost:5000/api/v1/admin/plans", {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/plans`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -101,7 +101,7 @@ export default function PlansList() {
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this plan?")) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/v1/admin/plans/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/plans/${id}`, {
         method: "DELETE",
         credentials: "include",
       });

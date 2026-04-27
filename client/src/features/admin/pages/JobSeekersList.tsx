@@ -51,7 +51,7 @@ export default function JobSeekersList() {
       if (statusFilter) params.set("status", statusFilter);
 
       const res = await fetch(
-        `http://localhost:5000/api/v1/admin/job-seekers?${params}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/admin/job-seekers?${params}`,
         { credentials: "include" },
       );
       const data = await res.json();
@@ -77,7 +77,7 @@ export default function JobSeekersList() {
   const handleStatusChange = async (jobseekerId: string, newStatus: string) => {
     try {
       await fetch(
-        `http://localhost:5000/api/v1/admin/job-seekers/${jobseekerId}/status`,
+        `${import.meta.env.VITE_API_URL}/api/v1/admin/job-seekers/${jobseekerId}/status`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -94,7 +94,7 @@ export default function JobSeekersList() {
   const handleDelete = async () => {
     if (!deleteModal) return;
     try {
-      await fetch(`http://localhost:5000/api/v1/admin/job-seekers/${deleteModal.id}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/job-seekers/${deleteModal.id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -151,7 +151,7 @@ export default function JobSeekersList() {
 
     setCreateLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/v1/admin/job-seekers", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/job-seekers`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

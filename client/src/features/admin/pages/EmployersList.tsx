@@ -20,7 +20,7 @@ export default function EmployersList() {
       if (statusFilter) params.set("status", statusFilter);
 
       const res = await fetch(
-        `http://localhost:5000/api/v1/admin/employers?${params}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/admin/employers?${params}`,
         { credentials: "include" },
       );
       const data = await res.json();
@@ -46,7 +46,7 @@ export default function EmployersList() {
   const handleStatusChange = async (userId: string, newStatus: string) => {
     try {
       await fetch(
-        `http://localhost:5000/api/v1/admin/employers/${userId}/status`,
+        `${import.meta.env.VITE_API_URL}/api/v1/admin/employers/${userId}/status`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -63,7 +63,7 @@ export default function EmployersList() {
   const handleDelete = async (userId: string) => {
     if (!confirm("Are you sure you want to delete this employer?")) return;
     try {
-      await fetch(`http://localhost:5000/api/v1/admin/employers/${userId}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/employers/${userId}`, {
         method: "DELETE",
         credentials: "include",
       });

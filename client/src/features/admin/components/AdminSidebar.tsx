@@ -44,7 +44,7 @@ export default function AdminSidebar({
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5000/api/v1/auth/logout", {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/logout`, {
         method: "POST",
         credentials: "include",
       });

@@ -32,7 +32,7 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/v1/admin/job-posts/${jobId}`, { credentials: "include" });
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/job-posts/${jobId}`, { credentials: "include" });
         const data = await res.json();
         setJob(data);
       } catch (error) {
@@ -46,7 +46,7 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
 
   const handleStatusChange = async (newStatus: string, reason?: string) => {
     try {
-      await fetch(`http://localhost:5000/api/v1/admin/job-posts/${jobId}/status`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/job-posts/${jobId}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -90,7 +90,7 @@ export default function JobPostDetails({ jobId }: { jobId: string }) {
 
   const handlePermanentDelete = async () => {
     try {
-      await fetch(`http://localhost:5000/api/v1/admin/job-posts/${jobId}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/job-posts/${jobId}`, {
         method: "DELETE",
         credentials: "include",
       });

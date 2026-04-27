@@ -11,7 +11,7 @@ export default function EmployerDetails({ userId }: { userId: string }) {
     const fetchProfile = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/v1/admin/employers/${userId}`,
+          `${import.meta.env.VITE_API_URL}/api/v1/admin/employers/${userId}`,
           { credentials: "include" },
         );
         const data = await res.json();
@@ -28,7 +28,7 @@ export default function EmployerDetails({ userId }: { userId: string }) {
   const handleStatusChange = async (newStatus: string) => {
     try {
       await fetch(
-        `http://localhost:5000/api/v1/admin/employers/${userId}/status`,
+        `${import.meta.env.VITE_API_URL}/api/v1/admin/employers/${userId}/status`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },

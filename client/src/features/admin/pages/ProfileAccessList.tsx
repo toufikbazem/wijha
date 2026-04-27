@@ -16,7 +16,7 @@ export default function ProfileAccessList() {
       if (statusFilter) params.set("status", statusFilter);
 
       const res = await fetch(
-        `http://localhost:5000/api/v1/admin/profile-access?${params}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/admin/profile-access?${params}`,
         { credentials: "include" },
       );
       const data = await res.json();

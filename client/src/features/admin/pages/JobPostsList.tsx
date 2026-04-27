@@ -67,7 +67,7 @@ export default function JobPostsList() {
       if (search) params.set("search", search);
       if (statusFilter) params.set("status", statusFilter);
 
-      const res = await fetch(`http://localhost:5000/api/v1/admin/job-posts?${params}`, { credentials: "include" });
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/job-posts?${params}`, { credentials: "include" });
       const data = await res.json();
       setJobPosts(data.jobPosts || []);
       setTotal(data.total || 0);
@@ -88,7 +88,7 @@ export default function JobPostsList() {
 
   const handleStatusChange = async (jobId: string, newStatus: string, reason?: string) => {
     try {
-      await fetch(`http://localhost:5000/api/v1/admin/job-posts/${jobId}/status`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/job-posts/${jobId}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -135,7 +135,7 @@ export default function JobPostsList() {
 
   const handlePermanentDelete = async (jobId: string) => {
     try {
-      await fetch(`http://localhost:5000/api/v1/admin/job-posts/${jobId}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/job-posts/${jobId}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -151,7 +151,7 @@ export default function JobPostsList() {
     if (!q.trim()) { setEmployerResults([]); return; }
     try {
       const res = await fetch(
-        `http://localhost:5000/api/v1/admin/employers?search=${encodeURIComponent(q)}&limit=10`,
+        `${import.meta.env.VITE_API_URL}/api/v1/admin/employers?search=${encodeURIComponent(q)}&limit=10`,
         { credentials: "include" },
       );
       const data = await res.json();
@@ -186,7 +186,7 @@ export default function JobPostsList() {
       const body: any = { ...createForm, is_anonymous: isAnonymous };
       if (!isAnonymous && selectedEmployer) body.employer_id = selectedEmployer.employer_id;
       for (const key of Object.keys(body)) { if (body[key] === "") delete body[key]; }
-      const res = await fetch("http://localhost:5000/api/v1/admin/job-posts", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/job-posts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

@@ -27,7 +27,7 @@ export default function SubscriptionsList() {
       if (statusFilter) params.set("status", statusFilter);
 
       const res = await fetch(
-        `http://localhost:5000/api/v1/admin/subscriptions?${params}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/admin/subscriptions?${params}`,
         { credentials: "include" },
       );
       const data = await res.json();
@@ -53,7 +53,7 @@ export default function SubscriptionsList() {
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
       await fetch(
-        `http://localhost:5000/api/v1/admin/subscriptions/${id}/status`,
+        `${import.meta.env.VITE_API_URL}/api/v1/admin/subscriptions/${id}/status`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -71,7 +71,7 @@ export default function SubscriptionsList() {
     if (!extendModal) return;
     try {
       await fetch(
-        `http://localhost:5000/api/v1/admin/subscriptions/${extendModal.id}/extend`,
+        `${import.meta.env.VITE_API_URL}/api/v1/admin/subscriptions/${extendModal.id}/extend`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -90,7 +90,7 @@ export default function SubscriptionsList() {
     if (!customModal) return;
     try {
       await fetch(
-        `http://localhost:5000/api/v1/admin/subscriptions/${customModal.id}/custom`,
+        `${import.meta.env.VITE_API_URL}/api/v1/admin/subscriptions/${customModal.id}/custom`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
