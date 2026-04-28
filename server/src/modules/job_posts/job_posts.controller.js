@@ -43,11 +43,21 @@ export const createJobPost = async (req, res) => {
       const employerData = employer.rows[0];
 
       if (!employerData.is_email_verified) {
-        return res.status(403).json({ message: "Email not verified" });
+        return res
+          .status(403)
+          .json({
+            code: "EMAIL_NOT_VERIFIED",
+            message: "Email not verified",
+          });
       }
 
       if (employerData.status !== "active") {
-        return res.status(403).json({ message: "Employer profile not active" });
+        return res
+          .status(403)
+          .json({
+            code: "EMPLOYER_NOT_ACTIVE",
+            message: "Employer profile not active",
+          });
       }
     }
 
@@ -56,7 +66,9 @@ export const createJobPost = async (req, res) => {
       const maxDate = new Date();
       maxDate.setMonth(maxDate.getMonth() + 3);
       if (new Date(deadline) > maxDate) {
-        return res.status(400).json({ message: "Deadline cannot be more than 3 months from now" });
+        return res
+          .status(400)
+          .json({ message: "Deadline cannot be more than 3 months from now" });
       }
     }
 
@@ -225,7 +237,9 @@ export const updateJobPost = async (req, res) => {
       const maxDate = new Date();
       maxDate.setMonth(maxDate.getMonth() + 3);
       if (new Date(deadline) > maxDate) {
-        return res.status(400).json({ message: "Deadline cannot be more than 3 months from now" });
+        return res
+          .status(400)
+          .json({ message: "Deadline cannot be more than 3 months from now" });
       }
     }
 
@@ -391,7 +405,10 @@ export const updateJobPostStatus = async (req, res) => {
       }
     }
 
-    const reasonValue = (newStatus === "Rejected" || newStatus === "Suspended") ? (status_reason || null) : null;
+    const reasonValue =
+      newStatus === "Rejected" || newStatus === "Suspended"
+        ? status_reason || null
+        : null;
 
     const result = await db.query(
       `UPDATE job_post SET status = $1, status_reason = $2 WHERE id = $3 RETURNING *`,

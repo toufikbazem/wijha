@@ -37,6 +37,7 @@ function DashJobPostsPagination({
   return (
     <div className="flex justify-center items-center gap-3 p-4 w-full">
       <button
+        type="button"
         onClick={() => handlePageChange(page - 1)}
         disabled={page === 1}
         className="min-w-[36px] h-9 px-2 rounded-lg border border-gray-200 bg-white text-gray-500
@@ -54,23 +55,24 @@ function DashJobPostsPagination({
             ···
           </span>
         ) : (
-          <>
-            <button
-              onClick={() => handlePageChange(item)}
-              className={`px-3 py-2 rounded-lg text-[12px] border transition
+          <button
+            key={`page-${item}`}
+            type="button"
+            onClick={() => handlePageChange(item as number)}
+            className={`px-3 py-2 rounded-lg text-[12px] border transition
         ${
           item === page
             ? "bg-primary-500 text-white"
             : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
         }`}
-            >
-              {String(item).padStart(2, "0")}
-            </button>
-          </>
+          >
+            {String(item).padStart(2, "0")}
+          </button>
         ),
       )}
 
       <button
+        type="button"
         onClick={() => handlePageChange(page + 1)}
         disabled={page === totalPages}
         className="min-w-[36px] h-9 px-2 rounded-lg border border-gray-200 bg-white text-gray-500

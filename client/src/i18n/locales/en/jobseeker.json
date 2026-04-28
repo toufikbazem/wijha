@@ -163,5 +163,7 @@
   "linkedinPlaceholder": "Enter your LinkedIn profile",
   "githubPlaceholder": "Enter your GitHub profile",
   "portfolioPlaceholder": "Enter your portfolio website",
-  "anonymousCompany": "Anonymous Company"
+  "anonymousCompany": "Anonymous Company",
+  "emailNotVerifiedError": "Please verify your email to confirm your account.",
+  "employerNotActiveError": "Your account is inactive. Please contact support for more information."
 }

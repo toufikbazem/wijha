@@ -5,10 +5,15 @@ import MyAccessCard from "./MyAccessCard";
 import DashJobPostsPagination from "./DashJobPostsPagination";
 import { useTranslation } from "react-i18next";
 
-export default function MyAccessList() {
+export default function MyAccessList({
+  page,
+  setPage,
+}: {
+  page: number;
+  setPage: (page: number) => void;
+}) {
   const [loading, setLoading] = useState(true);
   const [profiles, setProfiles] = useState<any[]>([]);
-  const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const limit = 9;
   const totalPages = Math.max(1, Math.ceil(total / limit));

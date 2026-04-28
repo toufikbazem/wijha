@@ -73,6 +73,10 @@ const DashCreateJobPost = () => {
             onClick: () => navigate("/dashboard?tab=subscription"),
           },
         });
+      } else if (info.code === "EMAIL_NOT_VERIFIED") {
+        toast.error(t("emailNotVerifiedError"));
+      } else if (info.code === "EMPLOYER_NOT_ACTIVE") {
+        toast.error(t("employerNotActiveError"));
       } else {
         toast.error(t("failedCreateJobPost"));
       }

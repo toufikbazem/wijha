@@ -266,5 +266,7 @@
   "jobTitlePlaceholder": "e.g. Software Engineer",
   "e.g.,": "e.g.,",
   "foundingYear": "Founding Year",
-  "email": "Email"
+  "email": "Email",
+  "emailNotVerifiedError": "Please verify your email to confirm your account.",
+  "employerNotActiveError": "Your account is inactive. Please contact support for more information."
 }

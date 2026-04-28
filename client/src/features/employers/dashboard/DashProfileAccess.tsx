@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 
 export default function DashProfileAccess() {
   const [activeTab, setActiveTab] = useState<"search" | "myAccess">("search");
+  const [searchPage, setSearchPage] = useState(1);
+  const [myAccessPage, setMyAccessPage] = useState(1);
 
   const { t } = useTranslation("employer");
 
@@ -47,8 +49,12 @@ export default function DashProfileAccess() {
         </div>
 
         {/* Tab Content */}
-        {activeTab === "search" && <ProfileSearch />}
-        {activeTab === "myAccess" && <MyAccessList />}
+        <div className={activeTab === "search" ? "" : "hidden"}>
+          <ProfileSearch page={searchPage} setPage={setSearchPage} />
+        </div>
+        <div className={activeTab === "myAccess" ? "" : "hidden"}>
+          <MyAccessList page={myAccessPage} setPage={setMyAccessPage} />
+        </div>
       </div>
     </div>
   );

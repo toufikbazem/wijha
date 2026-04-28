@@ -14,10 +14,15 @@ import { profileSearchFilterSchema } from "../schema";
 import ProfileSearchCard from "./ProfileSearchCard";
 import DashJobPostsPagination from "./DashJobPostsPagination";
 
-export default function ProfileSearch() {
+export default function ProfileSearch({
+  page,
+  setPage,
+}: {
+  page: number;
+  setPage: (page: number) => void;
+}) {
   const [loading, setLoading] = useState(true);
   const [profiles, setProfiles] = useState<any[]>([]);
-  const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [filterOpen, setFilterOpen] = useState(false);
   const { t } = useTranslation("employer");
@@ -75,8 +80,11 @@ export default function ProfileSearch() {
   }, [page]);
 
   const onSubmit = (data: z.infer<typeof profileSearchFilterSchema>) => {
-    setPage(1);
-    fetchProfiles(data);
+    if (page !== 1) {
+      setPage(1);
+    } else {
+      fetchProfiles(data);
+    }
   };
 
   const onAccessGranted = (jobSeekerId: string) => {
