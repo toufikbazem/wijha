@@ -58,6 +58,10 @@ export const employerSchema = z
       .string()
       .min(1, "Email is required.")
       .email("Invalid email address"),
+    foundingYear: z
+      .string()
+      .min(1, "Founding year is required.")
+      .regex(/^\d{4}$/, "Invalid founding year"),
     password: z
       .string()
       .min(1, "Password is required.")

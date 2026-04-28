@@ -83,6 +83,7 @@ function RegisterForm({
             size: "",
             industry: "",
             address: "",
+            foundingYear: "",
             email: "",
             password: "",
             confirmPassword: "",

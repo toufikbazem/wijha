@@ -18,6 +18,7 @@ const register = async (req, res) => {
     address,
     phoneNumber,
     companyName,
+    foundingYear,
     industry,
     size,
   } = req.body;
@@ -37,7 +38,15 @@ const register = async (req, res) => {
         .json({ message: "All fields are required for job seekers." });
     }
   } else if (role === "employer") {
-    if (!email || !password || !companyName || !industry || !size || !address) {
+    if (
+      !email ||
+      !password ||
+      !companyName ||
+      !industry ||
+      !size ||
+      !address ||
+      !foundingYear
+    ) {
       res
         .status(400)
         .json({ message: "All fields are required for employers." });
@@ -73,12 +82,27 @@ const register = async (req, res) => {
     if (role === "jobseeker") {
       await db.query(
         "INSERT INTO job_seeker (user_id, first_name, last_name, professional_title, address, phone_number) VALUES ($1, $2, $3, $4, $5, $6)",
-        [newUser.rows[0].id, firstName, lastName, professionalTitle, address, phoneNumber],
+        [
+          newUser.rows[0].id,
+          firstName,
+          lastName,
+          professionalTitle,
+          address,
+          phoneNumber,
+        ],
       );
     } else if (role === "employer") {
       const employerResult = await db.query(
-        "INSERT INTO employers (user_id, company_name, industry, size, address, phone_number) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
-        [newUser.rows[0].id, companyName, industry, size, address, phoneNumber],
+        "INSERT INTO employers (user_id, company_name, industry, size, address, phone_number, founding_year) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+        [
+          newUser.rows[0].id,
+          companyName,
+          industry,
+          size,
+          address,
+          phoneNumber,
+          foundingYear,
+        ],
       );
 
       // Auto-assign Free plan to new employer
@@ -138,13 +162,20 @@ const login = async (req, res) => {
     }
 
     if (user.rows[0].role === "employer") {
-      const emp = await db.query("SELECT status FROM employers WHERE user_id = $1", [user.rows[0].id]);
+      const emp = await db.query(
+        "SELECT status FROM employers WHERE user_id = $1",
+        [user.rows[0].id],
+      );
       const empStatus = emp.rows[0]?.status;
       if (empStatus === "deactivated") {
-        return res.status(403).json({ message: "Account deactivated, contact support" });
+        return res
+          .status(403)
+          .json({ message: "Account deactivated, contact support" });
       }
       if (empStatus === "suspended") {
-        return res.status(403).json({ message: "Account suspended, contact support" });
+        return res
+          .status(403)
+          .json({ message: "Account suspended, contact support" });
       }
     }
 

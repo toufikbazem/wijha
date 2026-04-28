@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { companySize, industries } from "@/utils/data";
-import { Building2, Factory, Phone, Users } from "lucide-react";
+import { Building2, Calendar, Factory, Phone, Users } from "lucide-react";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -72,13 +72,37 @@ function EmployerRegisterForm({ form }: { form: any }) {
         control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
-            <FieldLabel className="input-label">{t("address", { ns: "common" })}</FieldLabel>
+            <FieldLabel className="input-label">
+              {t("address", { ns: "common" })}
+            </FieldLabel>
             <AddressCombobox
               value={field.value}
               onChange={field.onChange}
               invalid={fieldState.invalid}
               variant="default"
             />
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+          </Field>
+        )}
+      />
+
+      {/* founding year */}
+      <Controller
+        name="foundingYear"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <Field data-invalid={fieldState.invalid}>
+            <FieldLabel className="input-label">{t("foundingYear")}</FieldLabel>
+            <div className="relative">
+              <Calendar className="input-icon" size={20} />
+              <Input
+                type="text"
+                className="input"
+                {...field}
+                aria-invalid={fieldState.invalid}
+                placeholder="YYYY"
+              />
+            </div>
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
         )}
@@ -91,7 +115,9 @@ function EmployerRegisterForm({ form }: { form: any }) {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel className="input-label">{t("industry", { ns: "common" })}</FieldLabel>
+              <FieldLabel className="input-label">
+                {t("industry", { ns: "common" })}
+              </FieldLabel>
               <div className="relative">
                 <Factory className="input-icon" size={20} />
                 <Select
@@ -103,7 +129,9 @@ function EmployerRegisterForm({ form }: { form: any }) {
                     aria-invalid={fieldState.invalid}
                     className="input"
                   >
-                    <SelectValue placeholder={t("selectIndustry", { ns: "common" })} />
+                    <SelectValue
+                      placeholder={t("selectIndustry", { ns: "common" })}
+                    />
                   </SelectTrigger>
                   <SelectContent className="p-3" position="item-aligned">
                     {industries.map((industry) => (
@@ -125,7 +153,9 @@ function EmployerRegisterForm({ form }: { form: any }) {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel className="input-label">{t("companySize")}</FieldLabel>
+              <FieldLabel className="input-label">
+                {t("companySize")}
+              </FieldLabel>
               <div className="relative">
                 <Users className="input-icon" size={20} />
                 <Select
