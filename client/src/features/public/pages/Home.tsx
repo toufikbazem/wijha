@@ -245,7 +245,7 @@ export default function JobSearchLanding() {
               <button
                 key={category.id}
                 onClick={() => navigate("/jobSearch")}
-                className="px-6 py-3 rounded-xl font-semibold transition-all bg-white text-gray-700 hover:shadow-md"
+                className="first:bg-linear-to-br from-primary-500 via-primary-400 to-primary-700 px-6 py-3 rounded-xl font-semibold transition-all bg-white text-gray-700 hover:shadow-md"
               >
                 {category.name}
               </button>
@@ -451,15 +451,15 @@ export default function JobSearchLanding() {
           </div>
         </div>
         {/* Infinite marquee strip */}
-        <div dir={isRTL ? "rtl" : "ltr"} className="relative w-full">
+        <div dir="ltr" className="relative w-full overflow-hidden">
           <div
-            className={`pointer-events-none absolute inset-s-0 top-0 h-full w-24 z-10 ${isRTL ? "bg-gradient-to-l" : "bg-gradient-to-r"} from-white to-transparent`}
+            className="pointer-events-none absolute left-0 top-0 h-full w-24 z-10 bg-gradient-to-r from-white to-transparent"
           />
           <div
-            className={`pointer-events-none absolute inset-e-0 top-0 h-full w-24 z-10 ${isRTL ? "bg-gradient-to-r" : "bg-gradient-to-l"} from-white to-transparent`}
+            className="pointer-events-none absolute right-0 top-0 h-full w-24 z-10 bg-gradient-to-l from-white to-transparent"
           />
           <div
-            className={`flex gap-6 min-w-max ${isRTL ? "animate-marquee-rtl" : "animate-marquee"}`}
+            className={`flex gap-6 w-max ${isRTL ? "animate-marquee-rtl" : "animate-marquee"}`}
           >
             {[
               img8,

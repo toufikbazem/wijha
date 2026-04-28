@@ -22,6 +22,31 @@ import { logout } from "@/features/auth/userSlice";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n/i18n";
 
+const LANGUAGES = [
+  { code: "en", flag: "🇬🇧", label: "EN" },
+  { code: "fr", flag: "🇫🇷", label: "FR" },
+  { code: "ar", flag: "🇩🇿", label: "AR" },
+];
+
+function LanguageSwitcher() {
+  const inactive = LANGUAGES.filter((l) => l.code !== i18n.language);
+
+  return (
+    <div className="flex items-center gap-1">
+      {inactive.map((lang) => (
+        <button
+          key={lang.code}
+          onClick={() => i18n.changeLanguage(lang.code)}
+          title={lang.label}
+          className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[#008CBA]/10 transition-all text-xl leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[#008CBA]"
+        >
+          {lang.flag}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function Header() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -63,7 +88,7 @@ function Header() {
             <img src={img} alt="Logo" className="h-16" />
             <img src={img1} alt="Logo" className="w-20" />
           </div>
-          <div className="hidden lg:flex space-x-8">
+          <div className="hidden lg:flex items-center space-x-8">
             <Link to="/" className={navLinkClass("/")}>
               {t("home")}
             </Link>
@@ -85,6 +110,7 @@ function Header() {
             <Link to="/about" className={navLinkClass("/about")}>
               {t("navAbout")}
             </Link>
+            <LanguageSwitcher />
           </div>
           {user ? (
             <DropdownMenu dir={i18n.dir()}>
@@ -216,6 +242,26 @@ function Header() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-gray-200" />
+                  <div className="px-1 py-1">
+                    <div className="text-xs text-gray-400 px-2 pb-1">
+                      {t("footerLanguage")}
+                    </div>
+                    <div className="flex gap-1 px-1">
+                      {LANGUAGES.filter((l) => l.code !== i18n.language).map(
+                        (lang) => (
+                          <button
+                            key={lang.code}
+                            onClick={() => i18n.changeLanguage(lang.code)}
+                            title={lang.label}
+                            className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[#008CBA]/10 transition-all text-xl leading-none"
+                          >
+                            {lang.flag}
+                          </button>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator className="bg-gray-200" />
                 </div>
                 <DropdownMenuItem
                   onClick={() => navigate("/dashboard?tab=dash")}
@@ -250,18 +296,20 @@ function Header() {
             </DropdownMenu>
           ) : (
             <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate("/login")}
-                className="hover:text-white box-border hidden lg:block hover:bg-[#008CBA] text-[#008CBA] border-2 border-[#008CBA] rounded-xl px-4 py-2 font-medium transition"
-              >
-                {t("login")}
-              </button>
-              <button
-                onClick={() => navigate("/register")}
-                className="hidden lg:block px-4 py-2 rounded-xl text-white font-semibold bg-[#008CBA] hover:bg-[#00668C] transition-all"
-              >
-                {t("navGetStarted")}
-              </button>
+              <div className="hidden lg:flex items-center gap-3">
+                <button
+                  onClick={() => navigate("/login")}
+                  className="hover:text-white box-border hover:bg-[#008CBA] text-[#008CBA] border-2 border-[#008CBA] rounded-xl px-4 py-2 font-medium transition"
+                >
+                  {t("login")}
+                </button>
+                <button
+                  onClick={() => navigate("/register")}
+                  className="px-4 py-2 rounded-xl text-white font-semibold bg-[#008CBA] hover:bg-[#00668C] transition-all"
+                >
+                  {t("navGetStarted")}
+                </button>
+              </div>
               <DropdownMenu dir={i18n.dir()}>
                 <DropdownMenuTrigger asChild>
                   <button className="lg:hidden p-2 rounded-lg hover:bg-gray-100 cursor-pointer">
@@ -301,6 +349,26 @@ function Header() {
                       {t("navAbout")}
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-gray-200" />
+                  <div className="px-1 py-1">
+                    <div className="text-xs text-gray-400 px-2 pb-1">
+                      {t("footerLanguage")}
+                    </div>
+                    <div className="flex gap-1 px-1">
+                      {LANGUAGES.filter((l) => l.code !== i18n.language).map(
+                        (lang) => (
+                          <button
+                            key={lang.code}
+                            onClick={() => i18n.changeLanguage(lang.code)}
+                            title={lang.label}
+                            className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[#008CBA]/10 transition-all text-xl leading-none"
+                          >
+                            {lang.flag}
+                          </button>
+                        ),
+                      )}
+                    </div>
+                  </div>
                   <DropdownMenuSeparator className="bg-gray-200" />
                   <DropdownMenuItem
                     onClick={() => navigate("/login")}

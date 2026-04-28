@@ -39,9 +39,11 @@ function JobPostsList({ loading, jobs }: { loading: boolean; jobs: any }) {
 
       {!loading && (
         <div className="flex flex-col gap-4">
-          {jobs.map((job: any) => (
-            <JobPostCard key={job.id} job={job} />
-          ))}
+          {jobs
+            .filter((job: any) => job.status === "Active")
+            .map((job: any) => (
+              <JobPostCard key={job.id} job={job} />
+            ))}
         </div>
       )}
 

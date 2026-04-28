@@ -22,6 +22,7 @@ import JobPostsList from "../components/JobPostsList";
 import JobPostsFilter from "../components/JobPostsFilter";
 import Header from "@/features/public/components/Header";
 import Footer from "@/features/public/components/Footer";
+import DashJobPostsPagination from "@/features/employers/components/DashJobPostsPagination";
 
 const JobSearchPage = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const JobSearchPage = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/v1/job-posts?page=${page}&limit=${limit}${filters?.search ? `&search=${filters.search}` : ""}${filters?.location ? `&location=${filters.location}` : ""}${filters?.job_type ? `&job_type=${filters.job_type}` : ""}${filters?.job_mode ? `&job_mode=${filters.job_mode}` : ""}${filters?.experience_level ? `&experience_level=${filters.experience_level}` : ""}${filters?.education_level ? `&education_level=${filters.education_level}` : ""}${filters?.industry ? `&industry=${encodeURIComponent(filters.industry)}` : ""}${filters?.status ? `&status=${filters.status}` : ""}${filters?.sortBy ? `&sortBy=${filters.sortBy}` : ""}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/job-posts?page=${page}&limit=${limit}&status=Active${filters?.search ? `&search=${filters.search}` : ""}${filters?.location ? `&location=${filters.location}` : ""}${filters?.job_type ? `&job_type=${filters.job_type}` : ""}${filters?.job_mode ? `&job_mode=${filters.job_mode}` : ""}${filters?.experience_level ? `&experience_level=${filters.experience_level}` : ""}${filters?.education_level ? `&education_level=${filters.education_level}` : ""}${filters?.industry ? `&industry=${encodeURIComponent(filters.industry)}` : ""}${filters?.sortBy ? `&sortBy=${filters.sortBy}` : ""}`,
         {
           method: "GET",
           credentials: "include",
@@ -77,7 +78,7 @@ const JobSearchPage = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof jobPostsFilterSchema>) => {
-    console.log(data);
+    setPage(1);
     fetchJobs(data);
   };
 
@@ -95,7 +96,16 @@ const JobSearchPage = () => {
           />
 
           {/* Premium Job Listings */}
-          <JobPostsList jobs={jobs} loading={loading} />
+          <div className="flex-1 min-w-0 flex flex-col">
+            <JobPostsList jobs={jobs} loading={loading} />
+            {totalPages > 1 && (
+              <DashJobPostsPagination
+                totalPages={totalPages}
+                page={page}
+                setPage={setPage}
+              />
+            )}
+          </div>
         </div>
       </div>
       <Footer />
