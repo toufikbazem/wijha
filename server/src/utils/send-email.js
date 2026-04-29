@@ -9,7 +9,9 @@ export const sendEmail = async ({ to, subject, html }) => {
     },
   });
 
-  return transporter.sendMail({
+  console.log(to)
+
+  return await transporter.sendMail({
     from: `wijha.emploi@gmail.com`,
     to,
     subject,
