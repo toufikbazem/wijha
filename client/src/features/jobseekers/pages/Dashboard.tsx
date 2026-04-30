@@ -7,8 +7,10 @@ import DashSaved from "../dashboard/DashSaved";
 import DashApplications from "../dashboard/DashApplications";
 import DashSettings from "../dashboard/DashSettings";
 import DashMain from "../dashboard/DashMain";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 function Dashboard() {
+  useDocumentTitle("meta.title.dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const [tab, setTab] = useState("dash");

@@ -10,7 +10,7 @@ export const sendEmail = async ({ to, subject, html }) => {
   });
 
   return transporter.sendMail({
-    from: `toufikbazem@gmail.com`,
+    from: `wijha.emploi@gmail.com`,
     to,
     subject,
     html,

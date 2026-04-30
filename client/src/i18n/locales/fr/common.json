@@ -101,5 +101,22 @@
   "Associate Degree": "Diplôme d'associé",
   "Bachelor's Degree": "Licence",
   "Master's Degree": "Master",
-  "Doctorate": "Doctorat"
+  "Doctorate": "Doctorat",
+  "meta": {
+    "title": {
+      "home": "Accueil",
+      "login": "Connexion",
+      "register": "Inscription",
+      "forgotPassword": "Mot de passe oublié",
+      "resetPassword": "Réinitialiser le mot de passe",
+      "verifyEmail": "Vérifier l'e-mail",
+      "jobSearch": "Recherche d'emploi",
+      "jobPost": "Offre d'emploi",
+      "companyProfile": "Profil de l'entreprise",
+      "about": "À propos",
+      "contact": "Contactez-nous",
+      "dashboard": "Tableau de bord",
+      "admin": "Administration"
+    }
+  }
 }

@@ -12,8 +12,10 @@ import {
 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 function AboutUs() {
+  useDocumentTitle("meta.title.about");
   const { t } = useTranslation("public");
 
   const missionItems = [

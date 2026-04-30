@@ -41,8 +41,10 @@ import Footer from "@/features/public/components/Footer";
 import Header from "@/features/public/components/Header";
 import i18n from "@/i18n/i18n";
 import addressData from "@/utils/address.json";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 export default function JobPosts() {
+  useDocumentTitle("meta.title.jobPost");
   const { user } = useSelector((state: any) => state.user);
   const [data, setData] = useState<any>(null);
   const [applied, setApplied] = useState(false);

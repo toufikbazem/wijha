@@ -101,5 +101,22 @@
   "Associate Degree": "درجة الزمالة",
   "Bachelor's Degree": "درجة البكالوريوس",
   "Master's Degree": "درجة الماجستير",
-  "Doctorate": "درجة الدكتوراه"
+  "Doctorate": "درجة الدكتوراه",
+  "meta": {
+    "title": {
+      "home": "الرئيسية",
+      "login": "تسجيل الدخول",
+      "register": "إنشاء حساب",
+      "forgotPassword": "نسيت كلمة المرور",
+      "resetPassword": "إعادة تعيين كلمة المرور",
+      "verifyEmail": "التحقق من البريد الإلكتروني",
+      "jobSearch": "البحث عن وظيفة",
+      "jobPost": "إعلان وظيفة",
+      "companyProfile": "ملف الشركة",
+      "about": "من نحن",
+      "contact": "اتصل بنا",
+      "dashboard": "لوحة التحكم",
+      "admin": "الإدارة"
+    }
+  }
 }

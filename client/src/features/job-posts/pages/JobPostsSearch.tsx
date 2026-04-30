@@ -23,8 +23,10 @@ import JobPostsFilter from "../components/JobPostsFilter";
 import Header from "@/features/public/components/Header";
 import Footer from "@/features/public/components/Footer";
 import DashJobPostsPagination from "@/features/employers/components/DashJobPostsPagination";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const JobSearchPage = () => {
+  useDocumentTitle("meta.title.jobSearch");
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const dispatch = useDispatch();

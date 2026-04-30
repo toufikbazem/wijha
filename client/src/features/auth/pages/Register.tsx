@@ -5,8 +5,10 @@ import RegisterForm from "../components/RegisterForm";
 import { Link } from "react-router";
 import SendVerifyEmail from "../components/SendVerifyEmail";
 import { useTranslation } from "react-i18next";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 function Register() {
+  useDocumentTitle("meta.title.register");
   const [accountType, setAccountType] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [verifyEmail, setVerifyEmail] = useState("");

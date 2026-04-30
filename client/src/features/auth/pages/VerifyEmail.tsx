@@ -5,8 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { verifyEmail } from "@/features/auth/userSlice";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "react-i18next";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 function VerifyEmail() {
+  useDocumentTitle("meta.title.verifyEmail");
   const [loading, setLoading] = useState(true);
   const { user } = useSelector((state: any) => state.user);
   const dispatch = useDispatch();

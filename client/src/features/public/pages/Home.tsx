@@ -19,6 +19,7 @@ import img8 from "@/assets/7.png";
 import img13 from "@/assets/13.png";
 import img14 from "@/assets/14.png";
 import img15 from "@/assets/15.png";
+import img16 from "@/assets/img22.png";
 import add1 from "@/assets/add1.jpg";
 import add2 from "@/assets/add2.jpg";
 import Footer from "../components/Footer";
@@ -28,6 +29,7 @@ import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import moment from "moment/min/moment-with-locales";
 import addressData from "@/utils/address.json";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 interface JobPost {
   id: string;
@@ -43,6 +45,7 @@ interface JobPost {
 }
 
 export default function JobSearchLanding() {
+  useDocumentTitle();
   const navigate = useNavigate();
   const { t, i18n: i18nInstance } = useTranslation("public");
   const isRTL = i18nInstance.dir() === "rtl";
@@ -245,7 +248,7 @@ export default function JobSearchLanding() {
               <button
                 key={category.id}
                 onClick={() => navigate("/jobSearch")}
-                className="first:bg-linear-to-br from-primary-500 via-primary-400 to-primary-700 px-6 py-3 rounded-xl font-semibold transition-all bg-white text-gray-700 hover:shadow-md"
+                className="bg-linear-to-br from-primary-500 via-primary-400 to-primary-700 px-6 py-3 rounded-xl font-semibold transition-all bg-white text-gray-700 hover:shadow-md"
               >
                 {category.name}
               </button>
@@ -452,12 +455,8 @@ export default function JobSearchLanding() {
         </div>
         {/* Infinite marquee strip */}
         <div dir="ltr" className="relative w-full overflow-hidden">
-          <div
-            className="pointer-events-none absolute left-0 top-0 h-full w-24 z-10 bg-gradient-to-r from-white to-transparent"
-          />
-          <div
-            className="pointer-events-none absolute right-0 top-0 h-full w-24 z-10 bg-gradient-to-l from-white to-transparent"
-          />
+          <div className="pointer-events-none absolute left-0 top-0 h-full w-24 z-10 bg-gradient-to-r from-white to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-24 z-10 bg-gradient-to-l from-white to-transparent" />
           <div
             className={`flex gap-6 w-max ${isRTL ? "animate-marquee-rtl" : "animate-marquee"}`}
           >
@@ -471,6 +470,7 @@ export default function JobSearchLanding() {
               img13,
               img14,
               img15,
+              img16,
               img8,
               img3,
               img4,
@@ -480,6 +480,7 @@ export default function JobSearchLanding() {
               img13,
               img14,
               img15,
+              img16,
             ].map((src, i) => (
               <div
                 key={i}

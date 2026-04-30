@@ -3,8 +3,10 @@ import { useState } from "react";
 import { Link } from "react-router";
 import LoginForm from "../components/LoginForm";
 import { useTranslation } from "react-i18next";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 function Login() {
+  useDocumentTitle("meta.title.login");
   const [errorMessage, setErrorMessage] = useState("");
   const { t } = useTranslation("auth");
 

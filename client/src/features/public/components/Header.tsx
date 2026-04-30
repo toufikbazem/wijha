@@ -23,9 +23,9 @@ import { useTranslation } from "react-i18next";
 import i18n from "@/i18n/i18n";
 
 const LANGUAGES = [
-  { code: "en", flag: "🇬🇧", label: "EN" },
-  { code: "fr", flag: "🇫🇷", label: "FR" },
-  { code: "ar", flag: "🇩🇿", label: "AR" },
+  { code: "en", flag: "en", label: "EN" },
+  { code: "fr", flag: "fr", label: "FR" },
+  { code: "ar", flag: "ar", label: "AR" },
 ];
 
 function LanguageSwitcher() {

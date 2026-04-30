@@ -13,8 +13,10 @@ import PlansList from "./PlansList";
 import SubscriptionsList from "./SubscriptionsList";
 import ProfileAccessList from "./ProfileAccessList";
 import AdminSettings from "./AdminSettings";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 export default function Admin() {
+  useDocumentTitle("meta.title.admin");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const [tab, setTab] = useState("dashboard");

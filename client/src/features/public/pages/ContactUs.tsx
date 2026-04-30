@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 interface FormFields {
   name: string;
@@ -27,6 +28,7 @@ interface FormErrors {
 }
 
 function ContactUs() {
+  useDocumentTitle("meta.title.contact");
   const { t } = useTranslation("public");
 
   const [form, setForm] = useState<FormFields>({

@@ -13,8 +13,10 @@ import { useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import Header from "@/features/public/components/Header";
 import Footer from "@/features/public/components/Footer";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 export default function CompanyProfile() {
+  useDocumentTitle("meta.title.companyProfile");
   const { t } = useTranslation("employer");
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
