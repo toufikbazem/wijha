@@ -205,7 +205,6 @@ const login = async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-        domain: "https://wijha-z3rf.onrender.com",
         path: "/",
         maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000,
       })
