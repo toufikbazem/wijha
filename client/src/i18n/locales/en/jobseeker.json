@@ -109,7 +109,7 @@
   "cvSection": "Curriculum Vitae",
   "cvUploadSuccess": "CV uploaded successfully",
   "cvLabel": "Click to upload your CV",
-  "cvFormats": "PDF only (MAX. 5MB)",
+  "cvFormats": "PDF PNG JPEG DOC DOCX (MAX. 5MB)",
   "viewDownloadCV": "Download CV",
   "noCVAvailable": "No CV uploaded yet",
   "noCVDesc": "Upload your CV to let employers find you faster",

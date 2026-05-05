@@ -109,7 +109,7 @@
   "cvSection": "Curriculum Vitae",
   "cvUploadSuccess": "CV chargé avec succès",
   "cvLabel": "Cliquez pour téléverser votre CV",
-  "cvFormats": "PDF uniquement (MAX. 5 Mo)",
+  "cvFormats": "PDF PNG JPEG DOC DOCX (MAX. 5 Mo)",
   "viewDownloadCV": "Télécharger le CV",
   "noCVAvailable": "Aucun CV chargé pour l'instant",
   "noCVDesc": "Ajoutez votre CV pour que les recruteurs vous trouvent plus facilement",

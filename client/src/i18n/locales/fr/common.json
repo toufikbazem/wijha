@@ -116,7 +116,16 @@
       "about": "À propos",
       "contact": "Contactez-nous",
       "dashboard": "Tableau de bord",
-      "admin": "Administration"
+      "admin": "Administration",
+      "terms": "Conditions Générales"
     }
-  }
+  },
+  "selectExperienceLevel": "Sélectionnez le niveau d'expérience",
+  "selectEducationLevel": "Sélectionnez le niveau d'éducation",
+  "selectJobType": "Sélectionnez le type d'emploi",
+  "selectJobMode": "Sélectionnez le mode de travail",
+  "selectSortBy": "Sélectionnez le tri par",
+  "gender": "Genre",
+  "male": "Homme",
+  "female": "Femme"
 }

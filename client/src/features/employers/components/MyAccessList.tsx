@@ -86,9 +86,7 @@ export default function MyAccessList({
           <h3 className="text-xl font-bold text-gray-900 mb-2">
             {t("noUnlockedProfiles")}
           </h3>
-          <p className="text-gray-500">
-            {t("searchAndRequest")}
-          </p>
+          <p className="text-gray-500">{t("searchAndRequest")}</p>
         </div>
       )}
 
@@ -98,7 +96,7 @@ export default function MyAccessList({
           <p className="text-sm text-gray-500 mb-4">
             {total} {t("unlockedProfiles")}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {profiles.map((profile) => (
               <MyAccessCard key={profile.access_id} profile={profile} />
             ))}

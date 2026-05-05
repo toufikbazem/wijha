@@ -1,5 +1,188 @@
 import db from "../../config/db.js";
 
+// export const createJobPost = async (req, res) => {
+//   const {
+//     employerId,
+//     title,
+//     description,
+//     location,
+//     job_type,
+//     job_mode,
+//     industry,
+//     experience_level,
+//     education_level,
+//     number_of_positions,
+//     min_salary,
+//     max_salary,
+//     deadline,
+//     is_anonymous,
+//   } = req.body;
+
+//   console.log(req.user.userId, employerId);
+
+//   // if (req.user.userId !== employerId && req.user.role !== "admin") {
+//   //   return res.status(403).json({ message: "Forbidden" });
+//   // }
+
+//   try {
+//     if (req.user.role === "employer") {
+//       const employer = await db.query(
+//         `
+//             SELECT users.id AS user_id, users.is_email_verified, employers.id AS employer_id, employers.status, employers.company_name
+//             FROM users
+//             INNER JOIN employers ON users.id = employers.user_id
+//             WHERE users.id = $1
+//             `,
+//         [req.user.userId],
+//       );
+
+//       if (!employer.rows.length) {
+//         return res.status(404).json({ message: "Employer profile not found" });
+//       }
+
+//       const employerData = employer.rows[0];
+
+//       // if (!employerData.is_email_verified) {
+//       //   return res.status(403).json({
+//       //     code: "EMAIL_NOT_VERIFIED",
+//       //     message: "Email not verified",
+//       //   });
+//       // }
+
+//       // if (employerData.status !== "active") {
+//       //   return res.status(403).json({
+//       //     code: "EMPLOYER_NOT_ACTIVE",
+//       //     message: "Employer profile not active",
+//       //   });
+//       // }
+//     }
+
+//     // Validate deadline is not more than 3 months in the future
+//     if (deadline) {
+//       const maxDate = new Date();
+//       maxDate.setMonth(maxDate.getMonth() + 3);
+//       if (new Date(deadline) > maxDate) {
+//         return res
+//           .status(400)
+//           .json({ message: "Deadline cannot be more than 3 months from now" });
+//       }
+//     }
+
+//     const updates = [];
+//     const values = [];
+//     let index = 1;
+
+//     if (title !== undefined) {
+//       updates.push(`title`);
+//       values.push(title);
+//     }
+
+//     if (description !== undefined) {
+//       updates.push(`description`);
+//       values.push(description);
+//     }
+
+//     if (location !== undefined) {
+//       updates.push(`location`);
+//       values.push(location);
+//     }
+
+//     if (industry !== undefined) {
+//       updates.push(`industry`);
+//       values.push(industry);
+//     }
+
+//     if (job_type !== undefined) {
+//       updates.push(`job_type`);
+//       values.push(job_type);
+//     }
+
+//     if (job_mode !== undefined) {
+//       updates.push(`job_mode`);
+//       values.push(job_mode);
+//     }
+
+//     if (experience_level !== undefined) {
+//       updates.push(`experience_level`);
+//       values.push(experience_level);
+//     }
+
+//     if (education_level !== undefined) {
+//       updates.push(`education_level`);
+//       values.push(education_level);
+//     }
+
+//     if (min_salary !== "") {
+//       updates.push(`min_salary`);
+//       values.push(min_salary);
+//     }
+
+//     if (max_salary !== "") {
+//       updates.push(`max_salary`);
+//       values.push(max_salary);
+//     }
+
+//     if (deadline !== undefined) {
+//       updates.push(`deadline`);
+//       values.push(deadline);
+//     }
+
+//     if (number_of_positions !== undefined) {
+//       updates.push(`number_of_positions`);
+//       values.push(number_of_positions);
+//     }
+
+//     if (is_anonymous !== undefined) {
+//       updates.push(`is_anonymous`);
+//       values.push(is_anonymous);
+//     }
+
+//     if (employerId !== undefined) {
+//       updates.push(`employer_id`);
+//       values.push(employerId);
+//     }
+
+//     updates.push(`created_by`);
+//     values.push(req.user.userId);
+
+//     const status = req.user.role === "admin" ? "Active" : "In-review";
+//     updates.push(`status`);
+//     values.push(status);
+
+//     // Link to subscription if present
+//     if (req.subscription?.id) {
+//       updates.push(`subscription_id`);
+//       values.push(req.subscription.id);
+//     }
+
+//     // prevent empty update
+//     if (updates.length === 0) {
+//       return res.status(400).json({ message: "No fields provided to update" });
+//     }
+
+//     const query = `INSERT INTO job_post (${updates.join(", ")}) VALUES (${values
+//       .map((_, i) => `$${i + 1}`)
+//       .join(", ")}) RETURNING *`;
+
+//     const result = await db.query(query, values);
+
+//     // Increment subscription usage
+//     if (req.subscription?.id) {
+//       await db.query(
+//         `UPDATE subscription_usage
+//          SET job_post_used = job_post_used + 1
+//          WHERE subscription_id = $1`,
+//         [req.subscription.id],
+//       );
+//     }
+
+//     return res.status(201).json(result.rows[0]);
+//   } catch (error) {
+//     console.error("Error creating job post:", error);
+//     return res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
 export const createJobPost = async (req, res) => {
   const {
     employerId,
@@ -24,6 +207,8 @@ export const createJobPost = async (req, res) => {
   //   return res.status(403).json({ message: "Forbidden" });
   // }
 
+  const client = await db.connect();
+
   try {
     if (req.user.role === "employer") {
       const employer = await db.query(
@@ -41,24 +226,6 @@ export const createJobPost = async (req, res) => {
       }
 
       const employerData = employer.rows[0];
-
-      if (!employerData.is_email_verified) {
-        return res
-          .status(403)
-          .json({
-            code: "EMAIL_NOT_VERIFIED",
-            message: "Email not verified",
-          });
-      }
-
-      if (employerData.status !== "active") {
-        return res
-          .status(403)
-          .json({
-            code: "EMPLOYER_NOT_ACTIVE",
-            message: "Employer profile not active",
-          });
-      }
     }
 
     // Validate deadline is not more than 3 months in the future
@@ -168,11 +335,13 @@ export const createJobPost = async (req, res) => {
       .map((_, i) => `$${i + 1}`)
       .join(", ")}) RETURNING *`;
 
-    const result = await db.query(query, values);
+    await client.query("BEGIN");
+
+    const result = await client.query(query, values);
 
     // Increment subscription usage
     if (req.subscription?.id) {
-      await db.query(
+      await client.query(
         `UPDATE subscription_usage
          SET job_post_used = job_post_used + 1
          WHERE subscription_id = $1`,
@@ -180,10 +349,15 @@ export const createJobPost = async (req, res) => {
       );
     }
 
+    await client.query("COMMIT");
+
     return res.status(201).json(result.rows[0]);
   } catch (error) {
+    await client.query("ROLLBACK");
     console.error("Error creating job post:", error);
     return res.status(500).json({ message: "Internal server error" });
+  } finally {
+    client.release();
   }
 };
 
@@ -496,12 +670,10 @@ export const getJobPosts = async (req, res) => {
     employerId,
     industry,
     status = null,
-    sortBy = "newest",
+    sortBy = "latest",
     limit = 10,
     page = 1,
   } = req.query;
-
-  console.log(req.query);
 
   const offset = (page - 1) * limit;
 

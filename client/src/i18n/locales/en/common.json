@@ -116,7 +116,16 @@
       "about": "About Us",
       "contact": "Contact Us",
       "dashboard": "Dashboard",
-      "admin": "Admin"
+      "admin": "Admin",
+      "terms": "Terms and Conditions"
     }
-  }
+  },
+  "selectExperienceLevel": "Select experience level",
+  "selectEducationLevel": "Select education level",
+  "selectJobType": "Select job type",
+  "selectJobMode": "Select job mode",
+  "selectSortBy": "Select sort by",
+  "gender": "Gender",
+  "male": "Male",
+  "female": "Female"
 }

@@ -1,9 +1,6 @@
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { AddressCombobox } from "@/components/ui/address-combobox";
-import { Briefcase, IdCard, Phone, TrendingUp, User } from "lucide-react";
-import { Controller } from "react-hook-form";
-import { useTranslation } from "react-i18next";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -12,67 +9,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { educationLevels, experienceLevels } from "@/utils/data";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { Briefcase, IdCard, Share2, TrendingUp } from "lucide-react";
+import { Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import i18n from "@/i18n/i18n";
 
-function JobseekerRegisterForm({ form }: { form: any }) {
+function StepProfessionalInfo({ form }: { form: any }) {
   const { t } = useTranslation("auth");
+  const { t: tc } = useTranslation("common");
   const { t: td } = useTranslation("data");
 
   return (
-    <div className="space-y-5 border-t border-gray-200 pt-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {t("personalInformation")}
-      </h3>
-
-      <div className="flex flex-col sm:flex-row gap-5">
-        {/* First Name */}
-        <Controller
-          name="firstName"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel className="input-label">{t("firstName")}</FieldLabel>
-              <div className="relative">
-                <User className="input-icon" size={20} />
-                <Input
-                  type="text"
-                  className="input"
-                  {...field}
-                  aria-invalid={fieldState.invalid}
-                  placeholder={t("enterFirstName")}
-                />
-              </div>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        {/* Last Name */}
-        <Controller
-          name="lastName"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel className="input-label">{t("lastName")}</FieldLabel>
-              <div className="relative">
-                <User className="input-icon" size={20} />
-                <Input
-                  type="text"
-                  className="input"
-                  {...field}
-                  aria-invalid={fieldState.invalid}
-                  placeholder={t("enterLastName")}
-                />
-              </div>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-xl font-bold text-gray-900">
+          {t("professionalInformation")}
+        </h2>
+        <p className="text-sm text-gray-500 mt-1">
+          {t("professionalInformationSubtitle")}
+        </p>
       </div>
 
-      {/* Professional Title */}
       <Controller
         name="professionalTitle"
         control={form.control}
@@ -97,7 +54,6 @@ function JobseekerRegisterForm({ form }: { form: any }) {
       />
 
       <div className="flex flex-col sm:flex-row gap-5">
-        {/* education level */}
         <Controller
           name="educationLevel"
           control={form.control}
@@ -107,7 +63,7 @@ function JobseekerRegisterForm({ form }: { form: any }) {
               className="overflow-hidden flex-1"
             >
               <FieldLabel className="input-label">
-                {t("educationLevel", { ns: "common" })}
+                {tc("educationLevel")}
               </FieldLabel>
               <div className="relative">
                 <Briefcase className="input-icon" size={20} />
@@ -121,9 +77,7 @@ function JobseekerRegisterForm({ form }: { form: any }) {
                     aria-invalid={fieldState.invalid}
                     className="input"
                   >
-                    <SelectValue
-                      placeholder={t("selectEducationLevel", { ns: "common" })}
-                    />
+                    <SelectValue placeholder={tc("selectEducationLevel")} />
                   </SelectTrigger>
                   <SelectContent className="p-3" position="item-aligned">
                     {educationLevels.map((level) => (
@@ -139,7 +93,6 @@ function JobseekerRegisterForm({ form }: { form: any }) {
           )}
         />
 
-        {/* experience level */}
         <Controller
           name="experienceLevel"
           control={form.control}
@@ -149,7 +102,7 @@ function JobseekerRegisterForm({ form }: { form: any }) {
               className="overflow-hidden flex-1"
             >
               <FieldLabel className="input-label">
-                {t("experienceLevel", { ns: "common" })}
+                {tc("experienceLevel")}
               </FieldLabel>
               <div className="relative">
                 <TrendingUp className="input-icon" size={20} />
@@ -163,9 +116,7 @@ function JobseekerRegisterForm({ form }: { form: any }) {
                     aria-invalid={fieldState.invalid}
                     className="input"
                   >
-                    <SelectValue
-                      placeholder={t("selectExperienceLevel", { ns: "common" })}
-                    />
+                    <SelectValue placeholder={tc("selectExperienceLevel")} />
                   </SelectTrigger>
                   <SelectContent className="p-3" position="item-aligned">
                     {experienceLevels.map((level) => (
@@ -182,65 +133,26 @@ function JobseekerRegisterForm({ form }: { form: any }) {
         />
       </div>
 
-      {/* Gender */}
       <Controller
-        name="gender"
+        name="linkedin"
         control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldLabel className="input-label">
-              {t("gender", { ns: "common" })}
+              {t("linkedinUrl")}{" "}
+              <span className="text-gray-400 font-normal">
+                ({t("optional")})
+              </span>
             </FieldLabel>
-            <RadioGroup
-              dir={i18n.dir()}
-              value={field.value}
-              onValueChange={field.onChange}
-              className="flex flex-nowrap items-center gap-8"
-            >
-              <div className="flex items-center gap-3">
-                <RadioGroupItem className="w-4 h-4 " value="male" id="male" />
-                <Label
-                  className="text-gray-900 font-semibold text-sm"
-                  htmlFor="male"
-                >
-                  {t("male", { ns: "common" })}
-                </Label>
-              </div>
-              <div className="flex items-center gap-3">
-                <RadioGroupItem
-                  className="w-4 h-4"
-                  value="female"
-                  id="female"
-                />
-                <Label
-                  className="text-gray-900 font-semibold text-sm"
-                  htmlFor="female"
-                >
-                  {t("female", { ns: "common" })}
-                </Label>
-              </div>
-            </RadioGroup>
-
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-          </Field>
-        )}
-      />
-
-      {/* Phone Number */}
-      <Controller
-        name="phoneNumber"
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel className="input-label">{t("phoneNumber")}</FieldLabel>
             <div className="relative">
-              <Phone className="input-icon" size={20} />
+              <Share2 className="input-icon" size={20} />
               <Input
                 type="text"
                 className="input"
                 {...field}
+                value={field.value ?? ""}
                 aria-invalid={fieldState.invalid}
-                placeholder="+213 123 456 789"
+                placeholder="https://linkedin.com/in/your-profile"
               />
             </div>
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -248,20 +160,23 @@ function JobseekerRegisterForm({ form }: { form: any }) {
         )}
       />
 
-      {/* address */}
       <Controller
-        name="address"
+        name="professionalSummary"
         control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldLabel className="input-label">
-              {t("address", { ns: "common" })}
+              {t("professionalSummaryLabel")}{" "}
+              <span className="text-gray-400 font-normal">
+                ({t("optional")})
+              </span>
             </FieldLabel>
-            <AddressCombobox
-              value={field.value}
-              onChange={field.onChange}
-              invalid={fieldState.invalid}
-              variant="default"
+            <Textarea
+              {...field}
+              value={field.value ?? ""}
+              rows={4}
+              placeholder={t("professionalSummaryPlaceholder")}
+              className="text-[16px] w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008CBA] focus:border-transparent outline-none transition resize-none"
             />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
@@ -271,4 +186,4 @@ function JobseekerRegisterForm({ form }: { form: any }) {
   );
 }
 
-export default JobseekerRegisterForm;
+export default StepProfessionalInfo;

@@ -66,27 +66,45 @@ export const searchProfiles = async (req, res) => {
 
     const result = await db.query(
       `SELECT
-         js.id,
-         js.user_id,
-         js.professional_title,
-         js.skills,
-         js.experience_level,
-         js.education_level,
-         js.address,
-         js.cv,
-         COALESCE(u.email, js.user_email) AS email,
-         CASE
-           WHEN pa.id IS NOT NULL AND pa.expire_at > NOW() THEN true
-           ELSE false
-         END AS has_access,
-         COUNT(*) OVER() AS total
-       FROM job_seeker js
-       LEFT JOIN users u ON js.user_id = u.id
-       LEFT JOIN profile_access pa
-         ON pa.job_seeker = js.id AND pa.employer = $${employerIdx}
-       WHERE ${whereClause}
-       ORDER BY js.created_at DESC
-       LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
+  js.id,
+  js.user_id,
+  js.professional_title,
+  js.skills,
+  js.experience_level,
+  js.education_level,
+  js.address,
+  js.gender,
+
+  CASE
+    WHEN js.cv IS NOT NULL AND js.cv <> '' THEN true
+    ELSE false
+  END AS has_cv,
+
+  COALESCE(u.email, js.user_email) AS email,
+
+  false AS has_access,
+
+  COUNT(*) OVER() AS total
+
+FROM job_seeker js
+
+LEFT JOIN users u
+  ON js.user_id = u.id
+
+LEFT JOIN profile_access pa
+  ON pa.job_seeker = js.id
+  AND pa.employer = $${employerIdx}
+
+WHERE ${whereClause}
+  AND (
+    pa.id IS NULL
+    OR pa.expire_at <= NOW()
+  )
+
+ORDER BY js.created_at DESC
+
+LIMIT $${limitIdx}
+OFFSET $${offsetIdx}`,
       values,
     );
 
@@ -140,6 +158,7 @@ export const getMyAccess = async (req, res) => {
          js.skills,
          js.experience_level,
          js.education_level,
+         js.gender,
          js.address,
          js.phone_number,
          js.linkedin,

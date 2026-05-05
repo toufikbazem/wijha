@@ -15,12 +15,28 @@ const register = async (req, res) => {
     firstName,
     lastName,
     professionalTitle,
+    experienceLevel,
+    educationLevel,
+    gender,
     address,
     phoneNumber,
     companyName,
     foundingYear,
     industry,
     size,
+    // optional jobseeker
+    profileImage,
+    linkedin,
+    professionalSummary,
+    cv,
+    skills,
+    experiences,
+    educations,
+    // optional employer
+    website,
+    description,
+    missions,
+    logo,
   } = req.body;
 
   if (role === "jobseeker") {
@@ -31,9 +47,12 @@ const register = async (req, res) => {
       !password ||
       !address ||
       !phoneNumber ||
-      !professionalTitle
+      !professionalTitle ||
+      !experienceLevel ||
+      !educationLevel ||
+      !gender
     ) {
-      res
+      return res
         .status(400)
         .json({ message: "All fields are required for job seekers." });
     }
@@ -47,12 +66,12 @@ const register = async (req, res) => {
       !address ||
       !foundingYear
     ) {
-      res
+      return res
         .status(400)
         .json({ message: "All fields are required for employers." });
     }
   } else {
-    res.status(400).json({ message: "Invalid user role." });
+    return res.status(400).json({ message: "Invalid user role." });
   }
 
   let newUser;
@@ -80,20 +99,68 @@ const register = async (req, res) => {
     sendVerifyEmail(email, newUser.rows[0].id);
 
     if (role === "jobseeker") {
-      await db.query(
-        "INSERT INTO job_seeker (user_id, first_name, last_name, professional_title, address, phone_number) VALUES ($1, $2, $3, $4, $5, $6)",
+      const jobseekerResult = await db.query(
+        "INSERT INTO job_seeker (user_id, first_name, last_name, professional_title, experience_level, education_level, gender, address, phone_number, profile_image, linkedin, professional_summary, cv, skills) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
         [
           newUser.rows[0].id,
           firstName,
           lastName,
           professionalTitle,
+          experienceLevel,
+          educationLevel,
+          gender,
           address,
           phoneNumber,
+          profileImage || null,
+          linkedin || null,
+          professionalSummary || null,
+          cv || null,
+          Array.isArray(skills) && skills.length > 0 ? skills : null,
         ],
       );
+
+      const userId = newUser.rows[0].id;
+
+      if (Array.isArray(experiences) && experiences.length > 0) {
+        for (const exp of experiences) {
+          if (exp && exp.title && exp.company && exp.from) {
+            await db.query(
+              'INSERT INTO experiences (user_id, title, company, "from", "to", is_current, description) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+              [
+                userId,
+                exp.title,
+                exp.company,
+                exp.from,
+                exp.to || null,
+                Boolean(exp.is_current),
+                exp.description || null,
+              ],
+            );
+          }
+        }
+      }
+
+      if (Array.isArray(educations) && educations.length > 0) {
+        for (const edu of educations) {
+          if (edu && edu.degree && edu.institution && edu.from) {
+            await db.query(
+              'INSERT INTO educations (user_id, degree, institution, "from", "to", is_current, description) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+              [
+                userId,
+                edu.degree,
+                edu.institution,
+                edu.from,
+                edu.to || null,
+                Boolean(edu.is_current),
+                edu.description || null,
+              ],
+            );
+          }
+        }
+      }
     } else if (role === "employer") {
       const employerResult = await db.query(
-        "INSERT INTO employers (user_id, company_name, industry, size, address, phone_number, founding_year) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id",
+        "INSERT INTO employers (user_id, company_name, industry, size, address, phone_number, founding_year, linkedin, website, description, missions, logo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id",
         [
           newUser.rows[0].id,
           companyName,
@@ -102,6 +169,11 @@ const register = async (req, res) => {
           address,
           phoneNumber,
           foundingYear,
+          linkedin || null,
+          website || null,
+          description || null,
+          Array.isArray(missions) && missions.length > 0 ? missions : [],
+          logo || null,
         ],
       );
 
@@ -131,8 +203,8 @@ const register = async (req, res) => {
     }
     res.status(201).json({ message: "User registered successfully." });
   } catch (error) {
-    await db.query("DELETE FROM users WHERE id=$1", [newUser.rows[0].id]);
-    res.status(500).json(error.message);
+    // await db.query("DELETE FROM users WHERE id=$1", [newUser.rows[0].id]);
+    res.status(500).json(error);
   }
 };
 

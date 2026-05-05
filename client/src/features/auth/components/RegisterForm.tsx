@@ -42,6 +42,9 @@ function RegisterForm({
         email: "",
         phoneNumber: "",
         address: "",
+        experienceLevel: "",
+        educationLevel: "",
+        gender: "",
         password: "",
         confirmPassword: "",
         termsAndConditions: false,
@@ -74,6 +77,9 @@ function RegisterForm({
             email: "",
             phoneNumber: "",
             address: "",
+            experienceLevel: "",
+            educationLevel: "",
+            gender: "",
             password: "",
             confirmPassword: "",
             termsAndConditions: false,
@@ -241,7 +247,16 @@ function RegisterForm({
                     className="input-checkbox"
                   />
                   <FieldLabel className="text-sm text-gray-600">
-                    {t("termsAndConditions")}
+                    {t("iAgreeToThe")}{" "}
+                    <a
+                      href="/terms"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-[#008CBA] hover:text-[#00668C] underline underline-offset-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {t("termsLinkLabel")}
+                    </a>
                   </FieldLabel>
                 </Field>
                 {fieldState.invalid && (

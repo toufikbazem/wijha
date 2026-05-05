@@ -1,22 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useSearchParams } from "react-router";
 import z from "zod";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
-import { useEffect } from "react";
-
-import { Skeleton } from "@/components/ui/skeleton";
-import { useSelector, useDispatch } from "react-redux";
-import { toast } from "sonner";
-import { useNavigate } from "react-router";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import {
-  educationLevels,
-  experienceLevels,
-  industries,
-  jobModes,
-  jobTypes,
-} from "@/utils/data";
 import { jobPostsFilterSchema } from "../schema";
 import JobPostsList from "../components/JobPostsList";
 import JobPostsFilter from "../components/JobPostsFilter";
@@ -25,63 +11,132 @@ import Footer from "@/features/public/components/Footer";
 import DashJobPostsPagination from "@/features/employers/components/DashJobPostsPagination";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
+type Filters = z.infer<typeof jobPostsFilterSchema>;
+
+const FILTER_KEYS: (keyof Filters)[] = [
+  "search",
+  "location",
+  "industry",
+  "job_type",
+  "job_mode",
+  "experience_level",
+  "education_level",
+  "sortBy",
+];
+
+const DEFAULT_FILTERS: Filters = {
+  search: "",
+  location: "",
+  industry: "",
+  job_type: "",
+  job_mode: "",
+  experience_level: "",
+  education_level: "",
+  sortBy: "latest",
+};
+
+const filtersFromParams = (params: URLSearchParams): Filters => {
+  const result = { ...DEFAULT_FILTERS };
+  for (const key of FILTER_KEYS) {
+    const value = params.get(key);
+    if (value !== null) result[key] = value;
+  }
+  return result;
+};
+
 const JobSearchPage = () => {
   useDocumentTitle("meta.title.jobSearch");
-  const navigate = useNavigate();
-  const [page, setPage] = useState(1);
-  const dispatch = useDispatch();
+
+  const [searchParams, setSearchParams] = useSearchParams();
   const limit = 4;
+  const page = Math.max(1, Number(searchParams.get("page") ?? "1") || 1);
+
+  const initialFilters = useMemo(
+    () => filtersFromParams(searchParams),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
   const [totalJobs, setTotalJobs] = useState(0);
   const totalPages = Math.ceil(totalJobs / limit);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { user } = useSelector((state: any) => state.user);
 
-  const fetchJobs = async (filters?: any) => {
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/v1/job-posts?page=${page}&limit=${limit}&status=Active${filters?.search ? `&search=${filters.search}` : ""}${filters?.location ? `&location=${filters.location}` : ""}${filters?.job_type ? `&job_type=${filters.job_type}` : ""}${filters?.job_mode ? `&job_mode=${filters.job_mode}` : ""}${filters?.experience_level ? `&experience_level=${filters.experience_level}` : ""}${filters?.education_level ? `&education_level=${filters.education_level}` : ""}${filters?.industry ? `&industry=${encodeURIComponent(filters.industry)}` : ""}${filters?.sortBy ? `&sortBy=${filters.sortBy}` : ""}`,
-        {
-          method: "GET",
-          credentials: "include",
-        },
-      );
-      const data = await res.json();
-      if (res.ok) {
-        setJobs(data.jobs);
-        setTotalJobs(data.total);
-      } else {
-        console.error("Error fetching job posts:", data.message);
-      }
-    } catch (error) {
-      console.error("Error fetching job posts:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchJobs();
-  }, [page]);
-
-  const form = useForm<z.infer<typeof jobPostsFilterSchema>>({
+  const form = useForm<Filters>({
     resolver: zodResolver(jobPostsFilterSchema),
-    defaultValues: {
-      search: "",
-      location: "",
-      job_type: "",
-      industry: "",
-      job_mode: "",
-      experience_level: "",
-      education_level: "",
-      sortBy: "latest",
-    },
+    defaultValues: initialFilters,
   });
 
-  const onSubmit = async (data: z.infer<typeof jobPostsFilterSchema>) => {
-    setPage(1);
-    fetchJobs(data);
+  const activeFilters = useMemo(
+    () => filtersFromParams(searchParams),
+    [searchParams],
+  );
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchJobs = async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: String(limit),
+          status: "Active",
+        });
+        for (const key of FILTER_KEYS) {
+          const value = activeFilters[key];
+          if (value) params.set(key, value);
+        }
+
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/v1/job-posts?${params.toString()}`,
+          {
+            method: "GET",
+            credentials: "include",
+            signal: controller.signal,
+          },
+        );
+        const data = await res.json();
+        if (res.ok) {
+          setJobs(data.jobs);
+          setTotalJobs(data.total);
+        } else {
+          console.error("Error fetching job posts:", data.message);
+        }
+      } catch (error) {
+        if ((error as Error).name !== "AbortError") {
+          console.error("Error fetching job posts:", error);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+    return () => controller.abort();
+  }, [page, activeFilters]);
+
+  const writeFiltersToUrl = (filters: Filters, nextPage: number) => {
+    const next = new URLSearchParams();
+    for (const key of FILTER_KEYS) {
+      const value = filters[key];
+      if (value && value !== DEFAULT_FILTERS[key]) next.set(key, value);
+    }
+    if (nextPage > 1) next.set("page", String(nextPage));
+    setSearchParams(next, { replace: false });
+  };
+
+  const onSubmit = (data: Filters) => {
+    writeFiltersToUrl(data, 1);
+  };
+
+  const onReset = () => {
+    form.reset(DEFAULT_FILTERS);
+    writeFiltersToUrl(DEFAULT_FILTERS, 1);
+  };
+
+  const setPage = (nextPage: number) => {
+    writeFiltersToUrl(form.getValues(), nextPage);
   };
 
   return (
@@ -93,7 +148,7 @@ const JobSearchPage = () => {
           <JobPostsFilter
             onSubmit={onSubmit}
             form={form}
-            fetchJobs={fetchJobs}
+            onReset={onReset}
             loading={loading}
           />
 

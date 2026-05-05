@@ -36,17 +36,26 @@ export const jobTypes = [
 export const jobModes = ["On-site", "Remote", "Hybrid"];
 
 export const experienceLevels = [
-  "Entry Level",
-  "Mid Level",
-  "Senior Level",
-  "Director",
-  "Executive",
+  "No experience (Intern)",
+  "0–1 year (Junior)",
+  "1–3 years (Intermediate Junior)",
+  "3–5 years (Mid-level)",
+  "5–10 years (Senior)",
+  "10+ years (Expert)",
 ];
 
 export const educationLevels = [
+  "No Formal Education",
+  "Primary School",
+  "Middle School",
   "High School",
-  "Associate Degree",
-  "Bachelor's Degree",
-  "Master's Degree",
+  "Baccalaureate",
+  "Bac +2 (DUT, BTS, TS)",
+  "Bac +3 (Bachelor's Degree)",
+  "Bac +4 (Master 1)",
+  "Bac +5 (Master's Degree / Engineering Degree)",
+  "Magistere, Bac +7",
   "Doctorate",
+  "Technical Training",
+  "University Education, No Degree",
 ];

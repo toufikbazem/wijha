@@ -18,6 +18,7 @@ import EmployerDashboard from "@/features/employers/pages/Dashboard";
 import Admin from "./features/admin/pages/Admin";
 import AboutUs from "./features/public/pages/AboutUs";
 import ContactUs from "./features/public/pages/ContactUs";
+import TermsAndConditions from "./features/public/pages/TermsAndConditions";
 
 import SessionGuard from "./components/SessionGuard";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -53,6 +54,7 @@ function App() {
           <Route path="/companyProfile/:id" element={<CompanyProfile />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contacts" element={<ContactUs />} />
+          <Route path="/terms" element={<TermsAndConditions />} />
 
           {/* Protected: any authenticated user */}
           <Route element={<ProtectedRoute />}>

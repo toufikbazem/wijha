@@ -116,7 +116,16 @@
       "about": "من نحن",
       "contact": "اتصل بنا",
       "dashboard": "لوحة التحكم",
-      "admin": "الإدارة"
+      "admin": "الإدارة",
+      "terms": "الشروط والأحكام"
     }
-  }
+  },
+  "selectExperienceLevel": "اختر مستوى الخبرة",
+  "selectEducationLevel": "اختر المستوى التعليمي",
+  "selectJobType": "اختر نوع الوظيفة",
+  "selectJobMode": "اختر نمط العمل",
+  "selectSortBy": "اختر ترتيب حسب",
+  "gender": "الجنس",
+  "male": "ذكر",
+  "female": "أنثى"
 }

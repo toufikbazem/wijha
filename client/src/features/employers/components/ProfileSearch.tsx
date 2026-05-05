@@ -89,9 +89,7 @@ export default function ProfileSearch({
 
   const onAccessGranted = (jobSeekerId: string) => {
     setProfiles((prev) =>
-      prev.map((p) =>
-        p.id === jobSeekerId ? { ...p, has_access: true } : p,
-      ),
+      prev.map((p) => (p.id === jobSeekerId ? { ...p, has_access: true } : p)),
     );
   };
 
@@ -107,8 +105,8 @@ export default function ProfileSearch({
 
       {/* Filter Drawer */}
       <div
-        className={`z-[49] fixed top-0 right-0 h-full w-96 bg-white shadow-lg transform transition-transform duration-300 flex flex-col
-        ${filterOpen ? "translate-x-0" : "translate-x-full"}`}
+        className={`z-[49] fixed top-0 rtl:left-0 ltr:right-0 h-full w-96 bg-white shadow-lg transform transition-transform duration-300 flex flex-col
+        ${filterOpen ? "ltr:translate-x-0 rtl:translate-x-0" : "ltr:translate-x-full rtl:-translate-x-full"}`}
       >
         {/* Header */}
         <div className="flex items-start justify-between px-5 py-5 border-b border-gray-100">
@@ -337,9 +335,7 @@ export default function ProfileSearch({
           <h3 className="text-xl font-bold text-gray-900 mb-2">
             {t("noProfilesFound")}
           </h3>
-          <p className="text-gray-500">
-            {t("adjustSearchFilters")}
-          </p>
+          <p className="text-gray-500">{t("adjustSearchFilters")}</p>
         </div>
       )}
 
@@ -349,7 +345,7 @@ export default function ProfileSearch({
           <p className="text-sm text-gray-500 mb-4">
             {total} {t("profilesFound")}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {profiles.map((profile) => (
               <ProfileSearchCard
                 key={profile.id}

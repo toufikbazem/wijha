@@ -1,0 +1,359 @@
+{
+  "pageTitle": "Conditions Générales",
+  "pageSubtitle": "Politique de Confidentialité et Conditions d'Utilisation",
+  "lastUpdated": "Dernière mise à jour",
+  "lastUpdatedDate": "11 janvier 2026",
+  "tableOfContents": "Table des matières",
+  "backToTop": "Retour en haut",
+  "readingTime": "{{minutes}} min de lecture",
+  "trustedNotice": "Votre vie privée et votre confiance sont importantes pour nous. Veuillez lire attentivement ces conditions.",
+
+  "section1": {
+    "title": "Politique de Confidentialité – Plateforme Wijha",
+    "intro": "Cette Politique de Confidentialité décrit comment Wijha collecte, utilise et protège vos informations personnelles lors de l'utilisation de notre plateforme."
+  },
+
+  "definitions": {
+    "title": "1. Définitions",
+    "platform": {
+      "term": "« Plateforme »",
+      "definition": "Le site web et les services de Wijha."
+    },
+    "user": {
+      "term": "« Utilisateur »",
+      "definition": "Toute personne qui s'inscrit ou utilise la plateforme."
+    },
+    "personalData": {
+      "term": "« Données Personnelles »",
+      "definition": "Toute information permettant d'identifier l'utilisateur directement ou indirectement."
+    },
+    "processing": {
+      "term": "« Traitement »",
+      "definition": "Toute opération sur les données (collecte, stockage, modification, partage, etc.)."
+    }
+  },
+
+  "legalFramework": {
+    "title": "2. Cadre Juridique",
+    "content": "Wijha s'engage à traiter les données personnelles conformément à la loi algérienne n° 18-07 relative à la protection des données à caractère personnel, ainsi qu'à toutes les réglementations complémentaires."
+  },
+
+  "serviceNature": {
+    "title": "3. Nature du Service",
+    "intro": "Wijha est une plateforme numérique qui vise à :",
+    "item1": "Mettre en relation les chercheurs d'emploi avec les employeurs.",
+    "item2": "Afficher les CV des candidats.",
+    "noticeTitle": "Avis Juridique",
+    "notice1": "La plateforme fournit l'accès aux CV comme partie essentielle du service.",
+    "notice2": "Des frais sont facturés pour l'accès aux CV ou aux profils des candidats.",
+    "notice3": "Tout service supplémentaire payant est présenté séparément et clairement."
+  },
+
+  "dataCollected": {
+    "title": "4. Données Collectées",
+    "userProvidedTitle": "4.1 Données fournies par l'utilisateur :",
+    "userItem1": "Nom et prénom",
+    "userItem2": "Adresse e-mail",
+    "userItem3": "Numéro de téléphone",
+    "userItem4": "CV",
+    "userItem5": "Qualifications et expérience",
+    "userItem6": "Photo de profil (si fournie)",
+    "automaticTitle": "4.2 Données collectées automatiquement :",
+    "autoItem1": "Adresse IP",
+    "autoItem2": "Type d'appareil et de navigateur",
+    "autoItem3": "Journal d'activité sur la plateforme",
+    "thirdPartyTitle": "4.3 Données de tiers (le cas échéant) :",
+    "thirdPartyItem": "Lors de l'inscription via des services externes (tels que Google)."
+  },
+
+  "processingPurposes": {
+    "title": "5. Finalités du Traitement",
+    "intro": "Les données sont traitées aux fins suivantes :",
+    "item1": "Création et gestion du compte utilisateur.",
+    "item2": "Permettre aux employeurs d'accéder aux profils des candidats.",
+    "item3": "Améliorer l'expérience utilisateur.",
+    "item4": "Analyse statistique et développement des services.",
+    "item5": "Garantir la sécurité de la plateforme et prévenir la fraude.",
+    "outro": "Les données ne sont pas utilisées en dehors de ces finalités sans consentement explicite."
+  },
+
+  "legalBasis": {
+    "title": "6. Base Juridique du Traitement",
+    "intro": "Le traitement repose sur :",
+    "item1": "Le consentement de l'utilisateur.",
+    "item2": "L'exécution d'un service demandé par l'utilisateur.",
+    "item3": "Les obligations légales.",
+    "item4": "L'intérêt légitime de la plateforme, sans préjudice pour les droits de l'utilisateur."
+  },
+
+  "userConsent": {
+    "title": "7. Consentement de l'Utilisateur",
+    "intro": "L'utilisateur consent expressément à :",
+    "item1": "La collecte et le traitement de ses données.",
+    "item2": "La mise à disposition de ses données professionnelles aux employeurs inscrits.",
+    "outro": "L'utilisateur a le droit de retirer ce consentement à tout moment."
+  },
+
+  "dataSharing": {
+    "title": "8. Partage des Données",
+    "intro": "Les données peuvent être partagées avec :",
+    "item1": "Les employeurs inscrits sur la plateforme.",
+    "item2": "Les prestataires de services techniques (hébergement, maintenance, etc.).",
+    "noticeTitle": "Notre Engagement",
+    "notice1": "Les données ne sont jamais vendues.",
+    "notice2": "Les données ne sont pas utilisées à des fins publicitaires sans consentement."
+  },
+
+  "dataTransfer": {
+    "title": "9. Transfert de Données",
+    "intro": "En cas de transfert de données hors d'Algérie :",
+    "item1": "Cela se fait conformément aux réglementations légales.",
+    "item2": "Un niveau de protection approprié est garanti."
+  },
+
+  "dataProtection": {
+    "title": "10. Protection des Données",
+    "intro": "La plateforme applique des mesures de protection comprenant :",
+    "item1": "Le chiffrement des données pendant le transfert.",
+    "item2": "Des systèmes de protection contre les intrusions.",
+    "item3": "Des contrôles des autorisations d'accès.",
+    "item4": "La surveillance des activités inhabituelles.",
+    "warningTitle": "Avis Important",
+    "warning": "Malgré toutes les mesures prises, une sécurité absolue ne peut être garantie dans l'environnement numérique."
+  },
+
+  "retention": {
+    "title": "11. Durée de Conservation",
+    "item1": "Les données ne sont conservées que pour la durée nécessaire.",
+    "item2": "Certaines données peuvent être conservées à des fins légales ou de sécurité."
+  },
+
+  "userRights": {
+    "title": "12. Droits de l'Utilisateur",
+    "intro": "L'utilisateur a le droit de :",
+    "item1": "Accéder à ses données.",
+    "item2": "Les modifier.",
+    "item3": "Les supprimer.",
+    "item4": "S'opposer à leur traitement.",
+    "item5": "Demander la limitation de leur utilisation."
+  },
+
+  "accountDeletion": {
+    "title": "13. Suppression du Compte et des Données",
+    "intro": "L'utilisateur peut :",
+    "item1": "Supprimer son compte à tout moment.",
+    "item2": "Demander la suppression de ses données.",
+    "warningTitle": "Note",
+    "warning1": "Certaines données peuvent être conservées si la loi l'exige.",
+    "warning2": "Certaines données peuvent être conservées à des fins de protection contre la fraude."
+  },
+
+  "userResponsibilities": {
+    "title": "14. Responsabilités de l'Utilisateur",
+    "intro": "L'utilisateur reconnaît :",
+    "item1": "Fournir des données exactes.",
+    "item2": "Être responsable des informations qu'il publie.",
+    "item3": "Être responsable du partage de ses données avec les employeurs."
+  },
+
+  "employerResponsibilities": {
+    "title": "15. Responsabilités des Employeurs",
+    "intro": "Les employeurs s'engagent à :",
+    "item1": "Utiliser les données uniquement à des fins de recrutement.",
+    "item2": "Ne pas exploiter les données en dehors de la plateforme.",
+    "item3": "Respecter la confidentialité des données des candidats.",
+    "warning": "La plateforme n'est pas responsable d'un quelconque mauvais usage par l'employeur en dehors de la plateforme."
+  },
+
+  "limitations": {
+    "title": "16. Limitation de Responsabilité",
+    "intro": "Wijha n'est pas responsable de :",
+    "item1": "Toute fuite résultant d'une utilisation illégale hors du contrôle de la plateforme.",
+    "item2": "Tout accord conclu entre l'utilisateur et l'employeur en dehors de la plateforme.",
+    "item3": "L'exactitude des informations fournies par les utilisateurs."
+  },
+
+  "cookies": {
+    "title": "17. Cookies",
+    "intro": "La plateforme utilise des cookies pour :",
+    "item1": "Améliorer les performances.",
+    "item2": "Analyser l'utilisation.",
+    "item3": "Personnaliser l'expérience.",
+    "outro": "Les utilisateurs peuvent les désactiver dans les paramètres de leur navigateur."
+  },
+
+  "modifications": {
+    "title": "18. Modifications",
+    "content": "La plateforme se réserve le droit de modifier cette politique à tout moment. Les utilisateurs seront informés des changements importants."
+  },
+
+  "contact": {
+    "title": "19. Contact",
+    "email": "support@wijha-dz.com"
+  },
+
+  "acceptance": {
+    "title": "20. Acceptation",
+    "intro": "En utilisant la plateforme, l'utilisateur reconnaît :",
+    "item1": "Avoir lu cette politique.",
+    "item2": "L'avoir comprise.",
+    "item3": "L'accepter pleinement."
+  },
+
+  "section2": {
+    "title": "Politique de Confidentialité et Utilisation des Données – Employeurs (Plateforme Wijha)",
+    "intro": "Cette politique régit l'accès des employeurs aux données des candidats via Wijha et définit leurs obligations légales et éthiques lors de l'utilisation de ces données.",
+    "agreement": "En utilisant la plateforme en tant qu'employeur, vous acceptez expressément de vous conformer à cette politique."
+  },
+
+  "employerService": {
+    "title": "1. Nature du Service",
+    "intro": "Wijha permet aux employeurs de :",
+    "item1": "Consulter les CV des candidats.",
+    "item2": "Accéder à leurs informations professionnelles.",
+    "item3": "Communiquer avec eux uniquement à des fins de recrutement.",
+    "noticeTitle": "Avis Important",
+    "notice1": "L'accès aux CV est un service essentiel de la plateforme.",
+    "notice2": "Des frais sont facturés pour accéder aux données des candidats.",
+    "notice3": "Cet accès n'accorde aucun droit de propriété sur les données."
+  },
+
+  "employerDataNature": {
+    "title": "2. Nature des Données",
+    "intro": "Les données accessibles incluent :",
+    "item1": "Nom et prénom.",
+    "item2": "Coordonnées.",
+    "item3": "Expérience professionnelle.",
+    "item4": "Qualifications.",
+    "item5": "CV.",
+    "outro": "Ces données sont considérées comme des données personnelles juridiquement protégées."
+  },
+
+  "permittedPurpose": {
+    "title": "3. Finalité Autorisée",
+    "intro": "Les données ne peuvent être utilisées que pour :",
+    "item1": "Le recrutement.",
+    "item2": "L'évaluation des candidats.",
+    "item3": "La communication professionnelle liée au poste.",
+    "warning": "L'utilisation des données à toute autre fin est strictement interdite."
+  },
+
+  "prohibitedUse": {
+    "title": "4. Utilisations Interdites",
+    "intro": "Il est interdit aux employeurs de :",
+    "item1": "Utiliser les données à des fins commerciales ou marketing.",
+    "item2": "Envoyer des messages publicitaires ou promotionnels.",
+    "item3": "Vendre ou redistribuer les données.",
+    "item4": "Stocker des données en dehors de la plateforme sans justification légale.",
+    "item5": "Créer des bases de données privées de candidats.",
+    "item6": "Partager des données avec des tiers sans consentement."
+  },
+
+  "confidentiality": {
+    "title": "5. Confidentialité des Données",
+    "intro": "L'employeur s'engage à :",
+    "item1": "Maintenir la confidentialité des informations.",
+    "item2": "Ne pas les divulguer à une partie non autorisée.",
+    "item3": "Prendre des mesures pour les protéger au sein de son organisation."
+  },
+
+  "legalLiability": {
+    "title": "6. Responsabilité Légale",
+    "intro": "L'employeur assume la pleine responsabilité de :",
+    "item1": "Toute utilisation illégale des données.",
+    "item2": "Toute violation de la vie privée des candidats.",
+    "item3": "Tout dommage résultant d'un mauvais usage des données.",
+    "warning": "Wijha décline toute responsabilité pour toute utilisation illégale par l'employeur."
+  },
+
+  "dataRetentionEmployer": {
+    "title": "7. Conservation des Données",
+    "intro": "L'employeur doit :",
+    "item1": "Ne pas conserver les données plus longtemps que nécessaire.",
+    "item2": "Supprimer les données des candidats après réalisation de leur finalité."
+  },
+
+  "compliance": {
+    "title": "8. Conformité Légale",
+    "intro": "L'employeur s'engage à :",
+    "item1": "Respecter la loi algérienne n° 18-07.",
+    "item2": "Ne pas traiter les données en dehors du cadre juridique."
+  },
+
+  "monitoring": {
+    "title": "9. Surveillance et Mesures",
+    "intro": "Wijha se réserve le droit de :",
+    "item1": "Surveiller l'utilisation des données.",
+    "item2": "Suspendre ou annuler tout compte employeur non conforme.",
+    "item3": "Engager des poursuites légales si nécessaire."
+  },
+
+  "platformLimits": {
+    "title": "10. Limites de la Plateforme",
+    "intro": "Wijha :",
+    "item1": "Ne fournit qu'un moyen de communication entre les parties.",
+    "item2": "Ne vérifie pas l'intention d'utilisation des données par les employeurs.",
+    "item3": "N'est pas responsable des transactions en dehors de la plateforme."
+  },
+
+  "penalties": {
+    "title": "11. Sanctions",
+    "intro": "En cas de violation, la plateforme peut :",
+    "item1": "Suspendre le compte.",
+    "item2": "Bloquer l'accès.",
+    "item3": "Engager des poursuites légales."
+  },
+
+  "modificationsEmployer": {
+    "title": "12. Modifications",
+    "content": "Cette politique peut être modifiée à tout moment. La poursuite de l'utilisation de la plateforme constitue l'acceptation des modifications."
+  },
+
+  "acceptanceEmployer": {
+    "title": "13. Acceptation",
+    "intro": "En utilisant la plateforme, vous :",
+    "item1": "Reconnaissez avoir compris cette politique.",
+    "item2": "Acceptez de vous y conformer.",
+    "item3": "Assumez la pleine responsabilité de votre utilisation des données."
+  },
+
+  "footer": {
+    "questions": "Des questions sur nos conditions ?",
+    "contactUs": "Contactez-nous à",
+    "thankYou": "Merci de faire confiance à Wijha"
+  },
+
+  "tocItems": {
+    "definitions": "Définitions",
+    "legalFramework": "Cadre Juridique",
+    "serviceNature": "Nature du Service",
+    "dataCollected": "Données Collectées",
+    "processingPurposes": "Finalités du Traitement",
+    "legalBasis": "Base Juridique",
+    "userConsent": "Consentement",
+    "dataSharing": "Partage des Données",
+    "dataTransfer": "Transfert de Données",
+    "dataProtection": "Protection des Données",
+    "retention": "Conservation",
+    "userRights": "Droits de l'Utilisateur",
+    "accountDeletion": "Suppression du Compte",
+    "userResponsibilities": "Responsabilités Utilisateur",
+    "employerResponsibilities": "Responsabilités Employeur",
+    "limitations": "Limitation de Responsabilité",
+    "cookies": "Cookies",
+    "modifications": "Modifications",
+    "contact": "Contact",
+    "acceptance": "Acceptation",
+    "employerSection": "Politique Employeurs",
+    "employerService": "Service Employeur",
+    "employerDataNature": "Nature des Données",
+    "permittedPurpose": "Finalité Autorisée",
+    "prohibitedUse": "Utilisations Interdites",
+    "confidentiality": "Confidentialité",
+    "legalLiability": "Responsabilité Légale",
+    "compliance": "Conformité Légale",
+    "monitoring": "Surveillance",
+    "platformLimits": "Limites Plateforme",
+    "penalties": "Sanctions"
+  }
+}

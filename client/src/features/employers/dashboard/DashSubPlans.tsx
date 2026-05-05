@@ -78,10 +78,8 @@ export default function DashSubPlans() {
 
             {/* Price */}
             <div className="mb-6">
-              <span className="text-3xl font-bold text-gray-900">
-                {plan.price === 0
-                  ? t("free")
-                  : `${(plan.price / 100).toFixed(0)} DA`}
+              <span className="text-2xl font-bold text-gray-900">
+                {plan.price === 0 ? t("free") : `${plan.price}دج`}
               </span>
               {plan.price > 0 && (
                 <span className="text-sm text-gray-500 ml-1">

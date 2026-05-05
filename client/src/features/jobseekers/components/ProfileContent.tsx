@@ -4,9 +4,7 @@ import { Controller } from "react-hook-form";
 import ProfileExperience from "./ProfileExperience";
 import ProfileEducation from "./ProfileEducation";
 import {
-  ArrowUp,
   Award,
-  Globe,
   Link2,
   Plus,
   Share2,
@@ -16,6 +14,8 @@ import {
   FileText,
   RefreshCw,
   CheckCircle2,
+  Phone,
+  Mail,
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { Input } from "@/components/ui/input";
@@ -126,7 +126,7 @@ function ProfileContent({
                     <Textarea
                       placeholder={t("professionalSummaryPlaceholder")}
                       {...field}
-                      className="h-[446px] text-[16px] w-full  px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008CBA] focus:border-transparent outline-none transition"
+                      className="h-111.5 text-[16px] w-full  px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008CBA] focus:border-transparent outline-none transition"
                     />
                   </div>
                   {fieldState.invalid && (
@@ -169,7 +169,7 @@ function ProfileContent({
             type="file"
             id="cv-upload"
             className="hidden"
-            accept=".pdf"
+            accept=".pdf, .doc, .docx, .png, .jpg, .jpeg, .webp"
             onChange={handleCVUpload}
             disabled={cvUploading}
           />
@@ -270,16 +270,59 @@ function ProfileContent({
 
       {/* Right Column */}
       <div className="space-y-6">
-        {/* Links */}
+        {/* Contacts */}
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <div className="flex items-center gap-2 mb-4">
             <Link2 className="w-5 h-5 text-[#008CBA]" />
-            <h3 className="text-lg font-bold text-gray-900">{t("links")}</h3>
+            <h3 className="text-lg font-bold text-gray-900">{t("contacts")}</h3>
           </div>
 
           <div className="space-y-3">
             {isEditing ? (
               <>
+                <Controller
+                  name="email"
+                  disabled={true}
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <div className="relative">
+                        <Mail className="input-icon-filter h-4 w-4" />
+                        <Input
+                          {...field}
+                          type="text"
+                          className="input-filter text-3xl font-bold"
+                          aria-invalid={fieldState.invalid}
+                          placeholder={t("emailPlaceholder")}
+                        />
+                      </div>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="phone_number"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <div className="relative">
+                        <Phone className="input-icon-filter h-4 w-4" />
+                        <Input
+                          {...field}
+                          type="text"
+                          className="input-filter text-3xl font-bold"
+                          aria-invalid={fieldState.invalid}
+                          placeholder={t("phoneNumberPlaceholder")}
+                        />
+                      </div>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
                 <Controller
                   name="linkedin"
                   control={form.control}
@@ -301,51 +344,33 @@ function ProfileContent({
                     </Field>
                   )}
                 />
-                <Controller
-                  name="github"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <div className="relative">
-                        <Share2 className="input-icon-filter h-4 w-4" />
-                        <Input
-                          {...field}
-                          type="text"
-                          className="input-filter text-3xl font-bold"
-                          aria-invalid={fieldState.invalid}
-                          placeholder={t("githubPlaceholder")}
-                        />
-                      </div>
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="portfolio"
-                  control={form.control}
-                  render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                      <div className="relative">
-                        <Share2 className="input-icon-filter h-4 w-4" />
-                        <Input
-                          {...field}
-                          type="text"
-                          className="input-filter text-3xl font-bold"
-                          aria-invalid={fieldState.invalid}
-                          placeholder={t("portfolioPlaceholder")}
-                        />
-                      </div>
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </Field>
-                  )}
-                />
               </>
             ) : (
               <>
+                {/* Email */}
+                <Link
+                  to={`mailto:${profile.email}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg transition group"
+                >
+                  <Mail className="w-5 h-5 text-primary-500" />
+                  <span className="whitespace-nowrap overflow-hidden text-sm text-gray-700 group-hover:text-primary-500 transition">
+                    {profile.email}
+                  </span>
+                </Link>
+                {/* Phone */}
+                <Link
+                  to={`tel:${profile.phone_number}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg transition group"
+                >
+                  <Phone className="w-5 h-5 text-primary-500" />
+                  <span className="whitespace-nowrap overflow-hidden text-sm text-gray-700 group-hover:text-primary-500 transition">
+                    {profile.phone_number}
+                  </span>
+                </Link>
                 {/* LinkedIn */}
                 <Link
                   to={profile.linkedin ? profile.linkedin : "#"}
@@ -365,51 +390,6 @@ function ProfileContent({
                       <Share2 className="w-5 h-5 text-primary-500" />
                       <span className="whitespace-nowrap overflow-hidden text-sm text-gray-700 group-hover:text-primary-500 transition">
                         {t("linkedinNotAvailable")}
-                      </span>
-                    </>
-                  )}
-                </Link>
-                <Link
-                  to={profile.github ? profile.github : "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg transition group"
-                >
-                  {profile.github ? (
-                    <>
-                      <Share2 className="w-5 h-5 text-primary-500" />
-                      <span className="whitespace-nowrap overflow-hidden text-sm text-gray-700 group-hover:text-primary-500 transition">
-                        {profile.github}
-                      </span>
-                      <ArrowUp className="w-3 h-3 text-gray-500" />
-                    </>
-                  ) : (
-                    <>
-                      <Share2 className="w-5 h-5 text-primary-500" />
-                      <span className="whitespace-nowrap overflow-hidden text-sm text-gray-700 group-hover:text-primary-500 transition text-ellipsis">
-                        {t("githubNotAvailable")}
-                      </span>
-                    </>
-                  )}
-                </Link>
-                <Link
-                  to={`${profile.portfolio ? profile.portfolio : "#"}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg  transition group"
-                >
-                  {profile.portfolio ? (
-                    <>
-                      <Globe className="w-5 h-5 text-primary-500" />
-                      <span className="whitespace-nowrap overflow-hidden text-sm text-gray-700 group-hover:text-primary-500 transition">
-                        {profile.portfolio}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <Globe className="w-5 h-5 text-primary-500" />
-                      <span className="whitespace-nowrap overflow-hidden text-sm text-gray-700 group-hover:text-primary-500 transition">
-                        {t("portfolioNotAvailable")}
                       </span>
                     </>
                   )}
@@ -489,7 +469,7 @@ function ProfileContent({
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {profile.skills?.map((skill, index) => (
+            {profile.skills?.map((skill: string, index: number) => (
               <span
                 key={index}
                 className="px-3 py-1.5 bg-[#E6F7FB] text-[#008CBA] rounded-full text-sm font-medium flex items-center gap-2 hover:shadow-md transition"
@@ -500,7 +480,7 @@ function ProfileContent({
                     onClick={() => {
                       const updatedSkills = form
                         .getValues("skills")
-                        ?.filter((_, i) => i !== index);
+                        ?.filter((_: string, i: number) => i !== index);
                       form.setValue("skills", updatedSkills || [], {
                         shouldDirty: true,
                         shouldTouch: true,

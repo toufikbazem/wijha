@@ -10,6 +10,8 @@ import enEmployer from "./locales/en/employer.json";
 import enJobseeker from "./locales/en/jobseeker.json";
 import enAdmin from "./locales/en/admin.json";
 import enPublic from "./locales/en/public.json";
+import enData from "./locales/en/data.json";
+import enTerms from "./locales/en/terms.json";
 
 // French
 import frCommon from "./locales/fr/common.json";
@@ -19,6 +21,8 @@ import frEmployer from "./locales/fr/employer.json";
 import frJobseeker from "./locales/fr/jobseeker.json";
 import frAdmin from "./locales/fr/admin.json";
 import frPublic from "./locales/fr/public.json";
+import frData from "./locales/fr/data.json";
+import frTerms from "./locales/fr/terms.json";
 
 // Arabic
 import arCommon from "./locales/ar/common.json";
@@ -28,6 +32,8 @@ import arEmployer from "./locales/ar/employer.json";
 import arJobseeker from "./locales/ar/jobseeker.json";
 import arAdmin from "./locales/ar/admin.json";
 import arPublic from "./locales/ar/public.json";
+import arData from "./locales/ar/data.json";
+import arTerms from "./locales/ar/terms.json";
 
 i18n
   .use(LanguageDetector)
@@ -35,7 +41,17 @@ i18n
   .init({
     fallbackLng: "en",
     defaultNS: "common",
-    ns: ["common", "auth", "jobs", "employer", "jobseeker", "admin", "public"],
+    ns: [
+      "common",
+      "auth",
+      "jobs",
+      "employer",
+      "jobseeker",
+      "admin",
+      "public",
+      "data",
+      "terms",
+    ],
     debug: false,
     interpolation: {
       escapeValue: false,
@@ -53,6 +69,8 @@ i18n
         jobseeker: enJobseeker,
         admin: enAdmin,
         public: enPublic,
+        data: enData,
+        terms: enTerms,
       },
       fr: {
         common: frCommon,
@@ -62,6 +80,8 @@ i18n
         jobseeker: frJobseeker,
         admin: frAdmin,
         public: frPublic,
+        data: frData,
+        terms: frTerms,
       },
       ar: {
         common: arCommon,
@@ -71,6 +91,8 @@ i18n
         jobseeker: arJobseeker,
         admin: arAdmin,
         public: arPublic,
+        data: arData,
+        terms: arTerms,
       },
     },
   });

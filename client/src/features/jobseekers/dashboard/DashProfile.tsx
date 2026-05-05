@@ -79,9 +79,7 @@ const DashProfile = () => {
       experience_level: profile?.experience_level
         ? profile?.experience_level
         : "",
-      education_level: profile?.education_level
-        ? profile?.education_level
-        : "",
+      education_level: profile?.education_level ? profile?.education_level : "",
       skills: profile?.skills ? profile?.skills : [],
       profile_image: profile?.profile_image ? profile?.profile_image : "",
       cv: profile?.cv ? profile?.cv : "",
@@ -144,6 +142,8 @@ const DashProfile = () => {
         email: profile.email,
         phone_number: profile.phone_number,
         professional_summary: profile.professional_summary || "",
+        experience_level: profile.experience_level || "",
+        education_level: profile.education_level || "",
         address: profile.address,
         gender: profile.gender,
         resume: profile.resume,
@@ -201,7 +201,7 @@ const DashProfile = () => {
             <Skeleton className="h-48 w-full rounded-lg bg-gray-200" />
 
             {/* Avatar + name */}
-            <div className="flex items-end gap-4 mt-[-40px] px-4">
+            <div className="flex items-end gap-4 mt-10 px-4">
               <Skeleton className="h-20 w-20 rounded-full bg-gray-200" />
 
               <div className="space-y-2 pb-2">

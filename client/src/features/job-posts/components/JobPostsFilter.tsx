@@ -26,9 +26,7 @@ import {
   ArrowUpDown,
   Check,
   Filter,
-  Mail,
   MapPin,
-  Search,
   SlidersHorizontal,
   X,
 } from "lucide-react";
@@ -36,17 +34,24 @@ import { useState } from "react";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
-function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
+function JobPostsFilter({ form, onSubmit, onReset, loading }: any) {
   const [open, setOpen] = useState(false);
   const [sort, setSort] = useState(form.getValues("sortBy"));
   const { t } = useTranslation("common");
+  const { t: td } = useTranslation("data");
+
+  const applySort = (value: "latest" | "oldest") => {
+    setSort(value);
+    form.setValue("sortBy", value, { shouldDirty: true, shouldTouch: true });
+    onSubmit({ ...form.getValues(), sortBy: value });
+  };
 
   return (
     <>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="lg:hidden">
           <div
-            className={`z-[48] fixed inset-0 bg-black/50 transition-opacity duration-300 ${
+            className={`z-48 fixed inset-0 bg-black/50 transition-opacity duration-300 ${
               open ? "opacity-100 visible" : "opacity-0 invisible"
             }`}
             onClick={() => setOpen(false)}
@@ -54,7 +59,7 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
 
           {/* Drawer */}
           <div
-            className={`z-[49] fixed top-0 ltr:right-0 rtl:left-0 h-full w-96 bg-white shadow-lg transform transition-transform duration-300 flex flex-col
+            className={`z-49 fixed top-0 ltr:right-0 rtl:left-0 h-full w-96 bg-white shadow-lg transform transition-transform duration-300 flex flex-col
                     ${open ? "translate-x-0" : "ltr:translate-x-full rtl:-translate-x-full"}`}
           >
             {/* Header */}
@@ -116,7 +121,7 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                       <Select
                         dir={i18n.dir()}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
                           <SelectValue placeholder={t("selectIndustry")} />
@@ -156,10 +161,10 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                       <Select
                         dir={i18n.dir()}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
-                          <SelectValue placeholder={t("selectIndustry")} />
+                          <SelectValue placeholder={t("selectJobType")} />
                         </SelectTrigger>
                         <SelectContent className="p-2 border-gray-300 bg-white">
                           {jobTypes.map((item, index) => {
@@ -196,10 +201,10 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                       <Select
                         dir={i18n.dir()}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
-                          <SelectValue placeholder={t("selectIndustry")} />
+                          <SelectValue placeholder={t("selectJobMode")} />
                         </SelectTrigger>
                         <SelectContent className="p-2 border-gray-300 bg-white">
                           {jobModes.map((item, index) => {
@@ -236,20 +241,22 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                       <Select
                         dir={i18n.dir()}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
-                          <SelectValue placeholder={t("selectIndustry")} />
+                          <SelectValue
+                            placeholder={t("selectEducationLevel")}
+                          />
                         </SelectTrigger>
                         <SelectContent className="p-2 border-gray-300 bg-white">
-                          {industries.map((item, index) => {
+                          {educationLevels.map((item, index) => {
                             return (
                               <SelectItem
                                 key={index}
                                 className="hover:bg-blue-50"
                                 value={item}
                               >
-                                {t(item)}
+                                {td(item)}
                               </SelectItem>
                             );
                           })}
@@ -276,10 +283,12 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                       <Select
                         dir={i18n.dir()}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
-                          <SelectValue placeholder={t("selectIndustry")} />
+                          <SelectValue
+                            placeholder={t("selectExperienceLevel")}
+                          />
                         </SelectTrigger>
                         <SelectContent className="p-2 border-gray-300 bg-white">
                           {experienceLevels.map((item, index) => {
@@ -289,54 +298,10 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                                 className="hover:bg-blue-50"
                                 value={item}
                               >
-                                {t(item)}
+                                {td(item)}
                               </SelectItem>
                             );
                           })}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-
-              {/* status */}
-              <Controller
-                name="status"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field className="flex-1" data-invalid={fieldState.invalid}>
-                    <FieldLabel className="input-label">
-                      {t("status")}
-                    </FieldLabel>
-                    <div className="relative">
-                      <Select
-                        dir={i18n.dir()}
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger className="input-filter ltr:pr-8 rtl:pl-8">
-                          <SelectValue placeholder={t("selectIndustry")} />
-                        </SelectTrigger>
-                        <SelectContent className="p-2 border-gray-300 bg-white">
-                          <SelectItem value="Pending" key={1}>
-                            {t("pending")}
-                          </SelectItem>
-                          <SelectItem value="In-review" key={2}>
-                            {t("inReview")}
-                          </SelectItem>
-                          <SelectItem value="Paused" key={3}>
-                            {t("paused")}
-                          </SelectItem>
-                          <SelectItem value="Rejected" key={4}>
-                            {t("rejected")}
-                          </SelectItem>
-                          <SelectItem value="Closed" key={5}>
-                            {t("closed")}
-                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -353,7 +318,9 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
               <button
                 type="button"
                 onClick={() => {
-                  form.reset();
+                  setSort("latest");
+                  onReset();
+                  setOpen(false);
                 }}
                 className="cursor-pointer flex-1 py-2 rounded-lg border border-gray-200 text-[13px] font-medium text-gray-500 hover:bg-gray-50 transition-colors"
               >
@@ -362,7 +329,7 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
               <button
                 onClick={() => setOpen(false)}
                 type="submit"
-                className="cursor-pointer flex-[2] py-2 rounded-lg bg-[#008CBA] text-[13px] font-medium text-white hover:bg-[#007aa6] transition-colors"
+                className="cursor-pointer flex-2 py-2 rounded-lg bg-[#008CBA] text-[13px] font-medium text-white hover:bg-[#007aa6] transition-colors"
               >
                 {loading ? (
                   <>
@@ -411,34 +378,14 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                 </PopoverTrigger>
                 <PopoverContent>
                   <Button
-                    onClick={() => {
-                      setSort("latest");
-                      form.setValue("sortBy", "latest", {
-                        shouldDirty: true,
-                        shouldTouch: true,
-                      });
-                      fetchJobs({
-                        ...form.getValues(),
-                        sortBy: "latest",
-                      });
-                    }}
+                    onClick={() => applySort("latest")}
                     className={`hover:bg-gray-50 justify-between ${sort == "latest" && "bg-gray-100"}`}
                   >
                     {t("latest")}
                     {sort === "latest" && <Check className="" />}
                   </Button>
                   <Button
-                    onClick={() => {
-                      setSort("oldest");
-                      form.setValue("sortBy", "oldest", {
-                        shouldDirty: true,
-                        shouldTouch: true,
-                      });
-                      fetchJobs({
-                        ...form.getValues(),
-                        sortBy: "oldest",
-                      });
-                    }}
+                    onClick={() => applySort("oldest")}
                     className={`hover:bg-gray-50 justify-between ${sort == "oldest" && "bg-gray-100"}`}
                   >
                     {t("oldest")}
@@ -458,7 +405,7 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
             </div>
           </div>
         </div>
-        <aside className="hidden lg:block lg:w-72 xl:w-80 max-h-full flex-shrink-0">
+        <aside className="hidden lg:block lg:w-72 xl:w-80 max-h-full shrink-0">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-6">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
@@ -531,7 +478,7 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                       <Select
                         dir={i18n.dir()}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
                           <SelectValue placeholder={t("selectIndustry")} />
@@ -571,10 +518,10 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                       <Select
                         dir={i18n.dir()}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
-                          <SelectValue placeholder={t("selectIndustry")} />
+                          <SelectValue placeholder={t("selectJobType")} />
                         </SelectTrigger>
                         <SelectContent className="p-2 border-gray-300 bg-white">
                           {jobTypes.map((item, index) => {
@@ -611,10 +558,10 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                       <Select
                         dir={i18n.dir()}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
-                          <SelectValue placeholder={t("selectIndustry")} />
+                          <SelectValue placeholder={t("selectJobMode")} />
                         </SelectTrigger>
                         <SelectContent className="p-2 border-gray-300 bg-white">
                           {jobModes.map((item, index) => {
@@ -651,10 +598,12 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                       <Select
                         dir={i18n.dir()}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
-                          <SelectValue placeholder={t("selectIndustry")} />
+                          <SelectValue
+                            placeholder={t("selectExperienceLevel")}
+                          />
                         </SelectTrigger>
                         <SelectContent className="p-2 border-gray-300 bg-white">
                           {experienceLevels.map((item, index) => {
@@ -664,7 +613,7 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                                 className="hover:bg-blue-50"
                                 value={item}
                               >
-                                {t(item)}
+                                {td(item)}
                               </SelectItem>
                             );
                           })}
@@ -691,10 +640,12 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                       <Select
                         dir={i18n.dir()}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
-                          <SelectValue placeholder={t("selectIndustry")} />
+                          <SelectValue
+                            placeholder={t("selectEducationLevel")}
+                          />
                         </SelectTrigger>
                         <SelectContent className="p-2 border-gray-300 bg-white">
                           {educationLevels.map((item, index) => {
@@ -704,7 +655,7 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                                 className="hover:bg-blue-50"
                                 value={item}
                               >
-                                {t(item)}
+                                {td(item)}
                               </SelectItem>
                             );
                           })}
@@ -731,10 +682,10 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                       <Select
                         dir={i18n.dir()}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <SelectTrigger className="input-filter rtl:pr-2.5! ltr:pl-2.5!">
-                          <SelectValue placeholder={t("selectIndustry")} />
+                          <SelectValue placeholder={t("selectSortBy")} />
                         </SelectTrigger>
                         <SelectContent className="p-2 border-gray-300 bg-white">
                           <SelectItem key={1} value="oldest">
@@ -765,8 +716,8 @@ function JobPostsFilter({ form, onSubmit, fetchJobs, loading }: any) {
                 type="button"
                 className="flex-1 cursor-pointer px-6 py-2 bg-white hover:bg-[#008CBA] text-[#008CBA] hover:text-white transition rounded-lg border-2 border-[#008CBA]"
                 onClick={() => {
-                  form.reset();
-                  fetchJobs();
+                  setSort("latest");
+                  onReset();
                 }}
               >
                 {t("clear")}
