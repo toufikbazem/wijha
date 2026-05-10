@@ -4,7 +4,7 @@ import FadeText from "@/features/public/components/FadeText";
 import { useInView } from "@/features/public/components/hooks/useInView";
 
 
-import { FileText, Building2, Briefcase, Shield, MapPin, Clock, DollarSign, Award, Target, Rocket, ArrowRight } from "lucide-react";
+import { Shield, MapPin, Clock, DollarSign, Award, Target, Rocket, ArrowRight } from "lucide-react";
 import img3 from "@/assets/2.png";
 import img4 from "@/assets/3.png";
 import img5 from "@/assets/4.png";
@@ -132,14 +132,6 @@ export default function JobSearchLanding() {
     },
   ];
 
-  const jobCategories = [
-    { id: 1, name: t("cat1") },
-    { id: 2, name: t("cat2") },
-    { id: 3, name: t("cat3") },
-    { id: 4, name: t("cat4") },
-    { id: 5, name: t("cat5") },
-  ];
-
   const testimonials = [
     {
       name: "Pr. Sid Ahmed Hadj Aissa",
@@ -192,9 +184,9 @@ export default function JobSearchLanding() {
         className=""
       >
         <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden w-full h-screen">
-          <div className="absolute inset-0 z-0 bg-[url('/src/assets/gg.png')] bg-cover bg-center blur-xs scale-110"></div>
-          <div className="absolute inset-0 z-0 md:hidden bg-[url('/src/assets/ggmd.png')] bg-cover bg-center blur-xs scale-110"></div>
-          <div className="absolute inset-0 z-1 bg-[#06192d]/80"></div>
+          <div className="absolute inset-0 bg-[url('/src/assets/gg.png')] bg-cover bg-center"></div>
+         <div className="absolute inset-0 bg-[#06192d]/70"></div>
+          <div className="relative z-10 max-w-7xl mx-auto p-10"></div>
           <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
             <div className="pt-0">
               <FadeText
@@ -255,38 +247,7 @@ export default function JobSearchLanding() {
         </div>
       </section>
 
-      <section className="py-16 px-6 border-border-gray-200">
-        <div className="max-w-7xl mx-auto border-2 border-gray-100 rounded-2xl p-10 bg-[#0a2238]/50">
-        <div className="text-center mb-16 ">
-          <h1 className="text-4xl md:text-5xl font-bold text-green-50 mb-4">
-            {t("OurImpact")}
-          </h1>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
-    <CounterCard
-      label={t("statsCvs")}
-      target={3000}
-      suffix="+"
-      icon={<FileText size={18} />}
-      className="bg-[#0a2238] border-[#008CBA]"
-    />
-    <CounterCard
-      label={t("statsCompanies")}
-      target={80}
-      suffix="+"
-      icon={<Building2 size={18} />}
-      className="bg-[#0a2238] border-[#008CBA]"
-    />
-    <CounterCard
-      label={t("statsJobs")}
-      target={50}
-      suffix="+"
-      icon={<Briefcase size={18} />}
-      className="bg-[#0a2238] border-[#008CBA]"
-    />
-    </div>
-    </div>
-      </section>
+                 
             {/* Featured Jobs */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -294,10 +255,10 @@ export default function JobSearchLanding() {
             <div className="inline-block bg-[#06192d]/50 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 w-70">
               {t("jobsTitle")}
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-[#cccccc] mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               {t("jobsSubtitle")}
             </h2>
-            <p className="text-xl text-[#cccccc] max-w-3xl mx-auto">
+            <p className="text-xl text-white max-w-3xl mx-auto">
               {t("jobsText")}
             </p>
           </div>
@@ -307,7 +268,7 @@ export default function JobSearchLanding() {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-2xl p-6 border-2 border-gray-100 animate-pulse"
+                  className="bg-linear-to-br from-white to-[#F0F8FF] rounded-2xl p-6 border-2 border-[#008CBA] animate-pulse"
                 >
                   <div className="h-5 bg-gray-200 rounded w-3/4 mb-4"></div>
                   <div className="h-4 bg-gray-200 rounded w-1/2 mb-6"></div>
@@ -338,7 +299,7 @@ export default function JobSearchLanding() {
                   <div
                     key={job.id}
                     onClick={() => navigate(`/jobPost/${job.id}`)}
-                    className="right-reveal group bg-white rounded-2xl p-6 border-2 border-gray-100 hover:border-[#008CBA] hover:shadow-2xl transition-all duration-300 cursor-pointer"
+                    className="right-reveal group bg-linear-to-br from-white to-[#F0F8FF] rounded-2xl p-6 border-2 border-[#008CBA] hover:border-[#005F7F] transition-all duration-300 cursor-pointer"
                   >
                     <div className="flex items-center gap-3 mb-4">
                       {job.logo ? (
@@ -409,7 +370,32 @@ export default function JobSearchLanding() {
         </div>
       </section>
 
-     
+      <section className="py-16 px-6 border-border-gray-200 relative overflow-hidden ">
+              <div className="absolute inset-0 bg-[url('/src/assets/gg.png')] bg-cover bg-center bg-fixed"></div>
+           <div className="absolute inset-0 bg-[#06192d]/70"></div>
+  <div className="relative z-10 max-w-7xl mx-auto p-10">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full justify-between px-6">
+      <CounterCard
+        label={t("statsCvs")}
+        target={5000}
+        suffix="+"
+        className=""
+      />
+      <CounterCard
+        label={t("statsCompanies")}
+        target={200}
+        suffix="+"
+        className=""
+      />
+      <CounterCard
+        label={t("statsJobs")}
+        target={100}
+        suffix="+"
+        className=""
+      />
+    </div>
+  </div>
+</section>
 
       {/* Features */}
       <section className="py-20 ">
@@ -418,10 +404,10 @@ export default function JobSearchLanding() {
             <div className="inline-block  bg-[#06192d]/50 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 w-70">
               {t("featuresTitle")}
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-[#cccccc] mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               {t("featuresSubtitle")}
             </h2>
-            <p className="text-xl text-[#cccccc] max-w-3xl mx-auto">
+            <p className="text-xl text-white max-w-3xl mx-auto">
               {t("featuresText")}
             </p>
           </div>
@@ -429,7 +415,7 @@ export default function JobSearchLanding() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="left-reveal group relative bg-linear-to-br from-gray-50 to-white p-8 rounded-2xl border border-gray-100 transition-all duration-300"
+                className="left-reveal group relative bg-linear-to-br from-white to-[#F0F8FF] p-8 rounded-2xl border-2 border-[#008CBA] hover:border-[#005F7F] transition-all duration-300"
               >
                 <div className="absolute top-0 right-0 w-20 h-20 bg-linear-to-br from-[#008CBA]/10 to-transparent rounded-bl-3xl"></div>
                 <div className="relative">
@@ -454,7 +440,7 @@ export default function JobSearchLanding() {
       {/* Sponsored Ads Section */}
       <section className="py-10">
         <div className="max-w-7xl text-center mb-16 mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="inline-block  bg-[#06192d]/50 text-white px-4 py-2 mb-10 rounded-full text-sm font-semibold mb-4 w-70">
+            <div className="inline-block  bg-[#06192d]/50 text-white px-4 py-2 mb-10 rounded-full text-sm font-semibold w-70">
           <p className="text-sm  uppercase tracking-widest text-center">
             {t("sponsored")}
           </p>
@@ -549,7 +535,7 @@ export default function JobSearchLanding() {
             {testimonials.map((testimonial, index) => (
               <div
                 key={index}
-                className="left-reveal bg-white rounded-2xl p-8 shadow-lg"
+                className="left-reveal bg-linear-to-br from-white to-[#F0F8FF] rounded-2xl p-8 border-2 border-[#008CBA] hover:border-[#005F7F] transition-all duration-300"
               >
                 <div className="flex items-center mb-6">
                   <div className="w-16 h-16 bg-linear-to-br from-[#008CBA] to-[#005F7F] rounded-2xl flex items-center justify-center text-white font-bold text-xl ltr:mr-4 rtl:ml-4">

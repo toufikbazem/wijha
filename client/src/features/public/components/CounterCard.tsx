@@ -28,7 +28,7 @@ const CounterCard = ({
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setInView(true); },
-      { threshold: 0.3 }
+      { threshold: 1.0 }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -38,21 +38,21 @@ const CounterCard = ({
 
   return (
     <div
-      ref={ref}
-      className={cn(
-        "rounded-xl border-2 p-5 text-center transition-colors",
-        className
-      )}
+  ref={ref}
+  className={cn(
+    " p-8 text-center transition-colors flex flex-col justify-between min-h-32",
+    className
+  )}
     >
       {icon && (
-        <div className="w-9 h-9 rounded-lg flex items-center justify-center mx-auto mb-3 bg-[#008CBA] text-white">
+        <div className="w-9 h-9 rounded-lg flex items-center justify-center mx-auto mb-4 bg-[#008CBA] text-white">
           {icon}
         </div>
       )}
-      <p className="text-3xl font-medium tabular-nums text-white leading-none mb-1.5">
+      <p className="text-5xl font-bold tabular-nums text-white leading-none mb-3">
         {prefix}{value.toLocaleString()}{suffix}
       </p>
-      <p className="text-sm text-[#7cc4d8]">{label}</p>
+      <p className="text-base text-white/70">{label}</p>
     </div>
   );
 };
