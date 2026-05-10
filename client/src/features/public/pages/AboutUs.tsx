@@ -71,7 +71,7 @@ function AboutUs() {
             </p>
           </div>
           <div className="relative">
-            <div className="bg-gradient-to-br from-[#008CBA]/10 to-[#008CBA]/5 rounded-3xl p-10 text-center">
+            <div className="bg-linear-to-br from-[#008CBA]/10 to-[#008CBA]/5 rounded-3xl p-10 text-center">
               <div className="w-20 h-20 bg-[#008CBA] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <Target className="w-10 h-10 text-white" />
               </div>
