@@ -174,7 +174,7 @@ export default function JobSearchLanding() {
   // };
   const { ref, inView } = useInView();
   return (
-    <div className="w-full min-h-screen bg-linear-to-b from-[#06192d] to-[#78b1ed] pointer-">
+    <div className="w-full min-h-screen bg-linear-to-b from-[#06192d] to-[#78b1ed] pointer-events-auto">
       {/* Navigation */}
       <Header />
 
@@ -365,6 +365,7 @@ export default function JobSearchLanding() {
                   </div>
                 );
               })}
+
             </div>
           )}
         </div>
@@ -506,12 +507,12 @@ export default function JobSearchLanding() {
             ].map((src, i) => (
               <div
                 key={i}
-                className="shrink-0 w-36 h-36 flex items-center justify-center"
+                className="shrink-0 w-36 h-36 flex items-center justify-center "
               >
                 <img
                   src={src}
                   alt=""
-                  className="max-h-36 max-w-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                  className="h-36 w-full bg-white/30 border-2 border-white/90 rounded-lg object-contain  transition-all duration-300 hover:scale-105 hover:shadow-lg hover:brightness-110 hover:scale-115"  
                 />
               </div>
             ))}
@@ -592,5 +593,5 @@ export default function JobSearchLanding() {
       {/* Footer */}
       <Footer />
     </div>
-  );
-}
+);}
+
