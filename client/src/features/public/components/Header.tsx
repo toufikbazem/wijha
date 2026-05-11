@@ -159,8 +159,8 @@ function Header() {
                         </>
                       ) : (
                         <>
-                          <div className="w-9 h-9 bg-[#2E8CB8] rounded-full flex items-center justify-center border border-[#5DADE2]">
-                            <User className="w-5 h-5 text-white" />
+                          <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center border border-[#5DADE2]">
+                            <User className="w-5 h-5 text-[#06192d]/95" />
                           </div>
                           <div className="hidden md:block">
                             <div className="text-sm font-medium text-white">

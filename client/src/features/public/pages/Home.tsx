@@ -174,7 +174,7 @@ export default function JobSearchLanding() {
   // };
   const { ref, inView } = useInView();
   return (
-    <div className="w-full min-h-screen bg-linear-to-b from-[#06192d] to-[#78b1ed] pointer-events-auto">
+    <div className="w-full min-h-screen bg-[#F5F7FA] pointer-events-auto">
       {/* Navigation */}
       <Header />
 
@@ -185,8 +185,7 @@ export default function JobSearchLanding() {
       >
         <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden w-full h-screen">
           <div className="absolute inset-0 bg-[url('/src/assets/gg.png')] bg-cover bg-center"></div>
-         <div className="absolute inset-0 bg-[#06192d]/70"></div>
-          <div className="relative z-10 max-w-7xl mx-auto p-10"></div>
+            <div className="relative z-10 max-w-7xl mx-auto p-10"></div>
           <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
             <div className="pt-0">
               <FadeText
@@ -252,13 +251,13 @@ export default function JobSearchLanding() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bottom-reveal text-center mb-16">
-            <div className="inline-block bg-[#06192d]/50 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 w-70">
+            <div className="inline-block bg-[#0D3B72]/90 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 w-70">
               {t("jobsTitle")}
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
               {t("jobsSubtitle")}
             </h2>
-            <p className="text-xl text-white max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               {t("jobsText")}
             </p>
           </div>
@@ -372,10 +371,10 @@ export default function JobSearchLanding() {
       </section>
 
       <section className="py-16 px-6 border-border-gray-200 relative overflow-hidden ">
-              <div className="absolute inset-0 bg-[url('/src/assets/gg.png')] bg-cover bg-center bg-fixed"></div>
-           <div className="absolute inset-0 bg-[#06192d]/70"></div>
+              <div className="absolute inset-0 bg-[url('/src/assets/conter.png')] bg-cover bg-center bg-fixed"></div>
+           {/* <div className="absolute inset-0 bg-[#06192d]/70"></div> */}
   <div className="relative z-10 max-w-7xl mx-auto p-10">
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full justify-between px-6">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 w-full justify-between px-6">
       <CounterCard
         label={t("statsCvs")}
         target={5000}
@@ -402,13 +401,13 @@ export default function JobSearchLanding() {
       <section className="py-20 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bottom-reveal text-center mb-16">
-            <div className="inline-block  bg-[#06192d]/50 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 w-70">
+            <div className="inline-block  bg-[#0D3B72]/90 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 w-70">
               {t("featuresTitle")}
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
               {t("featuresSubtitle")}
             </h2>
-            <p className="text-xl text-white max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               {t("featuresText")}
             </p>
           </div>
@@ -441,7 +440,7 @@ export default function JobSearchLanding() {
       {/* Sponsored Ads Section */}
       <section className="py-10">
         <div className="max-w-7xl text-center mb-16 mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="inline-block  bg-[#06192d]/50 text-white px-4 py-2 mb-10 rounded-full text-sm font-semibold w-70">
+            <div className="inline-block  bg-[#0D3B72]/90 text-white px-4 py-2 mb-10 rounded-full text-sm font-semibold w-70">
           <p className="text-sm  uppercase tracking-widest text-center">
             {t("sponsored")}
           </p>
@@ -473,7 +472,7 @@ export default function JobSearchLanding() {
             <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">
               {t("employersTitle")}
             </h2>
-            <p className="text-lg text-[#cccccc]">{t("employersSubtitle")}</p>
+            <p className="text-lg text-gray-900">{t("employersSubtitle")}</p>
           </div>
         </div>
         {/* Infinite marquee strip */}
@@ -512,7 +511,7 @@ export default function JobSearchLanding() {
                 <img
                   src={src}
                   alt=""
-                  className="h-36 w-full bg-white/30 border-2 border-white/90 rounded-lg object-contain  transition-all duration-300 hover:scale-105 hover:shadow-lg hover:brightness-110 hover:scale-115"  
+                  className="h-36 w-full bg-white/30 border-2 border-white/90 rounded-lg object-contain  transition-all duration-300  hover:shadow-lg hover:brightness-110 hover:scale-115"  
                 />
               </div>
             ))}
@@ -568,10 +567,10 @@ export default function JobSearchLanding() {
           <div className="absolute bottom-10 right-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
         </div>
         <div className="bottom-reveal relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center ">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#06192d] mb-6 leading-tight">
+          <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 leading-tight">
             {t("ctaTitle")}
           </h2>
-          <p className="text-xl text-[#06192d] mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-900 mb-10 max-w-2xl mx-auto">
             {t("ctaText")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

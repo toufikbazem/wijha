@@ -45,14 +45,14 @@ const CounterCard = ({
   )}
     >
       {icon && (
-        <div className="w-9 h-9 rounded-lg flex items-center justify-center mx-auto mb-4 bg-[#008CBA] text-white">
+        <div className="w-9 h-9 rounded-lg flex items-center justify-center mx-auto mb-4  text-white">
           {icon}
         </div>
       )}
       <p className="text-5xl font-bold tabular-nums text-white leading-none mb-3">
         {prefix}{value.toLocaleString()}{suffix}
       </p>
-      <p className="text-base text-white/70">{label}</p>
+      <p className="text-lg text-white">{label}</p>
     </div>
   );
 };
