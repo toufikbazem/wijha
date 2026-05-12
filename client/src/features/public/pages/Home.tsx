@@ -202,7 +202,7 @@ export default function JobSearchLanding() {
                   transform: inView ? "translateY(0)" : "translateY(200px)",
                   transition: "opacity 5s ease, transform 2s ease",
                 }}
-                className="text-lg text-white/80 leading-relaxed mt-10"
+                className="text-lg text-white leading-relaxed mt-10"
               >
                 {t("heroText")}
               </p>
@@ -234,7 +234,7 @@ export default function JobSearchLanding() {
                 }}
                 onClick={() => navigate("/dashboard?dash=profileAccess")}
                 className="flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl
-                           border border-black text-[#06192d] bg-amber-50 font-semibold text-base
+                           border border-black text-[#06192d] bg-white/80 font-semibold text-base
                            hover:border-white hover:text-white hover:bg-[#06192d] hover:shadow-[0_4px_16px_rgba(255,255,255,0.3)]
                            transition-all duration-200"
               >
@@ -267,7 +267,7 @@ export default function JobSearchLanding() {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="bg-linear-to-br from-white to-[#F0F8FF] rounded-2xl p-6 border-2 border-[#008CBA] animate-pulse"
+                  className="bg-linear-to-br from-white to-[#F0F8FF] rounded-2xl p-6 border-2 border-[#0D3B72]/50 animate-pulse hover:border-[#0D3B72]/90"
                 >
                   <div className="h-5 bg-gray-200 rounded w-3/4 mb-4"></div>
                   <div className="h-4 bg-gray-200 rounded w-1/2 mb-6"></div>
@@ -283,11 +283,11 @@ export default function JobSearchLanding() {
           )}
 
           {!jobsLoading && jobsError && (
-            <p className="text-center text-gray-500">{t("jobsError")}</p>
+            <p className="text-center text-gray-900">{t("jobsError")}</p>
           )}
 
           {!jobsLoading && !jobsError && jobPosts.length === 0 && (
-            <p className="text-center text-gray-500">{t("jobsEmpty")}</p>
+            <p className="text-center text-gray-900">{t("jobsEmpty")}</p>
           )}
 
           {!jobsLoading && !jobsError && jobPosts.length > 0 && (
@@ -305,10 +305,11 @@ export default function JobSearchLanding() {
                         <img
                           src={job.logo}
                           alt={job.company_name}
-                          className="w-10 h-10 rounded-lg object-contain border border-gray-100"
+                          className="w-10 h-10 rounded-lg object-contain border border-[#0D3B72]/90 bg-white "
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#008CBA] to-[#005F7F] flex items-center justify-center text-white font-bold text-sm">
+                        <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#008CBA] to-[#005F7F] flex items-center justify-center text-white font-bold text-sm"
+                        >
                           {job.company_name?.charAt(0) ?? "?"}
                         </div>
                       )}
@@ -321,17 +322,17 @@ export default function JobSearchLanding() {
                     </h3>
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center text-sm text-gray-600">
-                        <MapPin className="w-4 h-4 mr-2 text-[#008CBA]" />
+                        <MapPin className="w-4 h-4 mr-2 text-[#0D3B72]" />
                         {translateLocation(job.location)}
                       </div>
                       {salary && (
                         <div className="flex items-center text-sm text-gray-600">
-                          <DollarSign className="w-4 h-4 mr-2 text-[#008CBA]" />
+                          <DollarSign className="w-4 h-4 mr-2 text-[#0D3B72]" />
                           {salary}
                         </div>
                       )}
                       <div className="flex items-center text-sm text-gray-600">
-                        <Clock className="w-4 h-4 mr-2 text-[#008CBA]" />
+                        <Clock className="w-4 h-4 mr-2 text-[#0D3B72]" />
                         {t("jobPosted")}{" "}
                         {moment(job.created_at)
                           .locale(i18nInstance.language)
@@ -340,12 +341,12 @@ export default function JobSearchLanding() {
                     </div>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {job.job_type && (
-                        <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium">
+                        <span className="px-3 py-1 bg-gray-100 text-gray-900 rounded-lg text-xs font-medium">
                           {t(job.job_type)}
                         </span>
                       )}
                       {job.job_mode && (
-                        <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium">
+                        <span className="px-3 py-1 bg-gray-100 text-gray-900 rounded-lg text-xs font-medium">
                           {t(job.job_mode)}
                         </span>
                       )}
@@ -356,7 +357,7 @@ export default function JobSearchLanding() {
                           e.stopPropagation();
                           navigate(`/jobPost/${job.id}`);
                         }}
-                        className="px-4 py-2 bg-linear-to-r from-[#008CBA] to-[#005F7F] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#008CBA]/30 transition-all transform hover:scale-105"
+                        className="px-4 py-2 bg-linear-to-r from-[#0D3B72] to-[#005F7F] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#008CBA]/30 transition-all transform hover:scale-105"
                       >
                         {t("jobApply")}
                       </button>
@@ -407,7 +408,7 @@ export default function JobSearchLanding() {
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
               {t("featuresSubtitle")}
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-900 max-w-3xl mx-auto">
               {t("featuresText")}
             </p>
           </div>
@@ -415,17 +416,17 @@ export default function JobSearchLanding() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="left-reveal group relative bg-linear-to-br from-white to-[#F0F8FF] p-8 rounded-2xl border-2 border-[#008CBA] hover:border-[#005F7F] transition-all duration-300"
+                className="left-reveal group relative bg-linear-to-br from-white to-[#F0F8FF] p-8 rounded-2xl border-2 border-[#0D3B72]/50 hover:border-[#0D3B72]/90 transition-all duration-300"
               >
-                <div className="absolute top-0 right-0 w-20 h-20 bg-linear-to-br from-[#008CBA]/10 to-transparent rounded-bl-3xl"></div>
+                <div className="absolute top-0 right-0 w-20 h-20 bg-linear-to-br from-[#0D3B72]/50 to-transparent rounded-bl-3xl"></div>
                 <div className="relative">
-                  <div className="w-14 h-14 bg-linear-to-br from-[#008CBA] to-[#005F7F] rounded-xl flex items-center justify-center text-white mb-4 transition-transform">
+                  <div className="w-14 h-14 bg-[#0D3B72]/80 rounded-xl flex items-center justify-center text-white mb-4 transition-transform">
                     {feature.icon}
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-gray-900 leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
@@ -511,7 +512,7 @@ export default function JobSearchLanding() {
                 <img
                   src={src}
                   alt=""
-                  className="h-36 w-full bg-white/30 border-2 border-white/90 rounded-lg object-contain  transition-all duration-300  hover:shadow-lg hover:brightness-110 hover:scale-115"  
+                  className="h-36 w-full bg-[#0D3B72]/10 border-2 border-[#0D3B72]/50 rounded-lg object-contain  transition-all duration-300  hover:shadow-lg hover:brightness-110 hover:scale-115 hover:border-[#0D3B72]/90"  
                 />
               </div>
             ))}
@@ -523,34 +524,36 @@ export default function JobSearchLanding() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bottom-reveal text-center mb-16">
-            <div className="inline-block  bg-[#06192d]/50 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 w-70">
+            <div className="inline-block  bg-[#0D3B72]/90 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 w-70">
               {t("testimonialsTitle")}
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
               {t("testimonialsSubtitle")}
             </h2>
-            <p className="text-xl text-[#cccccc]">{t("testimonialsText")}</p>
+            <p className="text-xl text-gray-900">
+              {t("testimonialsText")}
+            </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <div
                 key={index}
-                className="left-reveal bg-linear-to-br from-white to-[#F0F8FF] rounded-2xl p-8 border-2 border-[#008CBA] hover:border-[#005F7F] transition-all duration-300"
+                className="left-reveal bg-linear-to-br from-white to-[#F0F8FF] rounded-2xl p-8 border-2 border-[#0D3B72]/50 hover:border-[#0D3B72]/90 transition-all duration-300"
               >
                 <div className="flex items-center mb-6">
-                  <div className="w-16 h-16 bg-linear-to-br from-[#008CBA] to-[#005F7F] rounded-2xl flex items-center justify-center text-white font-bold text-xl ltr:mr-4 rtl:ml-4">
+                  <div className="w-16 h-16 bg-[#0D3B72]/90 rounded-2xl flex items-center justify-center text-white font-bold text-xl ltr:mr-4 rtl:ml-4">
                     {testimonial.image}
                   </div>
                   <div>
                     <div className="font-bold text-gray-900 text-lg">
                       {testimonial.name}
                     </div>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-gray-900">
                       {testimonial.role}
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-900 leading-relaxed">
                   "{testimonial.text}"
                 </p>
               </div>
