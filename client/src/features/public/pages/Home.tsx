@@ -184,8 +184,8 @@ export default function JobSearchLanding() {
         className=""
       >
         <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden w-full h-screen">
-          <div className="absolute inset-0 bg-[url('/src/assets/gg.png')] bg-cover bg-center"></div>
-            <div className="relative z-10 max-w-7xl mx-auto p-10"></div>
+          <div className="absolute inset-0 bg-[url('/src/assets/gg.webp')] bg-cover bg-center"></div>
+            <div className="relative z-10 w-full mx-auto p-10"></div>
           <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
             <div className="pt-0">
               <FadeText
@@ -372,7 +372,7 @@ export default function JobSearchLanding() {
       </section>
 
       <section className="py-16 px-6 border-border-gray-200 relative overflow-hidden ">
-              <div className="absolute inset-0 bg-[url('/src/assets/conter.png')] bg-cover bg-center bg-fixed"></div>
+              <div className="absolute inset-0 bg-[url('/src/assets/conter.webp')] bg-cover bg-center bg-fixed"></div>
            {/* <div className="absolute inset-0 bg-[#06192d]/70"></div> */}
   <div className="relative z-10 max-w-7xl mx-auto p-10">
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 w-full justify-between px-6">

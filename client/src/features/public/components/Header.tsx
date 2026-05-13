@@ -6,8 +6,8 @@ import {
   User,
   User2Icon,
 } from "lucide-react";
-import img from "@/assets/logo.png";
-import img1 from "@/assets/logo1.png";
+import img from "@/assets/logo-w.png";
+import img1 from "@/assets/logo1-w.png";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {

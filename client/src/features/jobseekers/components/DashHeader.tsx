@@ -55,10 +55,10 @@ export default function DashHeader({
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
+    <header className=" bg-[#06192d]/95 border-b border-gray-200 sticky top-0 z-30">
       <div className="flex items-center justify-between h-16 px-4 sm:px-6 gap-3">
         <button
-          className="md:hidden p-2 rounded-lg hover:bg-gray-100 cursor-pointer"
+          className=" md:hidden p-2 rounded-lg hover:bg-gray-100 cursor-pointer"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
           <Menu className="w-6 h-6" />
@@ -67,13 +67,13 @@ export default function DashHeader({
         <form onSubmit={() => navigate(`/jobSearch?search=${search}`)}>
           <div className="sm:min-w-xs">
             <div className="relative">
-              <Search className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white" />
               <input
                 onChange={(e) => setSearch(e.target.value)}
                 type="text"
                 placeholder={t("searchJobs") + "..."}
-                className="sm:w-full w-fit ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 py-2 text-sm border border-gray-300 rounded-lg
-                     focus:outline-none focus:ring-2 focus:ring-[#008CBA] focus:border-transparent"
+                className="sm:w-full text-white w-fit ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 py-2 text-sm border-2 border-white rounded-lg
+                     focus:outline-none focus:ring-2 focus:ring-[#008CBA] "
               />
             </div>
           </div>
@@ -82,8 +82,8 @@ export default function DashHeader({
         <div className="flex items-center gap-3">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="flex items-center gap-3 cursor-pointer">
-                <div className="w-9 h-9 bg-[#008CBA] rounded-full flex items-center justify-center">
+              <div className="flex items-center gap-3 cursor-pointer ">
+                <div className="w-9 h-9 bg-white bor rounded-full flex items-center justify-center">
                   {user?.profile_image ? (
                     <img
                       src={user?.profile_image}
@@ -91,14 +91,14 @@ export default function DashHeader({
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <User className="w-5 h-5 text-white" />
+                    <User className="w-5 h-5 text-[#06192d]/95" />
                   )}
                 </div>
                 <div className="hidden md:block">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-white">
                     {user?.first_name} {user?.last_name}
                   </div>
-                  <div className="text-xs text-gray-500 truncate max-w-40">
+                  <div className="text-xs text-white truncate max-w-40">
                     {user?.email}
                   </div>
                 </div>
@@ -106,7 +106,7 @@ export default function DashHeader({
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-44 p-2 shadow bg-white border-gray-200">
               <DropdownMenuLabel className="md:hidden mb-2">
-                <div className="text-sm font-medium text-gray-900">
+                <div className="text-sm font-medium text-white">
                   {user?.first_name} {user?.last_name}
                 </div>
                 <div className="text-xs text-gray-500 truncate max-w-40">
@@ -139,7 +139,7 @@ export default function DashHeader({
                 onClick={handleLogOut}
                 className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
               >
-                <LogOutIcon className="w-4 h-4 ltr:mr-2 rtl:ml-2" />
+                <LogOutIcon className="w-4 h-4 ltr:mr-2 rtl:ml-2 bg " />
                 {t("logout")}
               </DropdownMenuItem>
             </DropdownMenuContent>
