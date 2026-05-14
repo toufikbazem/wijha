@@ -37,7 +37,7 @@ function AboutUs() {
       <Header />
       {/* Hero Section */}
       <section 
-        className="relative w-full min-h-screen bg-[url('/src/assets/contect.webp')] text-white overflow-hidden bg-cover bg-center"
+        className="relative w-full min-h-screen bg-[url('/src/assets/about.webp')] text-white overflow-hidden bg-cover bg-center"
       >
         <div className="absolute inset-0 bg-[#06192d]/70"></div>
         <div className="absolute inset-0 opacity-10">
@@ -146,7 +146,7 @@ function AboutUs() {
               <div className="w-12 h-12 bg-[#0D3B72]/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#0D3B72] transition-colors">
                 <Icon className="w-6 h-6 text-[#0D3B72] group-hover:text-white transition-colors" />
               </div>
-              <p className="text-gray-700 font-medium leading-relaxed pt-2">
+              <p className="text-gray-900 font-medium leading-relaxed pt-2">
                 {text}
               </p>
             </div>

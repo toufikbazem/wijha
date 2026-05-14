@@ -122,40 +122,42 @@ function ContactUs() {
     }`;
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="w-full min-h-screen bg-[#0D3B72]/20 z-0">
       <Header />
 
       {/* Hero */}
-      <section className="relative bg-linear-to-br from-[#008CBA] via-[#006a8e] to-[#004d6b] text-white overflow-hidden">
+      <section className="relative w-full min-h-screen bg-[url('/src/assets/contect.webp')] text-white overflow-hidden bg-cover bg-center">
+              <div className="absolute inset-0 bg-[#06192d]/70"></div>
+
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-white rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
         </div>
         <div className="relative max-w-4xl mx-auto px-6 py-24 text-center">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6 text-sm font-medium">
-            <Sparkles className="w-4 h-4" />
-            <span>✦ Wijha</span>
+          <div className="inline-flex items-center gap-2 bg-white backdrop-blur-sm rounded-full px-4 py-2 mb-6 text-base font-medium">
+            <Sparkles className="w-4 h-4 text-black" />
+            <span className="text-black"> Wijha</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-6 leading-tight text-white">
             {t("contactHeroTitle")}
           </h1>
-          <p className="text-lg sm:text-xl text-blue-100 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-white leading-relaxed max-w-3xl mx-auto">
             {t("contactHeroSubtitle")}
           </p>
         </div>
       </section>
 
       {/* Main content */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
-        <div className="grid lg:grid-cols-5 gap-12 items-start">
+      <section className="max-w-6xl mx-auto px-6 py-20 ">
+        <div className="grid lg:grid-cols-5 gap-12 items-start ">
           {/* Info panel */}
           <div className="lg:col-span-2 space-y-6">
             <div>
-              <div className="inline-flex items-center gap-2 text-[#008CBA] font-semibold text-sm uppercase tracking-wider mb-3">
-                <div className="w-8 h-0.5 bg-[#008CBA]" />
+              <div className="inline-flex items-center gap-2 text-[#0D3B72] font-semibold text-base uppercase tracking-wider mb-3">
+                <div className="w-8 h-0.5 bg-[#0D3B72]" />
                 {t("contactInfoTitle")}
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900 mb-5 leading-snug">
                 ✦ {t("contactInfoTitle")}
               </h2>
             </div>
@@ -164,16 +166,16 @@ function ContactUs() {
               {infoItems.map(({ icon: Icon, label, value }) => (
                 <div
                   key={label}
-                  className="flex items-start gap-4 bg-gray-50 rounded-2xl p-5 border border-gray-100 hover:border-[#008CBA]/30 hover:shadow-sm transition-all group"
+                  className=" flex items-start gap-4 bg-linear-to-br from-white to-[#F0F8FF] border border-[#0D3B72]/50 hover:border-[#0D3B72]/90 rounded-2xl p-6 shadow-sm hover:shadow-md  transition-all group"
                 >
-                  <div className="w-11 h-11 bg-[#008CBA]/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#008CBA] transition-colors">
-                    <Icon className="w-5 h-5 text-[#008CBA] group-hover:text-white transition-colors" />
+                  <div className="w-12 h-12 bg-[#0D3B72]/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#0D3B72] transition-colors">
+                    <Icon className="w-6 h-6 text-[#0D3B72] group-hover:text-white transition-colors" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                    <p className="text-xs font-semibold text-gray-900 uppercase tracking-wide mb-1">
                       {label}
                     </p>
-                    <p className="text-gray-700 font-medium text-sm">{value}</p>
+                    <p className="text-gray-900 font-medium text-sm">{value}</p>
                   </div>
                 </div>
               ))}
@@ -182,19 +184,19 @@ function ContactUs() {
 
           {/* Form */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 sm:p-10">
+            <div className="bg-linear-to-br from-white to-[#F0F8FF] rounded-3xl border border-[#0D3B72]/50 hover:border-[#0D3B72]/90 shadow-sm p-8 sm:p-10">
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   {t("contactFormTitle")}
                 </h2>
-                <p className="text-gray-500 text-sm">
+                <p className="text-gray-00 text-sm">
                   {t("contactFormSubtitle")}
                 </p>
               </div>
 
               {status === "success" ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-linear-to-br from-white to-[#F0F8FF] rounded-full flex items-center justify-center mb-4">
                     <CheckCircle className="w-8 h-8 text-green-500" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -205,7 +207,7 @@ function ContactUs() {
                   </p>
                   <button
                     onClick={() => setStatus("idle")}
-                    className="mt-6 text-sm text-[#008CBA] font-medium hover:underline"
+                    className="mt-6 text-sm text-[#0D3B72] font-medium hover:underline"
                   >
                     ← {t("contactSend")}
                   </button>
@@ -306,7 +308,7 @@ function ContactUs() {
                   <button
                     type="submit"
                     disabled={status === "sending"}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#008CBA] hover:bg-[#00668C] text-white font-semibold text-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#0D3B72] hover:bg-[#0A2A5A] text-white font-semibold text-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     {status === "sending" ? (
                       <>
