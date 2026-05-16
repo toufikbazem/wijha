@@ -1,0 +1,1425 @@
+openapi: 3.0.0
+info:
+  title: Wijha API
+  version: 1.0.0
+  description: |
+    REST API for the Wijha job platform.
+    Covers authentication, jobseeker/employer profiles, job posts, applications,
+    saved jobs, profile access, subscriptions, contact, and admin operations.
+  contact:
+    name: Wijha
+    url: https://wijha-dz.com
+
+servers:
+  - url: http://localhost:5000/api/v1
+    description: Local development
+  - url: https://api.wijha-dz.com/api/v1
+    description: Production
+
+tags:
+  - name: Auth
+    description: User registration, login, password and email verification
+  - name: Users
+    description: Account email/password management
+  - name: Job Seekers
+    description: Jobseeker profiles
+  - name: Employers
+    description: Employer profiles
+  - name: Job Posts
+    description: Job post listings
+  - name: Applications
+    description: Jobseeker applications to job posts
+  - name: Saved Jobs
+    description: Jobseeker bookmarks
+  - name: Experiences
+    description: Jobseeker work experiences
+  - name: Educations
+    description: Jobseeker educations
+  - name: Languages
+    description: Jobseeker languages
+  - name: Profile Access
+    description: Employer access to jobseeker profiles
+  - name: Subscriptions
+    description: Employer subscription plans
+  - name: Contact
+    description: Public contact form
+  - name: Admin Auth
+    description: Admin authentication
+  - name: Admin
+    description: Admin dashboard and management endpoints
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+      description: HttpOnly JWT cookie set on login
+
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema: { type: string }
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        succes: { type: boolean, example: false }
+        message: { type: string }
+
+    SuccessMessage:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        email: { type: string, format: email }
+        role: { type: string, enum: [jobseeker, employer, admin] }
+        emailVerified: { type: boolean }
+        createdAt: { type: string, format: date-time }
+
+    JobSeekerProfile:
+      type: object
+      properties:
+        id: { type: string }
+        userId: { type: string }
+        firstName: { type: string }
+        lastName: { type: string }
+        phone: { type: string }
+        bio: { type: string }
+        location: { type: string }
+        skills:
+          type: array
+          items: { type: string }
+        cvUrl: { type: string }
+        status: { type: string, enum: [active, inactive, banned] }
+
+    EmployerProfile:
+      type: object
+      properties:
+        id: { type: string }
+        userId: { type: string }
+        companyName: { type: string }
+        industry: { type: string }
+        website: { type: string }
+        description: { type: string }
+        logoUrl: { type: string }
+        location: { type: string }
+        status: { type: string, enum: [active, inactive, banned] }
+
+    JobPost:
+      type: object
+      properties:
+        id: { type: string }
+        employerId: { type: string }
+        title: { type: string }
+        description: { type: string }
+        location: { type: string }
+        contractType: { type: string }
+        salaryMin: { type: number }
+        salaryMax: { type: number }
+        status: { type: string, enum: [active, closed, draft] }
+        createdAt: { type: string, format: date-time }
+
+    Application:
+      type: object
+      properties:
+        id: { type: string }
+        jobPostId: { type: string }
+        jobSeekerId: { type: string }
+        coverLetter: { type: string }
+        status: { type: string }
+        createdAt: { type: string, format: date-time }
+
+    Experience:
+      type: object
+      properties:
+        id: { type: string }
+        jobSeekerId: { type: string }
+        title: { type: string }
+        company: { type: string }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+        description: { type: string }
+
+    Education:
+      type: object
+      properties:
+        id: { type: string }
+        jobSeekerId: { type: string }
+        institution: { type: string }
+        degree: { type: string }
+        field: { type: string }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date }
+
+    Language:
+      type: object
+      properties:
+        id: { type: string }
+        jobSeekerId: { type: string }
+        name: { type: string }
+        level: { type: string, enum: [beginner, intermediate, advanced, fluent, native] }
+
+    Plan:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        price: { type: number }
+        durationDays: { type: integer }
+        features:
+          type: array
+          items: { type: string }
+
+    Subscription:
+      type: object
+      properties:
+        id: { type: string }
+        employerId: { type: string }
+        planId: { type: string }
+        status: { type: string, enum: [active, expired, cancelled] }
+        startDate: { type: string, format: date-time }
+        endDate: { type: string, format: date-time }
+
+  responses:
+    Unauthorized:
+      description: Authentication required or invalid
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: User lacks permission for this action
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ValidationError:
+      description: Invalid request body or parameters
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+paths:
+  # ───────────── Auth ─────────────
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user (jobseeker or employer)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, role]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+                role: { type: string, enum: [jobseeker, employer] }
+      responses:
+        '201': { description: User created }
+        '400': { $ref: '#/components/responses/ValidationError' }
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Log in and receive an auth cookie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+      responses:
+        '200': { description: Logged in, sets auth cookie }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Log out and clear the auth cookie
+      responses:
+        '200': { description: Logged out }
+
+  /auth/forgot-password:
+    post:
+      tags: [Auth]
+      summary: Send a password reset email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '200': { description: Reset email sent if account exists }
+
+  /auth/reset-password:
+    put:
+      tags: [Auth]
+      summary: Reset password with a token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, password]
+              properties:
+                token: { type: string }
+                password: { type: string, format: password }
+      responses:
+        '200': { description: Password updated }
+        '400': { $ref: '#/components/responses/ValidationError' }
+
+  /auth/verify-email:
+    get:
+      tags: [Auth]
+      summary: Verify an email address with a token
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Email verified }
+        '400': { $ref: '#/components/responses/ValidationError' }
+
+  /auth/send-verification-email:
+    post:
+      tags: [Auth]
+      summary: Resend verification email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '200': { description: Verification email sent }
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get the currently authenticated user
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  # ───────────── Users ─────────────
+  /users/change-password:
+    put:
+      tags: [Users]
+      summary: Change the current user's password
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [currentPassword, newPassword]
+              properties:
+                currentPassword: { type: string, format: password }
+                newPassword: { type: string, format: password }
+      responses:
+        '200': { description: Password changed }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /users/change-email:
+    put:
+      tags: [Users]
+      summary: Change the current user's email
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password, newEmail]
+              properties:
+                password: { type: string, format: password }
+                newEmail: { type: string, format: email }
+      responses:
+        '200': { description: Email changed }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  # ───────────── Job Seekers ─────────────
+  /jobseekers/dashboard-stats:
+    get:
+      tags: [Job Seekers]
+      summary: Get dashboard stats for the logged-in jobseeker
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200': { description: Dashboard stats }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /jobseekers:
+    get:
+      tags: [Job Seekers]
+      summary: List jobseeker profiles (employer or admin)
+      security: [{ cookieAuth: [] }]
+      parameters:
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: limit, in: query, schema: { type: integer, default: 20 } }
+        - { name: search, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: List of jobseeker profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/JobSeekerProfile' }
+
+  /jobseekers/{id}:
+    get:
+      tags: [Job Seekers]
+      summary: Get a jobseeker profile by id
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200':
+          description: Jobseeker profile
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JobSeekerProfile' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Job Seekers]
+      summary: Update a jobseeker profile
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/JobSeekerProfile' }
+      responses:
+        '200': { description: Profile updated }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ───────────── Employers ─────────────
+  /employers/dashboard-stats:
+    get:
+      tags: [Employers]
+      summary: Get dashboard stats for the logged-in employer
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200': { description: Dashboard stats }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /employers:
+    get:
+      tags: [Employers]
+      summary: List employer profiles (admin only)
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200':
+          description: List of employer profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/EmployerProfile' }
+
+  /employers/{id}:
+    get:
+      tags: [Employers]
+      summary: Get an employer profile by id (public, optional auth)
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200':
+          description: Employer profile
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EmployerProfile' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Employers]
+      summary: Update an employer profile
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EmployerProfile' }
+      responses:
+        '200': { description: Profile updated }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ───────────── Job Posts ─────────────
+  /job-posts:
+    get:
+      tags: [Job Posts]
+      summary: List job posts (public, optional auth)
+      parameters:
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: limit, in: query, schema: { type: integer, default: 20 } }
+        - { name: search, in: query, schema: { type: string } }
+        - { name: location, in: query, schema: { type: string } }
+        - { name: contractType, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: List of job posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/JobPost' }
+    post:
+      tags: [Job Posts]
+      summary: Create a job post (employer with active subscription)
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/JobPost' }
+      responses:
+        '201': { description: Job post created }
+        '402': { description: Subscription required }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /job-posts/{id}:
+    get:
+      tags: [Job Posts]
+      summary: Get a job post by id
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200':
+          description: Job post
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JobPost' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Job Posts]
+      summary: Update a job post
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/JobPost' }
+      responses:
+        '200': { description: Job post updated }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /job-posts/{id}/status:
+    patch:
+      tags: [Job Posts]
+      summary: Change a job post status
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [active, closed, draft] }
+      responses:
+        '200': { description: Status changed }
+
+  # ───────────── Applications ─────────────
+  /applications:
+    get:
+      tags: [Applications]
+      summary: List applications (filtered by role)
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200':
+          description: List of applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Application' }
+    post:
+      tags: [Applications]
+      summary: Create an application (jobseeker)
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [jobPostId]
+              properties:
+                jobPostId: { type: string }
+                coverLetter: { type: string }
+      responses:
+        '201': { description: Application submitted }
+
+  /applications/{id}:
+    get:
+      tags: [Applications]
+      summary: Get an application by id (jobseeker)
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200':
+          description: Application
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Application' }
+    delete:
+      tags: [Applications]
+      summary: Delete an application (jobseeker or admin)
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: Application deleted }
+
+  /applications/by-job/{jobPostId}:
+    get:
+      tags: [Applications]
+      summary: List applicants for a job post (employer or admin)
+      security: [{ cookieAuth: [] }]
+      parameters:
+        - name: jobPostId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: List of applications for the job
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Application' }
+
+  # ───────────── Saved Jobs ─────────────
+  /saved-jobs:
+    get:
+      tags: [Saved Jobs]
+      summary: List the current jobseeker's saved jobs
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200':
+          description: List of saved jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/JobPost' }
+    post:
+      tags: [Saved Jobs]
+      summary: Save a job
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [jobPostId]
+              properties:
+                jobPostId: { type: string }
+      responses:
+        '201': { description: Saved }
+    delete:
+      tags: [Saved Jobs]
+      summary: Remove a saved job
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [jobPostId]
+              properties:
+                jobPostId: { type: string }
+      responses:
+        '200': { description: Removed }
+
+  /saved-jobs/{id}:
+    get:
+      tags: [Saved Jobs]
+      summary: Get a saved job by id
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: Saved job }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ───────────── Experiences ─────────────
+  /experiences:
+    post:
+      tags: [Experiences]
+      summary: Create a work experience
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Experience' }
+      responses:
+        '201': { description: Experience created }
+
+  /experiences/{id}:
+    put:
+      tags: [Experiences]
+      summary: Update a work experience
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Experience' }
+      responses:
+        '200': { description: Experience updated }
+    delete:
+      tags: [Experiences]
+      summary: Delete a work experience
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: Experience deleted }
+
+  # ───────────── Educations ─────────────
+  /educations:
+    post:
+      tags: [Educations]
+      summary: Create an education entry
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Education' }
+      responses:
+        '201': { description: Education created }
+
+  /educations/{id}:
+    put:
+      tags: [Educations]
+      summary: Update an education entry
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Education' }
+      responses:
+        '200': { description: Education updated }
+    delete:
+      tags: [Educations]
+      summary: Delete an education entry
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: Education deleted }
+
+  # ───────────── Languages ─────────────
+  /languages:
+    post:
+      tags: [Languages]
+      summary: Create a language entry
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Language' }
+      responses:
+        '201': { description: Language created }
+
+  /languages/{id}:
+    put:
+      tags: [Languages]
+      summary: Update a language entry
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Language' }
+      responses:
+        '200': { description: Language updated }
+    delete:
+      tags: [Languages]
+      summary: Delete a language entry
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: Language deleted }
+
+  # ───────────── Profile Access ─────────────
+  /profile-access/search:
+    get:
+      tags: [Profile Access]
+      summary: Search jobseeker profiles (employer)
+      security: [{ cookieAuth: [] }]
+      parameters:
+        - { name: q, in: query, schema: { type: string } }
+        - { name: skills, in: query, schema: { type: string } }
+        - { name: location, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/JobSeekerProfile' }
+
+  /profile-access/my-access:
+    get:
+      tags: [Profile Access]
+      summary: List profiles the employer has accessed
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200': { description: List of accessed profiles }
+
+  /profile-access/check/{jobSeekerId}:
+    get:
+      tags: [Profile Access]
+      summary: Check if employer has access to a jobseeker
+      security: [{ cookieAuth: [] }]
+      parameters:
+        - name: jobSeekerId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Access status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hasAccess: { type: boolean }
+
+  /profile-access/request/{jobSeekerId}:
+    post:
+      tags: [Profile Access]
+      summary: Request access to a jobseeker profile (consumes subscription quota)
+      security: [{ cookieAuth: [] }]
+      parameters:
+        - name: jobSeekerId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Access granted }
+        '402': { description: Subscription required or quota exceeded }
+
+  # ───────────── Subscriptions ─────────────
+  /subscriptions/plans:
+    get:
+      tags: [Subscriptions]
+      summary: List available subscription plans (public)
+      responses:
+        '200':
+          description: List of plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Plan' }
+
+  /subscriptions/my-subscription:
+    get:
+      tags: [Subscriptions]
+      summary: Get the current employer's active subscription
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200':
+          description: Active subscription
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Subscription' }
+
+  /subscriptions/subscribe:
+    post:
+      tags: [Subscriptions]
+      summary: Subscribe to a plan
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [planId]
+              properties:
+                planId: { type: string }
+      responses:
+        '201': { description: Subscription created }
+
+  /subscriptions/invoices:
+    get:
+      tags: [Subscriptions]
+      summary: List the employer's invoices
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200': { description: List of invoices }
+
+  # ───────────── Contact ─────────────
+  /contact:
+    post:
+      tags: [Contact]
+      summary: Submit a contact form message (public)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, message]
+              properties:
+                name: { type: string }
+                email: { type: string, format: email }
+                subject: { type: string }
+                message: { type: string }
+      responses:
+        '200': { description: Message submitted }
+
+  # ───────────── Admin Auth ─────────────
+  /admin/auth/login:
+    post:
+      tags: [Admin Auth]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+      responses:
+        '200': { description: Logged in }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /admin/auth/logout:
+    post:
+      tags: [Admin Auth]
+      summary: Admin logout
+      responses:
+        '200': { description: Logged out }
+
+  /admin/auth/me:
+    get:
+      tags: [Admin Auth]
+      summary: Get current admin user
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200':
+          description: Current admin
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+
+  # ───────────── Admin ─────────────
+  /admin/dashboard:
+    get:
+      tags: [Admin]
+      summary: Admin dashboard stats
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200': { description: Dashboard stats }
+
+  /admin/job-seekers:
+    get:
+      tags: [Admin]
+      summary: List jobseekers
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200': { description: List }
+    post:
+      tags: [Admin]
+      summary: Create a jobseeker profile
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/JobSeekerProfile' }
+      responses:
+        '201': { description: Created }
+
+  /admin/job-seekers/{id}:
+    get:
+      tags: [Admin]
+      summary: Get jobseeker details
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: Jobseeker details }
+    put:
+      tags: [Admin]
+      summary: Update jobseeker
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/JobSeekerProfile' }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Admin]
+      summary: Delete jobseeker
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: Deleted }
+
+  /admin/job-seekers/{id}/status:
+    patch:
+      tags: [Admin]
+      summary: Change jobseeker status
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [active, inactive, banned] }
+      responses:
+        '200': { description: Status changed }
+
+  /admin/job-seekers/{id}/applications:
+    get:
+      tags: [Admin]
+      summary: List a jobseeker's applications
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: List of applications }
+
+  /admin/job-seekers/{id}/applications/{applicationId}:
+    delete:
+      tags: [Admin]
+      summary: Delete a specific jobseeker application
+      security: [{ cookieAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdParam' }
+        - name: applicationId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Deleted }
+
+  /admin/job-seekers/{id}/saved:
+    get:
+      tags: [Admin]
+      summary: List a jobseeker's saved jobs
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: List of saved jobs }
+
+  /admin/job-seekers/{id}/saved/{savedId}:
+    delete:
+      tags: [Admin]
+      summary: Delete a specific saved job for a jobseeker
+      security: [{ cookieAuth: [] }]
+      parameters:
+        - { $ref: '#/components/parameters/IdParam' }
+        - name: savedId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Deleted }
+
+  /admin/employers:
+    get:
+      tags: [Admin]
+      summary: List employers
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200': { description: List }
+
+  /admin/employers/{id}:
+    get:
+      tags: [Admin]
+      summary: Get employer details
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: Employer details }
+    put:
+      tags: [Admin]
+      summary: Update employer
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EmployerProfile' }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Admin]
+      summary: Delete employer
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: Deleted }
+
+  /admin/employers/{id}/status:
+    patch:
+      tags: [Admin]
+      summary: Change employer status
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [active, inactive, banned] }
+      responses:
+        '200': { description: Status changed }
+
+  /admin/employers/{id}/profile-access:
+    get:
+      tags: [Admin]
+      summary: Profile access history for an employer
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: List }
+
+  /admin/employers/{id}/subscription:
+    get:
+      tags: [Admin]
+      summary: Subscription for an employer
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200':
+          description: Subscription
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Subscription' }
+
+  /admin/users/{id}/email:
+    put:
+      tags: [Admin]
+      summary: Update a user's email
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '200': { description: Updated }
+
+  /admin/users/{id}/password:
+    put:
+      tags: [Admin]
+      summary: Update a user's password
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password]
+              properties:
+                password: { type: string, format: password }
+      responses:
+        '200': { description: Updated }
+
+  /admin/users/{id}/email-verification:
+    patch:
+      tags: [Admin]
+      summary: Update email verification status
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [emailVerified]
+              properties:
+                emailVerified: { type: boolean }
+      responses:
+        '200': { description: Updated }
+
+  /admin/job-posts:
+    get:
+      tags: [Admin]
+      summary: List all job posts
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200': { description: List }
+    post:
+      tags: [Admin]
+      summary: Create a job post as admin
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/JobPost' }
+      responses:
+        '201': { description: Created }
+
+  /admin/job-posts/{id}:
+    get:
+      tags: [Admin]
+      summary: Get job post details
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: Job post }
+    put:
+      tags: [Admin]
+      summary: Update a job post as admin
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/JobPost' }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Admin]
+      summary: Delete a job post
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: Deleted }
+
+  /admin/job-posts/{id}/status:
+    patch:
+      tags: [Admin]
+      summary: Change job post status
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [active, closed, draft] }
+      responses:
+        '200': { description: Status changed }
+
+  /admin/applications:
+    get:
+      tags: [Admin]
+      summary: List all applications
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200': { description: List }
+
+  /admin/applications/{applicationId}:
+    delete:
+      tags: [Admin]
+      summary: Delete an application
+      security: [{ cookieAuth: [] }]
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Deleted }
+
+  /admin/plans:
+    get:
+      tags: [Admin]
+      summary: List subscription plans
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200':
+          description: List of plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Plan' }
+    post:
+      tags: [Admin]
+      summary: Create a plan
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Plan' }
+      responses:
+        '201': { description: Created }
+
+  /admin/plans/{id}:
+    put:
+      tags: [Admin]
+      summary: Update a plan
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Plan' }
+      responses:
+        '200': { description: Updated }
+    delete:
+      tags: [Admin]
+      summary: Delete a plan
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      responses:
+        '200': { description: Deleted }
+
+  /admin/subscriptions:
+    get:
+      tags: [Admin]
+      summary: List employer subscriptions
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200':
+          description: List of subscriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Subscription' }
+    post:
+      tags: [Admin]
+      summary: Create a subscription
+      security: [{ cookieAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [employerId, planId]
+              properties:
+                employerId: { type: string }
+                planId: { type: string }
+      responses:
+        '201': { description: Created }
+
+  /admin/subscriptions/{id}/status:
+    patch:
+      tags: [Admin]
+      summary: Change subscription status
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [active, expired, cancelled] }
+      responses:
+        '200': { description: Status changed }
+
+  /admin/subscriptions/{id}/extend:
+    patch:
+      tags: [Admin]
+      summary: Extend a subscription
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [days]
+              properties:
+                days: { type: integer }
+      responses:
+        '200': { description: Extended }
+
+  /admin/subscriptions/{id}/custom:
+    patch:
+      tags: [Admin]
+      summary: Assign a custom plan to a subscription
+      security: [{ cookieAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/IdParam' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Plan' }
+      responses:
+        '200': { description: Custom plan assigned }
+
+  /admin/profile-access:
+    get:
+      tags: [Admin]
+      summary: List profile access records (audit)
+      security: [{ cookieAuth: [] }]
+      responses:
+        '200': { description: List of access records }

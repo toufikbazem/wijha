@@ -17,9 +17,6 @@ export const searchProfiles = async (req, res) => {
     const conditions = [
       "js.status = 'active'",
       "js.professional_title IS NOT NULL AND js.professional_title != ''",
-      "js.experience_level IS NOT NULL AND js.experience_level != ''",
-      "js.education_level IS NOT NULL AND js.education_level != ''",
-      "js.gender IS NOT NULL",
     ];
     const values = [];
     let index = 1;

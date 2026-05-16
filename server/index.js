@@ -15,14 +15,33 @@ import users from "./src/modules/users/users.routes.js";
 import profileAccess from "./src/modules/profile-access/profile-access.routes.js";
 import subscriptions from "./src/modules/subscriptions/subscriptions.routes.js";
 import admin from "./src/modules/admin/admin.routes.js";
+import adminAuth from "./src/modules/admin/admin.auth.routes.js";
 import contact from "./src/modules/contact/contact.routes.js";
 
 const app = express();
 dotenv.config();
 
+// app.use(
+//   cors({
+//     origin: process.env.CLIENT_URL,
+//     credentials: true,
+//   }),
+// );
+// app.use(
+//   cors({
+//     origin: ["http://localhost:5173", "http://localhost:5174"],
+//     credentials: true,
+//   }),
+// );
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: [
+      "https://www.wijha-dz.com",
+      "https://www.admin.wijha-dz.com",
+      "https://admin.wijha-dz.com",
+      "https://wijha-dz.com",
+    ],
     credentials: true,
   }),
 );
@@ -46,6 +65,7 @@ app.use("/api/v1/educations", educations);
 app.use("/api/v1/languages", languages);
 app.use("/api/v1/profile-access", profileAccess);
 app.use("/api/v1/subscriptions", subscriptions);
+app.use("/api/v1/admin/auth", adminAuth);
 app.use("/api/v1/admin", admin);
 app.use("/api/v1/contact", contact);
 

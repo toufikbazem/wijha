@@ -39,6 +39,7 @@ const register = async (req, res) => {
     logo,
   } = req.body;
 
+  // Validate required fields based on role
   if (role === "jobseeker") {
     if (
       !firstName ||
@@ -52,9 +53,10 @@ const register = async (req, res) => {
       !educationLevel ||
       !gender
     ) {
-      return res
-        .status(400)
-        .json({ message: "All fields are required for job seekers." });
+      return res.status(400).json({
+        code_error: "ALL_FIELDS_REQUIRED",
+        message: "All fields are required for job seekers.",
+      });
     }
   } else if (role === "employer") {
     if (
@@ -66,24 +68,35 @@ const register = async (req, res) => {
       !address ||
       !foundingYear
     ) {
-      return res
-        .status(400)
-        .json({ message: "All fields are required for employers." });
+      return res.status(400).json({
+        code_error: "ALL_FIELDS_REQUIRED",
+        message: "All fields are required for employers.",
+      });
     }
   } else {
-    return res.status(400).json({ message: "Invalid user role." });
+    return res
+      .status(400)
+      .json({ code_error: "INVALID_ROLE", message: "Invalid user role." });
   }
 
   let newUser;
 
   try {
+    // Check if user already exists
     const existingUser = await db.query("SELECT * FROM users WHERE email=$1", [
       email,
     ]);
     if (existingUser.rows.length > 0) {
-      return res.status(409).json({ message: "User already exists." });
+      return res.status(409).json({
+        code_error: "USER_ALREADY_EXISTS",
+        message: "User already exists.",
+      });
     }
+
+    // Hash the password before storing
     const hashedPassword = bcryptjs.hashSync(password, 10);
+
+    // Insert user into database
     newUser = await db.query(
       "INSERT INTO users (email, password, role) VALUES ($1, $2, $3) RETURNING id",
       [email, hashedPassword, role],
@@ -98,6 +111,7 @@ const register = async (req, res) => {
 
     sendVerifyEmail(email, newUser.rows[0].id);
 
+    // Insert role-specific data
     if (role === "jobseeker") {
       const jobseekerResult = await db.query(
         "INSERT INTO job_seeker (user_id, first_name, last_name, professional_title, experience_level, education_level, gender, address, phone_number, profile_image, linkedin, professional_summary, cv, skills) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
@@ -204,7 +218,9 @@ const register = async (req, res) => {
     res.status(201).json({ message: "User registered successfully." });
   } catch (error) {
     // await db.query("DELETE FROM users WHERE id=$1", [newUser.rows[0].id]);
-    res.status(500).json(error);
+    res
+      .status(500)
+      .json({ code_error: "INTERNAL_SERVER_ERROR", message: error.message });
   }
 };
 

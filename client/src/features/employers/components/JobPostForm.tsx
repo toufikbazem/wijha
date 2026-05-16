@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -26,10 +25,8 @@ import {
 } from "@/utils/data";
 import {
   Briefcase,
-  Building2,
   CalendarIcon,
   ClipboardList,
-  Clock,
   FileText,
   Save,
   Send,
@@ -40,6 +37,7 @@ import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n/i18n";
+import RichEditor from "@/components/TextEditor";
 
 function JobPostForm({
   form,
@@ -479,28 +477,10 @@ function JobPostForm({
                 <FieldLabel className="input-label">
                   {t("jobDescription")}
                 </FieldLabel>
-                <Textarea
-                  placeholder="Mission / Role Overview
-
-The purpose of this role is to support the company’s growth by contributing to key projects, ensuring efficient operations, and delivering high-quality work. The candidate will play an important role in improving processes, collaborating with team members, and helping the company achieve its goals.
-
-Key Responsibilities
-
-• Assist in planning and executing daily tasks and projects.
-• Collaborate with team members to ensure smooth workflow and timely delivery.
-• Monitor and report progress, highlighting any issues or improvements.
-• Maintain accurate documentation and follow company procedures.
-• Communicate effectively with internal teams and external partners when needed.
-
-Requirements (Qualifications & Skills)
-
-• Basic understanding of the field or relevant experience is preferred.
-• Strong communication and organizational skills.
-• Ability to manage time, prioritize tasks, and work independently when required.
-• Problem-solving mindset and willingness to learn.
-• Knowledge of common tools or software used in the role is a plus."
-                  {...field}
-                  className="h-[446px] text-[16px] w-full  px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008CBA] focus:border-transparent outline-none transition"
+                <RichEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Start writing…"
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />

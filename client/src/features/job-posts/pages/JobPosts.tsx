@@ -588,9 +588,10 @@ export default function JobPosts() {
                     {t("jobDescription")}
                   </h2>
                 </div>
-                <p className="text-slate-700 leading-relaxed">
-                  {data.description}
-                </p>
+                <div
+                  dangerouslySetInnerHTML={{ __html: data.description }}
+                  className="ql-content text-slate-700 leading-relaxed"
+                />
               </div>
             </div>
 

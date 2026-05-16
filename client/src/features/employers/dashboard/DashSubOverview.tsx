@@ -37,9 +37,7 @@ export default function DashSubOverview() {
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
           {t("noActiveSubscription")}
         </h3>
-        <p className="text-gray-500 text-sm">
-          {t("subscribeStart")}
-        </p>
+        <p className="text-gray-500 text-sm">{t("subscribeStart")}</p>
       </div>
     );
   }
@@ -106,7 +104,7 @@ export default function DashSubOverview() {
             <p className="text-2xl font-bold text-gray-900">
               {subscription.price === 0
                 ? t("free")
-                : `${(subscription.price / 100).toFixed(2)} DA`}
+                : `${subscription.price / 100} DA`}
             </p>
             <p className="text-sm text-gray-500">{t("perCycle")}</p>
           </div>
@@ -165,7 +163,9 @@ export default function DashSubOverview() {
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900">{t("profileAccessUsage")}</h3>
+              <h3 className="font-semibold text-gray-900">
+                {t("profileAccessUsage")}
+              </h3>
               <p className="text-sm text-gray-500">
                 {isUnlimited
                   ? `${subscription.profile_access_used} ${t("used")} (${t("unlimited")})`

@@ -1,25 +1,44 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type Ref } from "react";
+import CounterCard from "@/features/public/components/CounterCard";
+import FadeText from "@/features/public/components/FadeText";
+import { useInView } from "@/features/public/components/hooks/useInView";
+
 import {
   Shield,
-  Star,
   MapPin,
   Clock,
   DollarSign,
   Award,
   Target,
   Rocket,
+  ArrowRight,
 } from "lucide-react";
-import Hero from "@/assets/Hero.png";
-import img3 from "@/assets/2.png";
-import img4 from "@/assets/3.png";
-import img5 from "@/assets/4.png";
-import img6 from "@/assets/9.png";
-import img7 from "@/assets/6.png";
-import img8 from "@/assets/7.png";
-import img13 from "@/assets/13.png";
-import img14 from "@/assets/14.png";
-import img15 from "@/assets/15.png";
-import img16 from "@/assets/img22.png";
+import img3 from "@/assets/bcos.png";
+import img4 from "@/assets/caame.png";
+import img5 from "@/assets/cad.png";
+import img6 from "@/assets/champidor.png";
+import img7 from "@/assets/cph.png";
+import img8 from "@/assets/Delta_kitchen.png";
+import img13 from "@/assets/ecs.png";
+import img14 from "@/assets/essalam.png";
+import img15 from "@/assets/goblux.png";
+import img16 from "@/assets/goldensbm.png";
+import img17 from "@/assets/ima.png";
+import img18 from "@/assets/logic_pack.png";
+import img19 from "@/assets/lum.png";
+import img20 from "@/assets/ozea.png";
+import img21 from "@/assets/plasfit.png";
+import img22 from "@/assets/prophex.png";
+import img23 from "@/assets/renoh.png";
+import img24 from "@/assets/san_water.png";
+import img25 from "@/assets/solutex.png";
+import img26 from "@/assets/speedwin.png";
+import img27 from "@/assets/taif.png";
+import img28 from "@/assets/techno.png";
+import img29 from "@/assets/uveds.png";
+import img30 from "@/assets/versal.png";
+import img31 from "@/assets/yotta.png";
+import img32 from "@/assets/megawell.png";
 import add1 from "@/assets/add1.jpg";
 import add2 from "@/assets/add2.jpg";
 import Footer from "../components/Footer";
@@ -137,14 +156,6 @@ export default function JobSearchLanding() {
     },
   ];
 
-  const jobCategories = [
-    { id: 1, name: t("cat1") },
-    { id: 2, name: t("cat2") },
-    { id: 3, name: t("cat3") },
-    { id: 4, name: t("cat4") },
-    { id: 5, name: t("cat5") },
-  ];
-
   const testimonials = [
     {
       name: "Pr. Sid Ahmed Hadj Aissa",
@@ -174,135 +185,96 @@ export default function JobSearchLanding() {
     return `Up to ${max!.toLocaleString()} DA`;
   };
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "1 day ago";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 14) return "1 week ago";
-    return `${Math.floor(diffDays / 7)} weeks ago`;
-  };
-
+  // const formatDate = (dateStr: string) => {
+  //   const date = new Date(dateStr);
+  //   const now = new Date();
+  //   const diffMs = now.getTime() - date.getTime();
+  //   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  //   if (diffDays === 0) return "Today";
+  //   if (diffDays === 1) return "1 day ago";
+  //   if (diffDays < 7) return `${diffDays} days ago`;
+  //   if (diffDays < 14) return "1 week ago";
+  //   return `${Math.floor(diffDays / 7)} weeks ago`;
+  // };
+  const { ref, inView } = useInView();
   return (
-    <div className="bg-white">
+    <div className="w-full min-h-screen bg-[#F5F7FA] pointer-events-auto">
       {/* Navigation */}
       <Header />
 
       {/* Hero Section */}
-      <section
-        dir={isRTL ? "rtl" : "ltr"}
-        className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-linear-to-br from-blue-50 via-white to-cyan-50"></div>
-        <div className="absolute top-20 right-10 w-72 h-72 bg-[#008CBA]/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
-
-        <div className="max-w-7xl mx-auto relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="left-reveal">
-              <h1 className="text-6xl font-bold text-gray-900 mb-6 leading-tight text-center rtl:lg:text-right ltr:lg:text-left">
-                {t("yourCareer")}{" "}
-                <span className="lg:block bg-[#008CBA] bg-clip-text text-transparent">
-                  {t("startHere")}
-                </span>
-              </h1>
-              <p className="text-center rtl:lg:text-right ltr:lg:text-left text-xl text-gray-600 mb-8 leading-relaxed">
+      <section dir={isRTL ? "rtl" : "ltr"} className="">
+        <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden w-full h-screen">
+          <div className="absolute inset-0 bg-[url('/src/assets/gg.png')] bg-cover bg-center"></div>
+          <div className="relative z-10 max-w-7xl mx-auto p-10"></div>
+          <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
+            <div className="pt-0">
+              <FadeText
+                text={t("yourCareer") + " " + t("startHere")}
+                mode="words"
+                stagger={150}
+                duration={800}
+                className="text-4xl md:text-6xl font-bold text-white justify-center"
+              />
+              <p
+                ref={ref as Ref<HTMLParagraphElement>}
+                // style={{
+                //   opacity: inView ? 1 : 0,
+                //   transform: inView ? "translateY(0)" : "translateY(200px)",
+                //   transition: "opacity 5s ease, transform 2s ease",
+                // }}
+                className="text-lg text-gray-50 leading-relaxed mt-10"
+              >
                 {t("heroText")}
               </p>
-              <div className="flex flex-col sm:justify-center lg:justify-start sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-10 mt-15 justify-center">
                 <button
+                  ref={ref as Ref<HTMLButtonElement>}
+                  // style={{
+                  //   opacity: inView ? 1 : 0,
+                  //   transform: inView ? "translateY(0)" : "translateY(200px)",
+                  //   transition: "opacity 5s ease, transform 2s ease",
+                  // }}
                   onClick={() => navigate("/jobSearch")}
-                  className="cursor-pointer px-4 py-2 rounded-xl text-white font-semibold bg-[#008CBA] hover:bg-[#00668C] transition-all flex items-center justify-center"
+                  className="flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl
+                           bg-linear-to-r from-[#008CBA] to-[#005F7F]
+                           text-white font-semibold text-base
+                           shadow-[0_4px_16px_rgba(0,140,186,0.3)]
+                           hover:shadow-[0_8px_28px_rgba(0,140,186,0.5)]
+                           hover:-translate-y-0.5 transition-all duration-200"
                 >
+                  <ArrowRight size={18} />
                   {t("exploreJobs")}
                 </button>
                 <button
+                  ref={ref as Ref<HTMLButtonElement>}
+                  // style={{
+                  //   opacity: inView ? 1 : 0,
+                  //   transform: inView ? "translateY(0)" : "translateY(200px)",
+                  //   transition: "opacity 5s ease, transform 2s ease",
+                  // }}
                   onClick={() => navigate("/dashboard?dash=profileAccess")}
-                  className="cursor-pointer hover:text-white box-border hover:bg-[#008CBA] text-[#008CBA] border-2 border-[#008CBA] rounded-xl px-4 py-2 font-medium transition"
+                  className="flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl
+                           border border-black text-[#06192d] bg-white/80 font-semibold text-base
+                           hover:border-white hover:text-white hover:bg-[#06192d] hover:shadow-[0_4px_16px_rgba(255,255,255,0.3)]
+                           transition-all duration-200"
                 >
                   {t("forEmployers")}
                 </button>
               </div>
             </div>
-            <div className="right-reveal hidden lg:flex justify-center items-center">
-              <img src={Hero} alt="hero" className="object-cover" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Job Categories */}
-      <section className="py-16 bg-gray-50">
-        <div className="bottom-reveal max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              {t("categoriesTitle")}
-            </h2>
-            <p className="text-lg text-gray-600">{t("categoriesSubtitle")}</p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-4">
-            {jobCategories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => navigate("/jobSearch")}
-                className="bg-linear-to-br from-primary-500 via-primary-400 to-primary-700 px-6 py-3 rounded-xl font-semibold transition-all bg-white text-gray-700 hover:shadow-md"
-              >
-                {category.name}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bottom-reveal text-center mb-16">
-            <div className="inline-block bg-[#008CBA]/10 text-[#008CBA] px-4 py-2 rounded-full text-sm font-semibold mb-4">
-              {t("featuresTitle")}
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              {t("featuresSubtitle")}
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {t("featuresText")}
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="left-reveal group relative bg-gradient-to-br from-gray-50 to-white p-8 rounded-2xl border border-gray-100 transition-all duration-300"
-              >
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#008CBA]/10 to-transparent rounded-bl-3xl"></div>
-                <div className="relative">
-                  <div className="w-14 h-14 bg-gradient-to-br from-[#008CBA] to-[#005F7F] rounded-xl flex items-center justify-center text-white mb-4 transition-transform">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
 
       {/* Featured Jobs */}
-      <section className="py-20 bg-linear-to-b from-gray-50 to-white">
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bottom-reveal text-center mb-16">
-            <div className="inline-block bg-[#008CBA]/10 text-[#008CBA] px-4 py-2 rounded-full text-sm font-semibold mb-4">
+            <div className="inline-block bg-[#0D3B72]/90 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 w-70">
               {t("jobsTitle")}
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
               {t("jobsSubtitle")}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -315,7 +287,7 @@ export default function JobSearchLanding() {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-2xl p-6 border-2 border-gray-100 animate-pulse"
+                  className="bg-linear-to-br from-white to-[#F0F8FF] rounded-2xl p-6 border-2 border-[#0D3B72]/50 animate-pulse hover:border-[#0D3B72]/90"
                 >
                   <div className="h-5 bg-gray-200 rounded w-3/4 mb-4"></div>
                   <div className="h-4 bg-gray-200 rounded w-1/2 mb-6"></div>
@@ -331,11 +303,11 @@ export default function JobSearchLanding() {
           )}
 
           {!jobsLoading && jobsError && (
-            <p className="text-center text-gray-500">{t("jobsError")}</p>
+            <p className="text-center text-gray-900">{t("jobsError")}</p>
           )}
 
           {!jobsLoading && !jobsError && jobPosts.length === 0 && (
-            <p className="text-center text-gray-500">{t("jobsEmpty")}</p>
+            <p className="text-center text-gray-900">{t("jobsEmpty")}</p>
           )}
 
           {!jobsLoading && !jobsError && jobPosts.length > 0 && (
@@ -346,14 +318,14 @@ export default function JobSearchLanding() {
                   <div
                     key={job.id}
                     onClick={() => navigate(`/jobPost/${job.id}`)}
-                    className="right-reveal group bg-white rounded-2xl p-6 border-2 border-gray-100 hover:border-[#008CBA] hover:shadow-2xl transition-all duration-300 cursor-pointer"
+                    className="right-reveal group bg-linear-to-br from-white to-[#F0F8FF] rounded-2xl p-6 border-2 border-[#008CBA] hover:border-[#005F7F] transition-all duration-300 cursor-pointer"
                   >
                     <div className="flex items-center gap-3 mb-4">
                       {job.logo ? (
                         <img
                           src={job.logo}
                           alt={job.company_name}
-                          className="w-10 h-10 rounded-lg object-contain border border-gray-100"
+                          className="w-10 h-10 rounded-lg object-contain border border-[#0D3B72]/90 bg-white "
                         />
                       ) : (
                         <div className="w-10 h-10 rounded-lg bg-linear-to-br from-[#008CBA] to-[#005F7F] flex items-center justify-center text-white font-bold text-sm">
@@ -369,17 +341,17 @@ export default function JobSearchLanding() {
                     </h3>
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center text-sm text-gray-600">
-                        <MapPin className="w-4 h-4 mr-2 text-[#008CBA]" />
+                        <MapPin className="w-4 h-4 mr-2 text-[#0D3B72]" />
                         {translateLocation(job.location)}
                       </div>
                       {salary && (
                         <div className="flex items-center text-sm text-gray-600">
-                          <DollarSign className="w-4 h-4 mr-2 text-[#008CBA]" />
+                          <DollarSign className="w-4 h-4 mr-2 text-[#0D3B72]" />
                           {salary}
                         </div>
                       )}
                       <div className="flex items-center text-sm text-gray-600">
-                        <Clock className="w-4 h-4 mr-2 text-[#008CBA]" />
+                        <Clock className="w-4 h-4 mr-2 text-[#0D3B72]" />
                         {t("jobPosted")}{" "}
                         {moment(job.created_at)
                           .locale(i18nInstance.language)
@@ -388,12 +360,12 @@ export default function JobSearchLanding() {
                     </div>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {job.job_type && (
-                        <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium">
+                        <span className="px-3 py-1 bg-gray-100 text-gray-900 rounded-lg text-xs font-medium">
                           {t(job.job_type)}
                         </span>
                       )}
                       {job.job_mode && (
-                        <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium">
+                        <span className="px-3 py-1 bg-gray-100 text-gray-900 rounded-lg text-xs font-medium">
                           {t(job.job_mode)}
                         </span>
                       )}
@@ -404,7 +376,7 @@ export default function JobSearchLanding() {
                           e.stopPropagation();
                           navigate(`/jobPost/${job.id}`);
                         }}
-                        className="px-4 py-2 bg-linear-to-r from-[#008CBA] to-[#005F7F] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#008CBA]/30 transition-all transform hover:scale-105"
+                        className="px-4 py-2 bg-linear-to-r from-[#0D3B72] to-[#005F7F] text-white rounded-lg font-medium hover:shadow-lg hover:shadow-[#008CBA]/30 transition-all transform hover:scale-105"
                       >
                         {t("jobApply")}
                       </button>
@@ -417,12 +389,79 @@ export default function JobSearchLanding() {
         </div>
       </section>
 
-      {/* Sponsored Ads Section */}
-      <section className="py-10 bg-gray-50">
+      <section className="py-16 px-6 border-border-gray-200 relative overflow-hidden ">
+        <div className="absolute inset-0 bg-[url('/src/assets/conter.png')] bg-cover bg-center bg-fixed"></div>
+        {/* <div className="absolute inset-0 bg-[#06192d]/70"></div> */}
+        <div className="relative z-10 max-w-7xl mx-auto p-10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 w-full justify-between px-6">
+            <CounterCard
+              label={t("statsCvs")}
+              target={5000}
+              suffix="+"
+              className=""
+            />
+            <CounterCard
+              label={t("statsCompanies")}
+              target={200}
+              suffix="+"
+              className=""
+            />
+            <CounterCard
+              label={t("statsJobs")}
+              target={100}
+              suffix="+"
+              className=""
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="py-20 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-xs text-gray-400 uppercase tracking-widest text-center mb-4">
-            {t("sponsored")}
-          </p>
+          <div className="bottom-reveal text-center mb-16">
+            <div className="inline-block  bg-[#0D3B72]/90 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 w-70">
+              {t("featuresTitle")}
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
+              {t("featuresSubtitle")}
+            </h2>
+            <p className="text-xl text-gray-900 max-w-3xl mx-auto">
+              {t("featuresText")}
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="left-reveal group relative bg-linear-to-br from-white to-[#F0F8FF] p-8 rounded-2xl border-2 border-[#0D3B72]/50 hover:border-[#0D3B72]/90 transition-all duration-300"
+              >
+                <div className="absolute top-0 right-0 w-20 h-20 bg-linear-to-br from-[#0D3B72]/50 to-transparent rounded-bl-3xl"></div>
+                <div className="relative">
+                  <div className="w-14 h-14 bg-[#0D3B72]/80 rounded-xl flex items-center justify-center text-white mb-4 transition-transform">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-900 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Sponsored Ads Section */}
+      <section className="py-10">
+        <div className="max-w-7xl text-center mb-16 mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="inline-block  bg-[#0D3B72]/90 text-white px-4 py-2 mb-10 rounded-full text-sm font-semibold w-70">
+            <p className="text-sm  uppercase tracking-widest text-center">
+              {t("sponsored")}
+            </p>
+          </div>
           <div className="mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="rounded-2xl overflow-hidden h-64 md:h-auto">
               <img
@@ -444,19 +483,19 @@ export default function JobSearchLanding() {
       </section>
 
       {/* Featured Employers */}
-      <section className="py-20 bg-white overflow-hidden">
+      <section className="py-10 overflow-hidden border-t-2 border-b-2 border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bottom-reveal text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">
               {t("employersTitle")}
             </h2>
-            <p className="text-lg text-gray-600">{t("employersSubtitle")}</p>
+            <p className="text-lg text-gray-900">{t("employersSubtitle")}</p>
           </div>
         </div>
         {/* Infinite marquee strip */}
         <div dir="ltr" className="relative w-full overflow-hidden">
-          <div className="pointer-events-none absolute left-0 top-0 h-full w-24 z-10 bg-gradient-to-r from-white to-transparent" />
-          <div className="pointer-events-none absolute right-0 top-0 h-full w-24 z-10 bg-gradient-to-l from-white to-transparent" />
+          <div className="pointer-events-none absolute left-0 top-0 h-full w-24 z-10 bg-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-24 z-10 bg-transparent" />
           <div
             className={`flex gap-6 w-max ${isRTL ? "animate-marquee-rtl" : "animate-marquee"}`}
           >
@@ -471,6 +510,22 @@ export default function JobSearchLanding() {
               img14,
               img15,
               img16,
+              img17,
+              img18,
+              img19,
+              img20,
+              img21,
+              img22,
+              img23,
+              img24,
+              img25,
+              img26,
+              img27,
+              img28,
+              img29,
+              img30,
+              img31,
+              img32,
               img8,
               img3,
               img4,
@@ -481,15 +536,31 @@ export default function JobSearchLanding() {
               img14,
               img15,
               img16,
+              img17,
+              img18,
+              img19,
+              img20,
+              img21,
+              img22,
+              img23,
+              img24,
+              img25,
+              img26,
+              img27,
+              img28,
+              img29,
+              img30,
+              img31,
+              img32,
             ].map((src, i) => (
               <div
                 key={i}
-                className="flex-shrink-0 w-36 h-36 flex items-center justify-center"
+                className="shrink-0 w-36 h-36 flex items-center justify-center "
               >
                 <img
                   src={src}
                   alt=""
-                  className="max-h-36 max-w-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                  className="h-36 w-full bg-[#0D3B72]/10 border-2 border-[#0D3B72]/50 rounded-lg object-contain  transition-all duration-300  hover:shadow-lg hover:brightness-110 hover:scale-115 hover:border-[#0D3B72]/90"
                 />
               </div>
             ))}
@@ -498,37 +569,37 @@ export default function JobSearchLanding() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-linear-to-br from-gray-50 to-blue-50">
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bottom-reveal text-center mb-16">
-            <div className="inline-block bg-[#008CBA]/10 text-[#008CBA] px-4 py-2 rounded-full text-sm font-semibold mb-4">
+            <div className="inline-block  bg-[#0D3B72]/90 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 w-70">
               {t("testimonialsTitle")}
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
               {t("testimonialsSubtitle")}
             </h2>
-            <p className="text-xl text-gray-600">{t("testimonialsText")}</p>
+            <p className="text-xl text-gray-900">{t("testimonialsText")}</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <div
                 key={index}
-                className="left-reveal bg-white rounded-2xl p-8 shadow-lg"
+                className="left-reveal bg-linear-to-br from-white to-[#F0F8FF] rounded-2xl p-8 border-2 border-[#0D3B72]/50 hover:border-[#0D3B72]/90 transition-all duration-300"
               >
                 <div className="flex items-center mb-6">
-                  <div className="w-16 h-16 bg-linear-to-br from-[#008CBA] to-[#005F7F] rounded-2xl flex items-center justify-center text-white font-bold text-xl ltr:mr-4 rtl:ml-4">
+                  <div className="w-16 h-16 bg-[#0D3B72]/90 rounded-2xl flex items-center justify-center text-white font-bold text-xl ltr:mr-4 rtl:ml-4">
                     {testimonial.image}
                   </div>
                   <div>
                     <div className="font-bold text-gray-900 text-lg">
                       {testimonial.name}
                     </div>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-gray-900">
                       {testimonial.role}
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-900 leading-relaxed">
                   "{testimonial.text}"
                 </p>
               </div>
@@ -539,22 +610,27 @@ export default function JobSearchLanding() {
 
       {/* CTA Section */}
       <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#008CBA] via-[#006D94] to-[#005F7F]"></div>
+        <div className="absolute inset-0"></div>
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
           <div className="absolute bottom-10 right-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
         </div>
-        <div className="bottom-reveal relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+        <div className="bottom-reveal relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center ">
+          <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 leading-tight">
             {t("ctaTitle")}
           </h2>
-          <p className="text-xl text-blue-50 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-900 mb-10 max-w-2xl mx-auto">
             {t("ctaText")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => navigate("/SignIn")}
-              className="cursor-pointer px-8 py-4 bg-white text-[#008CBA] rounded-xl font-bold text-lg hover:shadow-2xl transition-all transform hover:scale-105"
+              onClick={() => navigate("/dashboard?dash=profileAccess")}
+              className="cursor-pointer px-8 py-4 
+              bg-linear-to-r from-[#008CBA] to-[#005F7F]
+               text-white rounded-xl font-bold text-lg hover:shadow-2xl transition-all transform
+               hover:scale-105 shadow-[0_4px_16px_ [#06192d]]
+              hover:shadow-[0_8px_28px_rgba(0,140,186,0.5)]
+              hover:-translate-y-0.5 transition-all duration-200"
             >
               {t("ctaButton")}
             </button>
