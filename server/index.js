@@ -27,24 +27,24 @@ dotenv.config();
 //     credentials: true,
 //   }),
 // );
-// app.use(
-//   cors({
-//     origin: ["http://localhost:5173", "http://localhost:5174"],
-//     credentials: true,
-//   }),
-// );
-
 app.use(
   cors({
-    origin: [
-      "https://www.wijha-dz.com",
-      "https://www.admin.wijha-dz.com",
-      "https://admin.wijha-dz.com",
-      "https://wijha-dz.com",
-    ],
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     credentials: true,
   }),
 );
+
+// app.use(
+//   cors({
+//     origin: [
+//       "https://www.wijha-dz.com",
+//       "https://www.admin.wijha-dz.com",
+//       "https://admin.wijha-dz.com",
+//       "https://wijha-dz.com",
+//     ],
+//     credentials: true,
+//   }),
+// );
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000");

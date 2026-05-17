@@ -129,12 +129,12 @@ export default function EmployersFilterBar({
             name="industry"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field className="flex-1" data-invalid={fieldState.invalid}>
+              <Field data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">Industry</FieldLabel>
                 <div className="relative">
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || undefined}
+                    value={field.value || ""}
                   >
                     <SelectTrigger className="input-filter pl-2.5!">
                       <SelectValue placeholder="Select industry" />
@@ -164,12 +164,12 @@ export default function EmployersFilterBar({
             name="is_email_verified"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field className="flex-1" data-invalid={fieldState.invalid}>
+              <Field data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">Email verified</FieldLabel>
                 <div className="relative">
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || undefined}
+                    value={field.value || ""}
                   >
                     <SelectTrigger className="input-filter pl-2.5!">
                       <SelectValue placeholder="Any" />
@@ -196,12 +196,12 @@ export default function EmployersFilterBar({
             name="status"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field className="flex-1" data-invalid={fieldState.invalid}>
+              <Field data-invalid={fieldState.invalid}>
                 <FieldLabel className="input-label">Status</FieldLabel>
                 <div className="relative">
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || undefined}
+                    value={field.value || ""}
                   >
                     <SelectTrigger className="input-filter pl-2.5!">
                       <SelectValue placeholder="Select status" />

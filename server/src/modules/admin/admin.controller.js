@@ -773,6 +773,7 @@ export const getEmployers = async (req, res) => {
     page = 1,
     limit = 10,
   } = req.query;
+
   const offset = (page - 1) * limit;
 
   try {
@@ -780,23 +781,23 @@ export const getEmployers = async (req, res) => {
     const values = [];
     let index = 1;
 
-    // Legacy single search box (kept for backwards compatibility).
-    if (search) {
-      conditions.push(
-        `(e.company_name ILIKE $${index} OR u.email ILIKE $${index})`,
-      );
-      values.push(`%${search}%`);
-      index++;
-    }
+    const searchParam = search || globalSearch;
 
-    // Global search: company_name + description + missions.
-    let globalSearchIdx = null;
-    if (globalSearch) {
-      globalSearchIdx = index;
-      conditions.push(
-        `(e.company_name ILIKE $${index} OR e.description ILIKE $${index} OR e.missions::text ILIKE $${index})`,
-      );
-      values.push(`%${globalSearch}%`);
+    let searchIdx = null;
+
+    if (searchParam) {
+      searchIdx = index;
+
+      conditions.push(`
+        (
+          e.company_name ILIKE $${index}
+          OR u.email ILIKE $${index}
+          OR e.description ILIKE $${index}
+          OR e.missions::text ILIKE $${index}
+        )
+      `);
+
+      values.push(`%${searchParam}%`);
       index++;
     }
 
@@ -835,25 +836,29 @@ export const getEmployers = async (req, res) => {
 
     const whereClause = conditions.join(" AND ");
 
-    // Search-priority ordering: company_name match first, then description, then missions.
     const orderParts = [];
-    if (globalSearchIdx !== null) {
-      orderParts.push(
-        `CASE
-           WHEN e.company_name ILIKE $${globalSearchIdx} THEN 0
-           WHEN e.description ILIKE $${globalSearchIdx} THEN 1
-           WHEN e.missions::text ILIKE $${globalSearchIdx} THEN 2
-           ELSE 3
-         END`,
-      );
+
+    if (searchIdx !== null) {
+      orderParts.push(`
+        CASE
+          WHEN e.company_name ILIKE $${searchIdx} THEN 0
+          WHEN u.email ILIKE $${searchIdx} THEN 1
+          WHEN e.description ILIKE $${searchIdx} THEN 2
+          WHEN e.missions::text ILIKE $${searchIdx} THEN 3
+          ELSE 4
+        END
+      `);
     }
+
     orderParts.push(
       sortBy === "oldest" ? "u.created_at ASC" : "u.created_at DESC",
     );
+
     const orderClause = orderParts.join(", ");
 
     const limitIdx = index++;
     const offsetIdx = index++;
+
     values.push(Number(limit), offset);
 
     const result = await db.query(
@@ -871,11 +876,15 @@ export const getEmployers = async (req, res) => {
     );
 
     const total = result.rows.length > 0 ? Number(result.rows[0].total) : 0;
+
     const employers = result.rows.map(({ total: _, ...row }) => row);
 
-    return res
-      .status(200)
-      .json({ total, page: Number(page), limit: Number(limit), employers });
+    return res.status(200).json({
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      employers,
+    });
   } catch (error) {
     console.error("Error fetching employers:", error);
     return res.status(500).json({ message: "Internal server error" });

@@ -1,13 +1,6 @@
 import { useState } from "react";
 import { Controller, type UseFormReturn } from "react-hook-form";
-import {
-  ArrowUpDown,
-  Check,
-  Filter,
-  MapPin,
-  Search,
-  X,
-} from "lucide-react";
+import { ArrowUpDown, Check, Filter, MapPin, Search, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -184,7 +177,7 @@ export default function JobPostsFilterBar({
                 <div className="relative">
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || undefined}
+                    value={field.value || ""}
                   >
                     <SelectTrigger className="input-filter pl-2.5!">
                       <SelectValue placeholder="Select industry" />
@@ -221,7 +214,7 @@ export default function JobPostsFilterBar({
                 <div className="relative">
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || undefined}
+                    value={field.value || ""}
                   >
                     <SelectTrigger className="input-filter pl-2.5!">
                       <SelectValue placeholder="Select experience level" />
@@ -252,13 +245,11 @@ export default function JobPostsFilterBar({
             control={form.control}
             render={({ field, fieldState }) => (
               <Field className="flex-1" data-invalid={fieldState.invalid}>
-                <FieldLabel className="input-label">
-                  Education level
-                </FieldLabel>
+                <FieldLabel className="input-label">Education level</FieldLabel>
                 <div className="relative">
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || undefined}
+                    value={field.value || ""}
                   >
                     <SelectTrigger className="input-filter pl-2.5!">
                       <SelectValue placeholder="Select education level" />
@@ -293,7 +284,7 @@ export default function JobPostsFilterBar({
                 <div className="relative">
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || undefined}
+                    value={field.value || ""}
                   >
                     <SelectTrigger className="input-filter pl-2.5!">
                       <SelectValue placeholder="Select job type" />
@@ -328,7 +319,7 @@ export default function JobPostsFilterBar({
                 <div className="relative">
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || undefined}
+                    value={field.value || ""}
                   >
                     <SelectTrigger className="input-filter pl-2.5!">
                       <SelectValue placeholder="Select job mode" />
@@ -363,7 +354,7 @@ export default function JobPostsFilterBar({
                 <div className="relative">
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || undefined}
+                    value={field.value || ""}
                   >
                     <SelectTrigger className="input-filter pl-2.5!">
                       <SelectValue placeholder="Select status" />
@@ -398,7 +389,7 @@ export default function JobPostsFilterBar({
                 <div className="relative">
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || undefined}
+                    value={field.value || ""}
                   >
                     <SelectTrigger className="input-filter pl-2.5!">
                       <SelectValue placeholder="Any" />

@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Building2, Eye } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ const STATUS_BADGE: Record<string, string> = {
 function JobPostItem({ jobPost }: { jobPost: any }) {
   const jp = jobPost;
   const statusClass = STATUS_BADGE[jp.status] || "bg-gray-100 text-gray-800";
+  const navigate = useNavigate();
 
   return (
     <tr className="hover:bg-gray-50 transition-colors">
@@ -39,14 +40,17 @@ function JobPostItem({ jobPost }: { jobPost: any }) {
           )}
           <div className="min-w-0 flex-1">
             <div
-              className="font-medium text-gray-900 truncate"
+              className="font-medium text-gray-900 truncate cursor-pointer hover:text-primary-500"
               title={jp.title || undefined}
+              onClick={() => navigate(`/job-posts/${jp.id}`)}
             >
               {jp.title}
             </div>
             <div
               className="text-sm text-gray-500 truncate"
-              title={jp.is_anonymous ? "Anonymous" : jp.company_name || undefined}
+              title={
+                jp.is_anonymous ? "Anonymous" : jp.company_name || undefined
+              }
             >
               {jp.is_anonymous ? (
                 <span className="italic">Anonymous</span>

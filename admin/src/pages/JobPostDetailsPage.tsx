@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router";
+import { useParams, Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -22,7 +22,10 @@ import StatusReasonDialog, {
   type ReasonRequiredStatus,
 } from "@/components/jobpost-details/StatusReasonDialog";
 
-const REASON_REQUIRED_STATUSES: ReasonRequiredStatus[] = ["Pending", "Rejected"];
+const REASON_REQUIRED_STATUSES: ReasonRequiredStatus[] = [
+  "Pending",
+  "Rejected",
+];
 
 const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:5000/api/v1";
 
@@ -98,6 +101,7 @@ export default function JobPostDetailsPage() {
   const [statusChanging, setStatusChanging] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [savingEdit, setSavingEdit] = useState(false);
+  const navigate = useNavigate();
 
   // Reason dialog state — required when moving to Pending or Rejected
   const [reasonDialogOpen, setReasonDialogOpen] = useState(false);
@@ -252,12 +256,12 @@ export default function JobPostDetailsPage() {
         <div className="max-w-7xl mx-auto px-6 py-16 text-center">
           <Briefcase className="w-12 h-12 text-gray-300 mx-auto mb-3" />
           <p className="text-gray-500">Job post not found.</p>
-          <Link
-            to="/job-posts"
+          <button
+            onClick={() => navigate(-1)}
             className="inline-flex items-center gap-1 mt-4 text-sm text-[#008CBA] hover:underline"
           >
             <ChevronLeft className="size-4" /> Back to job posts
-          </Link>
+          </button>
         </div>
       </div>
     );
@@ -267,12 +271,13 @@ export default function JobPostDetailsPage() {
     <form onSubmit={form.handleSubmit(onSave)}>
       <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50">
         <div className="max-w-7xl mx-auto px-6 pt-6">
-          <Link
-            to="/job-posts"
+          <button
+            onClick={() => navigate(-1)}
+            type="button"
             className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 transition-colors"
           >
             <ChevronLeft className="size-4" /> Job Posts
-          </Link>
+          </button>
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center max-w-7xl mx-auto px-6 py-4 gap-4">
@@ -354,11 +359,7 @@ export default function JobPostDetailsPage() {
           </div>
 
           {tab === "Details" && (
-            <JobPostDetailsTab
-              post={post}
-              isEditing={isEditing}
-              form={form}
-            />
+            <JobPostDetailsTab post={post} isEditing={isEditing} form={form} />
           )}
           {tab === "Applications" && id && <JobApplicationsTab postId={id} />}
         </div>

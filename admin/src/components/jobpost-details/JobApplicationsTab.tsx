@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import AdminPagination from "@/components/AdminPagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 
 const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:5000/api/v1";
 const limit = 10;
@@ -22,6 +23,7 @@ export default function JobApplicationsTab({ postId }: { postId: string }) {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const requestId = useRef(0);
 
@@ -63,9 +65,7 @@ export default function JobApplicationsTab({ postId }: { postId: string }) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body?.message ?? "Failed");
       }
-      setApplications((prev) =>
-        prev.filter((a) => a.application_id !== appId),
-      );
+      setApplications((prev) => prev.filter((a) => a.application_id !== appId));
       setTotal((t) => Math.max(0, t - 1));
       toast.success("Application deleted");
     } catch (e: any) {
@@ -99,10 +99,7 @@ export default function JobApplicationsTab({ postId }: { postId: string }) {
             ))}
           </div>
           {Array.from({ length: 6 }).map((_, rowIndex) => (
-            <div
-              key={rowIndex}
-              className="grid grid-cols-5 gap-4 items-center"
-            >
+            <div key={rowIndex} className="grid grid-cols-5 gap-4 items-center">
               {Array.from({ length: 5 }).map((_, colIndex) => (
                 <Skeleton
                   key={colIndex}
@@ -180,7 +177,10 @@ export default function JobApplicationsTab({ postId }: { postId: string }) {
                           )}
                           <div className="min-w-0 flex-1">
                             <div
-                              className="font-medium text-gray-900 truncate"
+                              onClick={() =>
+                                navigate(`/job-seekers/${a.jobseeker_id}`)
+                              }
+                              className="hover:text-primary-500 cursor-pointer font-medium text-gray-900 truncate"
                               title={
                                 `${a.first_name ?? ""} ${a.last_name ?? ""}`.trim() ||
                                 undefined
