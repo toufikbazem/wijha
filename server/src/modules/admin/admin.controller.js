@@ -1916,7 +1916,15 @@ export const updateEmailVerification = async (req, res) => {
 
 // ─── Global Applications List ────────────────────────────────
 export const getApplications = async (req, res) => {
-  const { search, status, job_post_id, page = 1, limit = 10 } = req.query;
+  const {
+    search,
+    status,
+    job_post_id,
+    applied_in,
+    sortBy,
+    page = 1,
+    limit = 10,
+  } = req.query;
   const offset = (Number(page) - 1) * Number(limit);
 
   try {
@@ -1942,8 +1950,24 @@ export const getApplications = async (req, res) => {
       values.push(job_post_id);
     }
 
+    // Time-window filter on application date
+    const AppliedInIntervals = {
+      hour: "1 hour",
+      day: "24 hours",
+      week: "7 days",
+      month: "30 days",
+    };
+    if (applied_in && AppliedInIntervals[applied_in]) {
+      conditions.push(
+        `a.created_at >= NOW() - INTERVAL '${AppliedInIntervals[applied_in]}'`,
+      );
+    }
+
     const whereClause =
       conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";
+
+    const orderDirection = sortBy === "oldest" ? "ASC" : "DESC";
+
     const limitIdx = index++;
     const offsetIdx = index++;
     values.push(Number(limit), offset);
@@ -1956,7 +1980,7 @@ export const getApplications = async (req, res) => {
          jp.id AS job_post_id,
          jp.title AS job_title,
          jp.status AS job_status,
-         e.id AS employer_id,
+         e.user_id AS employer_id,
          e.company_name,
          e.logo,
          js.id AS jobseeker_id,
@@ -1973,7 +1997,7 @@ export const getApplications = async (req, res) => {
        INNER JOIN job_seeker js ON a.jobseeker = js.id
        LEFT JOIN users u ON js.user_id = u.id
        ${whereClause}
-       ORDER BY a.created_at DESC
+       ORDER BY a.created_at ${orderDirection}
        LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
       values,
     );

@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useNavigate } from "react-router";
 
 export const JOB_POST_STATUSES = [
   "Draft",
@@ -41,6 +42,7 @@ export default function JobPostDetailsHeader({
   onChangeStatus: (status: string) => void;
   onDelete: () => void;
 }) {
+  const navigate = useNavigate();
   const statusClass =
     STATUS_STYLES[post.status as string] ??
     "bg-gray-100 text-gray-700 ring-gray-200";
@@ -89,10 +91,13 @@ export default function JobPostDetailsHeader({
                     </span>
                   )}
               </div>
-              <p className="text-gray-600 font-medium">
+              <p
+                onClick={() => navigate(`/employers/${post.employer_user_id}`)}
+                className="text-gray-600 font-medium cursor-pointer hover:text-primary-500"
+              >
                 {post.is_anonymous
                   ? "Anonymous Company"
-                  : post.company_name ?? "—"}
+                  : (post.company_name ?? "—")}
               </p>
 
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-3 text-sm text-gray-600">

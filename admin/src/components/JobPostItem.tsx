@@ -47,10 +47,11 @@ function JobPostItem({ jobPost }: { jobPost: any }) {
               {jp.title}
             </div>
             <div
-              className="text-sm text-gray-500 truncate"
+              className="text-sm text-gray-500 truncate cursor-pointer hover:text-primary-500"
               title={
                 jp.is_anonymous ? "Anonymous" : jp.company_name || undefined
               }
+              onClick={() => navigate(`/employers/${jp.employer_user_id}`)}
             >
               {jp.is_anonymous ? (
                 <span className="italic">Anonymous</span>
