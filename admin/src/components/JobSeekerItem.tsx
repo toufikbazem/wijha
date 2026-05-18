@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Eye } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ const formatStatus = (s?: string) =>
 function JobSeekerItem({ jobSeeker }: { jobSeeker: any }) {
   const js = jobSeeker;
   const statusClass = STATUS_BADGE[js.status] || "bg-gray-100 text-gray-800";
+  const navigate = useNavigate();
 
   return (
     <tr className="hover:bg-gray-50 transition-colors">
@@ -36,8 +37,12 @@ function JobSeekerItem({ jobSeeker }: { jobSeeker: any }) {
           )}
           <div className="min-w-0 flex-1">
             <div
-              className="font-medium text-gray-900 truncate"
-              title={`${js.first_name ?? ""} ${js.last_name ?? ""}`.trim() || undefined}
+              onClick={() => navigate(`/job-seekers/${js.jobseeker_id}`)}
+              className="font-medium text-gray-900 truncate cursor-pointer hover:text-primary-500"
+              title={
+                `${js.first_name ?? ""} ${js.last_name ?? ""}`.trim() ||
+                undefined
+              }
             >
               {js.first_name} {js.last_name}
             </div>

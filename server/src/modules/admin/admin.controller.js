@@ -584,7 +584,7 @@ export const getJobSeekerApplications = async (req, res) => {
          jp.status AS job_status,
          jp.location,
          jp.job_type,
-         e.id AS employer_id,
+         e.user_id AS employer_id,
          e.company_name,
          e.logo,
          COUNT(*) OVER() AS total
@@ -652,7 +652,7 @@ export const getJobSeekerSavedJobs = async (req, res) => {
          jp.status AS job_status,
          jp.location,
          jp.job_type,
-         e.id AS employer_id,
+         e.user_id AS employer_id,
          e.company_name,
          e.logo,
          COUNT(*) OVER() AS total

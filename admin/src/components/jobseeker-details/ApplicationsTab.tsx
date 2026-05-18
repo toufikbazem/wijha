@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import AdminPagination from "@/components/AdminPagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 
 const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:5000/api/v1";
 const limit = 10;
@@ -15,6 +16,7 @@ export default function ApplicationsTab({ seekerId }: { seekerId: string }) {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const requestId = useRef(0);
 
@@ -57,9 +59,7 @@ export default function ApplicationsTab({ seekerId }: { seekerId: string }) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body?.message ?? "Failed");
       }
-      setApplications((prev) =>
-        prev.filter((a) => a.application_id !== appId),
-      );
+      setApplications((prev) => prev.filter((a) => a.application_id !== appId));
       setTotal((t) => Math.max(0, t - 1));
       toast.success("Application deleted");
     } catch (e: any) {
@@ -93,10 +93,7 @@ export default function ApplicationsTab({ seekerId }: { seekerId: string }) {
             ))}
           </div>
           {Array.from({ length: 6 }).map((_, rowIndex) => (
-            <div
-              key={rowIndex}
-              className="grid grid-cols-4 gap-4 items-center"
-            >
+            <div key={rowIndex} className="grid grid-cols-4 gap-4 items-center">
               {Array.from({ length: 4 }).map((_, colIndex) => (
                 <Skeleton
                   key={colIndex}
@@ -168,14 +165,20 @@ export default function ApplicationsTab({ seekerId }: { seekerId: string }) {
                           )}
                           <div className="min-w-0 flex-1">
                             <div
-                              className="font-medium text-gray-900 truncate"
+                              className="font-medium text-gray-900 truncate cursor-pointer hover:text-primary-500"
                               title={a.title || undefined}
+                              onClick={() =>
+                                navigate(`/job-posts/${a.job_post_id}`)
+                              }
                             >
                               {a.title || "—"}
                             </div>
                             <div
-                              className="text-sm text-gray-500 truncate"
+                              className="text-sm text-gray-500 truncate hover:text-primary-500 cursor-pointer"
                               title={a.company_name || undefined}
+                              onClick={() =>
+                                navigate(`/employers/${a.employer_id}`)
+                              }
                             >
                               {a.company_name || "—"}
                             </div>
@@ -210,9 +213,7 @@ export default function ApplicationsTab({ seekerId }: { seekerId: string }) {
                             type="button"
                             variant="ghost"
                             disabled={deletingId === a.application_id}
-                            onClick={() =>
-                              deleteApplication(a.application_id)
-                            }
+                            onClick={() => deleteApplication(a.application_id)}
                             className="cursor-pointer p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                             title="Delete application"
                             aria-label="Delete application"

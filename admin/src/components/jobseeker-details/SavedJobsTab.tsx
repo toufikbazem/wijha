@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import AdminPagination from "@/components/AdminPagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 
 const BASE = import.meta.env.VITE_API_URL ?? "http://localhost:5000/api/v1";
 const limit = 10;
@@ -15,6 +16,7 @@ export default function SavedJobsTab({ seekerId }: { seekerId: string }) {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const requestId = useRef(0);
 
@@ -91,10 +93,7 @@ export default function SavedJobsTab({ seekerId }: { seekerId: string }) {
             ))}
           </div>
           {Array.from({ length: 6 }).map((_, rowIndex) => (
-            <div
-              key={rowIndex}
-              className="grid grid-cols-3 gap-4 items-center"
-            >
+            <div key={rowIndex} className="grid grid-cols-3 gap-4 items-center">
               {Array.from({ length: 3 }).map((_, colIndex) => (
                 <Skeleton
                   key={colIndex}
@@ -159,13 +158,19 @@ export default function SavedJobsTab({ seekerId }: { seekerId: string }) {
                         )}
                         <div className="min-w-0 flex-1">
                           <div
-                            className="font-medium text-gray-900 truncate"
+                            onClick={() =>
+                              navigate(`/job-posts/${s.job_post_id}`)
+                            }
+                            className="font-medium text-gray-900 truncate cursor-pointer hover:text-primary-500"
                             title={s.title || undefined}
                           >
                             {s.title || "—"}
                           </div>
                           <div
-                            className="text-sm text-gray-500 truncate"
+                            onClick={() =>
+                              navigate(`/employers/${s.employer_id}`)
+                            }
+                            className="text-sm text-gray-500 truncate cursor-pointer hover:text-primary-500"
                             title={s.company_name || undefined}
                           >
                             {s.company_name || "—"}
