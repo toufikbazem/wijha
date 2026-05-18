@@ -23,11 +23,7 @@ function JobPostItem({ jobPost }: { jobPost: any }) {
       {/* title (logo + job title + company name) */}
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
-          {jp.is_anonymous ? (
-            <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 shrink-0">
-              <Building2 className="w-5 h-5" />
-            </div>
-          ) : jp.logo ? (
+          {jp.logo ? (
             <img
               src={jp.logo}
               alt=""
@@ -48,16 +44,10 @@ function JobPostItem({ jobPost }: { jobPost: any }) {
             </div>
             <div
               className="text-sm text-gray-500 truncate cursor-pointer hover:text-primary-500"
-              title={
-                jp.is_anonymous ? "Anonymous" : jp.company_name || undefined
-              }
+              title={jp.company_name}
               onClick={() => navigate(`/employers/${jp.employer_user_id}`)}
             >
-              {jp.is_anonymous ? (
-                <span className="italic">Anonymous</span>
-              ) : (
-                jp.company_name || "—"
-              )}
+              {jp.company_name || "—"}
             </div>
           </div>
         </div>

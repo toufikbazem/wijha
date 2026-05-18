@@ -95,9 +95,7 @@ export default function JobPostDetailsHeader({
                 onClick={() => navigate(`/employers/${post.employer_user_id}`)}
                 className="text-gray-600 font-medium cursor-pointer hover:text-primary-500"
               >
-                {post.is_anonymous
-                  ? "Anonymous Company"
-                  : (post.company_name ?? "—")}
+                {post.company_name || "—"}
               </p>
 
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-3 text-sm text-gray-600">
