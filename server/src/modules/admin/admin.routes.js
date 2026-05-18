@@ -36,6 +36,7 @@ import {
   extendSubscription,
   assignCustomPlan,
   getProfileAccessRecords,
+  deleteProfileAccessRecord,
   updateUserEmail,
   updateUserPassword,
   updateEmailVerification,
@@ -108,5 +109,6 @@ router.patch("/subscriptions/:id/custom", assignCustomPlan);
 
 // Profile Access Monitoring
 router.get("/profile-access", getProfileAccessRecords);
+router.delete("/profile-access/:id", deleteProfileAccessRecord);
 
 export default router;

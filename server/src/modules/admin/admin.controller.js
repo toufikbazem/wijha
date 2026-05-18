@@ -2120,10 +2120,13 @@ export const getProfileAccessRecords = async (req, res) => {
     employer_id,
     jobseeker_id,
     status: accessStatus,
+    search,
+    accessed_in,
+    sortBy,
     page = 1,
     limit = 10,
   } = req.query;
-  const offset = (page - 1) * limit;
+  const offset = (Number(page) - 1) * Number(limit);
 
   try {
     const conditions = [];
@@ -2148,8 +2151,31 @@ export const getProfileAccessRecords = async (req, res) => {
       conditions.push("pa.expire_at <= NOW()");
     }
 
+    if (search) {
+      conditions.push(
+        `(e.company_name ILIKE $${index} OR js.first_name ILIKE $${index} OR js.last_name ILIKE $${index})`,
+      );
+      values.push(`%${search}%`);
+      index++;
+    }
+
+    const AccessedInIntervals = {
+      hour: "1 hour",
+      day: "24 hours",
+      week: "7 days",
+      month: "30 days",
+    };
+    if (accessed_in && AccessedInIntervals[accessed_in]) {
+      conditions.push(
+        `pa.created_at >= NOW() - INTERVAL '${AccessedInIntervals[accessed_in]}'`,
+      );
+    }
+
     const whereClause =
       conditions.length > 0 ? "WHERE " + conditions.join(" AND ") : "";
+
+    const orderDirection = sortBy === "oldest" ? "ASC" : "DESC";
+
     const limitIdx = index++;
     const offsetIdx = index++;
     values.push(Number(limit), offset);
@@ -2157,28 +2183,57 @@ export const getProfileAccessRecords = async (req, res) => {
     const result = await db.query(
       `SELECT
          pa.id, pa.created_at, pa.expire_at,
-         e.id AS employer_id, e.company_name,
+         e.id AS employer_id, e.company_name, e.logo,
+         u.email AS employer_email,
          js.id AS jobseeker_id, js.first_name, js.last_name,
          js.professional_title, js.profile_image,
          CASE WHEN pa.expire_at > NOW() THEN 'active' ELSE 'expired' END AS access_status,
          COUNT(*) OVER() AS total
        FROM profile_access pa
        INNER JOIN employers e ON pa.employer = e.id
+       LEFT JOIN users u ON e.user_id = u.id
        INNER JOIN job_seeker js ON pa.job_seeker = js.id
        ${whereClause}
-       ORDER BY pa.created_at DESC
+       ORDER BY pa.created_at ${orderDirection}
        LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
       values,
     );
 
     const total = result.rows.length > 0 ? Number(result.rows[0].total) : 0;
     const records = result.rows.map(({ total: _, ...row }) => row);
+    const totalPages = Math.max(1, Math.ceil(total / Number(limit)));
 
-    return res
-      .status(200)
-      .json({ total, page: Number(page), limit: Number(limit), records });
+    return res.status(200).json({
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      records,
+      pagination: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+        totalPages,
+      },
+    });
   } catch (error) {
     console.error("Error fetching profile access records:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const deleteProfileAccessRecord = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await db.query(
+      "DELETE FROM profile_access WHERE id = $1 RETURNING id",
+      [id],
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Record not found" });
+    }
+    return res.status(200).json({ message: "Profile access record deleted" });
+  } catch (error) {
+    console.error("Error deleting profile access record:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
