@@ -8,8 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ProfessionalTitleCombobox } from "@/components/ui/professional-title-combobox";
 import { educationLevels, experienceLevels } from "@/utils/data";
-import { Briefcase, IdCard, Share2, TrendingUp } from "lucide-react";
+import { Briefcase, Share2, TrendingUp } from "lucide-react";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n/i18n";
@@ -38,16 +39,12 @@ function StepProfessionalInfo({ form }: { form: any }) {
             <FieldLabel className="input-label">
               {t("professionalTitle")}
             </FieldLabel>
-            <div className="relative">
-              <IdCard className="input-icon" size={20} />
-              <Input
-                type="text"
-                className="input"
-                {...field}
-                aria-invalid={fieldState.invalid}
-                placeholder={t("enterProfessionalTitle")}
-              />
-            </div>
+            <ProfessionalTitleCombobox
+              value={field.value}
+              onChange={field.onChange}
+              invalid={fieldState.invalid}
+              placeholder={t("enterProfessionalTitle")}
+            />
             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
           </Field>
         )}

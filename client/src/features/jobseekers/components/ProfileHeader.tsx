@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { AddressCombobox } from "@/components/ui/address-combobox";
+import { ProfessionalTitleCombobox } from "@/components/ui/professional-title-combobox";
 import {
   Building2,
   Mail,
@@ -11,7 +12,6 @@ import {
   XCircle,
   ShieldAlert,
   ShieldOff,
-  IdCard,
   Briefcase,
   TrendingUp,
   GraduationCap,
@@ -237,16 +237,14 @@ function ProfileHeader({ profile, isEditing, form, setProfile }: any) {
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <div className="relative">
-                        <IdCard className="input-icon-filter h-4 w-4" />
-                        <Input
-                          {...field}
-                          type="text"
-                          className="input-filter text-3xl font-bold"
-                          aria-invalid={fieldState.invalid}
-                          placeholder={t("professionalTitle")}
-                        />
-                      </div>
+                      <ProfessionalTitleCombobox
+                        value={field.value}
+                        onChange={field.onChange}
+                        invalid={fieldState.invalid}
+                        placeholder={t("professionalTitle")}
+                        variant="filter"
+                        className="text-3xl font-bold"
+                      />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}
