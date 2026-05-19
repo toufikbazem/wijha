@@ -6,8 +6,9 @@ import {
   User,
   User2Icon,
 } from "lucide-react";
-import img from "@/assets/logo-white.png";
-import img1 from "@/assets/logo1-white.png";
+
+import img from "@/assets/logo-w.png";
+import img1 from "@/assets/logo1-w.png";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,7 +22,6 @@ import {
 import { logout } from "@/features/auth/userSlice";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n/i18n";
-// @ts-expect-error -- LanguageSwitcher is implemented in JSX
 import LanguageSwitcher from "./LanguageSwitcher";
 
 function Header() {
@@ -181,6 +181,7 @@ function Header() {
                         ? user?.company_name
                         : `${user?.first_name} ${user?.last_name}`}
                     </div>
+
                     <div className="text-xs text-gray-500 truncate max-w-40">
                       {user?.email}
                     </div>

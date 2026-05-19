@@ -63,11 +63,11 @@ export default function DashHeader({
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
-      <div className="flex items-center justify-between h-16 px-4 sm:px-6 gap-3">
+    <header className="bg-[#06192d]/95 border-b border-gray-200 sticky top-0 z-30">
+      <div className="flex items-center justify-between h-16 px-4 sm:px-6 gap-3 ">
         {/* Left: Menu (mobile) */}
         <button
-          className="md:hidden p-2 rounded-lg hover:bg-gray-100 cursor-pointer"
+          className="md:hidden p-2 rounded-lg e hover:bg-gray-100 cursor-pointer"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
           <Menu className="w-6 h-6" />
@@ -155,7 +155,7 @@ export default function DashHeader({
                 onClick={() => handleLogOut()}
                 className="hover:bg-gray-100 rounded-md cursor-pointer p-2"
               >
-                <LogOutIcon className="w-4 h-4 ltr:mr-2 rtl:ml-2" />
+                <LogOutIcon className="w-4 h-4 ltr:mr-2 rtl:ml-2 " />
                 {t("logout")}
               </DropdownMenuItem>
             </DropdownMenuContent>

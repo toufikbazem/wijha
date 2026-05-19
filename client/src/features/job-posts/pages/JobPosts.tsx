@@ -558,7 +558,8 @@ export default function JobPosts() {
                       <div>
                         <p className="text-xs text-gray-500">Salary Range</p>
                         <p className="text-sm font-semibold text-gray-900">
-                          {data && data.salaryRange}$
+                          {data && data.min_salary?.toLocaleString()} -{" "}
+                          {data && data.max_salary?.toLocaleString()} DA
                         </p>
                       </div>
                     </div>
