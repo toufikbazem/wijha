@@ -11,7 +11,6 @@ function StepIndicator({
   stepLabel?: string;
 }) {
   const { t } = useTranslation("auth");
-  const percent = Math.round((currentStep / totalSteps) * 100);
 
   return (
     <div className="mb-8">
@@ -37,9 +36,9 @@ function StepIndicator({
               <div
                 className={`flex items-center justify-center w-7 h-7 rounded-full text-xs font-semibold shrink-0 transition-all duration-200 ${
                   isCompleted
-                    ? "bg-[#008CBA] text-white"
+                    ? "bg-primary-500 text-white"
                     : isCurrent
-                      ? "bg-[#008CBA] text-white ring-4 ring-[#008CBA]/20"
+                      ? "bg-primary-500 text-white ring-4 ring-primary-500/20"
                       : "bg-gray-200 text-gray-500"
                 }`}
               >
@@ -48,7 +47,7 @@ function StepIndicator({
               {stepNum < totalSteps && (
                 <div
                   className={`flex-1 h-1 rounded-full transition-all duration-200 ${
-                    isCompleted ? "bg-[#008CBA]" : "bg-gray-200"
+                    isCompleted ? "bg-primary-500" : "bg-gray-200"
                   }`}
                 />
               )}
@@ -56,8 +55,6 @@ function StepIndicator({
           );
         })}
       </div>
-
-      <div className="mt-2 text-xs text-gray-500 text-end">{percent}%</div>
     </div>
   );
 }

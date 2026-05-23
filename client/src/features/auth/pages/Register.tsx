@@ -26,7 +26,7 @@ function Register() {
             onClick={() => navigate("/")}
             src={logo}
             alt="logo"
-            className="h-32 mx-auto"
+            className="h-32 mx-auto mb-4 cursor-pointer"
           />
           <h1 className="text-3xl font-bold text-gray-900">
             {t("createYourAccount")}
@@ -44,7 +44,7 @@ function Register() {
             {t("alreadyHaveAccount")}{" "}
             <Link
               to="/login"
-              className="font-semibold text-[#008CBA] hover:text-[#00668C]"
+              className="font-semibold text-primary-500 hover:text-primary-700"
             >
               {t("signInButton")}
             </Link>
