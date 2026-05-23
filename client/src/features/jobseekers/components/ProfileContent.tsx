@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { Input } from "@/components/ui/input";
+import { SkillCombobox } from "@/components/ui/skill-combobox";
 import { Link } from "react-router";
 import {
   Dialog,
@@ -427,11 +428,11 @@ function ProfileContent({
                   <DialogTitle>{t("addSkill")}</DialogTitle>
                   <div className="flex flex-col gap-1">
                     <Label className="input-label">{t("skill")}</Label>
-                    <Input
-                      type="text"
+                    <SkillCombobox
+                      value={skill}
+                      onChange={setSkill}
                       placeholder={t("skill")}
-                      onChange={(e) => setSkill(e.target.value)}
-                      className="input-filter ltr:pl-2! rtl:pr-2!"
+                      className="ltr:pl-2! rtl:pr-2!"
                     />
                   </div>
 
@@ -440,6 +441,7 @@ function ProfileContent({
                       <Button
                         className="border-[#008CBA] text-[#008CBA] hover:bg-gray-50 cursor-pointer"
                         variant="outline"
+                        onClick={() => setSkill("")}
                       >
                         {t("cancel", { ns: "common" })}
                       </Button>
@@ -447,15 +449,19 @@ function ProfileContent({
                     <DialogClose asChild>
                       <Button
                         onClick={() => {
-                          form.setValue(
-                            "skills",
-                            [...(form.getValues("skills") || []), skill],
-                            {
-                              shouldDirty: true,
-                              shouldTouch: true,
-                            },
-                          );
+                          const trimmed = skill.trim();
+                          if (!trimmed) return;
+                          const current = form.getValues("skills") || [];
+                          if (current.includes(trimmed)) {
+                            setSkill("");
+                            return;
+                          }
+                          form.setValue("skills", [...current, trimmed], {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                          });
                           setProfile(form.getValues());
+                          setSkill("");
                         }}
                         className="bg-[#008CBA] hover:bg-[#007399] text-white cursor-pointer"
                       >

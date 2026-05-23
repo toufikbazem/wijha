@@ -1,4 +1,4 @@
-import { Input } from "@/components/ui/input";
+import { SkillCombobox } from "@/components/ui/skill-combobox";
 import { Award, Plus, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,8 +8,8 @@ function StepSkills({ form }: { form: any }) {
   const skills: string[] = form.watch("skills") || [];
   const [draft, setDraft] = useState("");
 
-  const addSkill = () => {
-    const trimmed = draft.trim();
+  const addSkill = (value?: string) => {
+    const trimmed = (value ?? draft).trim();
     if (!trimmed) return;
     if (skills.includes(trimmed)) {
       setDraft("");
@@ -27,13 +27,6 @@ function StepSkills({ form }: { form: any }) {
     );
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addSkill();
-    }
-  };
-
   return (
     <div className="space-y-5">
       <div>
@@ -42,17 +35,16 @@ function StepSkills({ form }: { form: any }) {
       </div>
 
       <div className="flex items-center gap-2">
-        <Input
-          type="text"
+        <SkillCombobox
           value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={handleKeyDown}
+          onChange={setDraft}
+          onSelect={(label) => addSkill(label)}
+          onPlainEnter={() => addSkill()}
           placeholder={t("addSkillPlaceholder")}
-          className="input-filter ltr:pl-3! rtl:pr-3!"
         />
         <button
           type="button"
-          onClick={addSkill}
+          onClick={() => addSkill()}
           className="flex items-center gap-2 px-4 py-2 bg-[#008CBA] hover:bg-[#007399] text-white rounded-lg transition text-sm font-medium cursor-pointer shrink-0"
         >
           <Plus className="w-4 h-4" />
