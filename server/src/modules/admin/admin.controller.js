@@ -929,6 +929,7 @@ export const updateEmployer = async (req, res) => {
     "description",
     "missions",
     "logo",
+    "cover_image",
   ];
 
   const updates = [];

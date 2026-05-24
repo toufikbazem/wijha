@@ -61,9 +61,7 @@ function LoginForm({
       } else {
         dispatch(signIn(result));
         toast.success(t("loginSuccessful"));
-        result.role === "admin"
-          ? navigate("/admin")
-          : navigate("/dashboard?tab=dash");
+        navigate("/dashboard?tab=dash");
       }
     } catch (error) {
       setErrorMessage(t("loginFailed"));
@@ -81,7 +79,9 @@ function LoginForm({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel className="input-label">{t("emailAddress")}</FieldLabel>
+              <FieldLabel className="input-label">
+                {t("emailAddress")}
+              </FieldLabel>
               <div className="relative">
                 <Mail className="input-icon" size={20} />
                 <Input
@@ -166,12 +166,14 @@ function LoginForm({
 
         {/* Sign In Button */}
         <Button
+          disabled={loading}
           type="submit"
           className="py-3 px-4 h-auto! rounded-lg font-semibold text-white transition-all duration-200 bg-[#008CBA] hover:bg-[#00668C] active:bg-blue-80 w-full mt-6 cursor-pointer"
         >
           {loading ? (
             <>
-              <Spinner className="ltr:mr-2 rtl:ml-2" /> {t("loading", { ns: "common" })}
+              <Spinner className="ltr:mr-2 rtl:ml-2" />{" "}
+              {t("loading", { ns: "common" })}
             </>
           ) : (
             t("signInButton")

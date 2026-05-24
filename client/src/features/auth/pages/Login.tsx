@@ -1,6 +1,6 @@
 import logo from "../../../assets/logo.png";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import LoginForm from "../components/LoginForm";
 import { useTranslation } from "react-i18next";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
@@ -9,13 +9,19 @@ function Login() {
   useDocumentTitle("meta.title.login");
   const [errorMessage, setErrorMessage] = useState("");
   const { t } = useTranslation("auth");
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 py-12 px-4">
       <div className="max-w-md w-full mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <img src={logo} alt="logo" className="h-32 mx-auto" />
+          <img
+            onClick={() => navigate("/")}
+            src={logo}
+            alt="logo"
+            className="h-32 mx-auto cursor-pointer mb-4"
+          />
           <h1 className="text-3xl font-bold text-gray-900">{t("welcome")}</h1>
           <p className="text-gray-600">{t("signInSubtitle")}</p>
         </div>

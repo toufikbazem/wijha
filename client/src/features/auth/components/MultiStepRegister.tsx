@@ -247,7 +247,7 @@ function MultiStepRegister({
       const result = await res.json();
 
       if (!res.ok) {
-        setErrorMessage(result.message || t("registrationFailed"));
+        setErrorMessage(result.message || t(result.error_code));
       } else {
         toast.success(t("registrationSuccessful"), {
           position: "bottom-right",

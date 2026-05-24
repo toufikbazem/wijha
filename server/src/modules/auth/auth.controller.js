@@ -66,7 +66,8 @@ const register = async (req, res) => {
       !industry ||
       !size ||
       !address ||
-      !foundingYear
+      !foundingYear ||
+      !phoneNumber
     ) {
       return res.status(400).json({
         code_error: "ALL_FIELDS_REQUIRED",
@@ -79,41 +80,35 @@ const register = async (req, res) => {
       .json({ code_error: "INVALID_ROLE", message: "Invalid user role." });
   }
 
-  let newUser;
+  // Normalize email: lowercase + trim.
+  const rawEmail =
+    typeof email === "string" ? email.trim().toLowerCase() : email;
+
+  const client = await db.connect();
 
   try {
-    // Check if user already exists
-    const existingUser = await db.query("SELECT * FROM users WHERE email=$1", [
-      email,
-    ]);
-    if (existingUser.rows.length > 0) {
-      return res.status(409).json({
-        code_error: "USER_ALREADY_EXISTS",
-        message: "User already exists.",
-      });
-    }
+    await client.query("BEGIN");
 
     // Hash the password before storing
-    const hashedPassword = bcryptjs.hashSync(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
 
     // Insert user into database
-    newUser = await db.query(
+    const newUser = await client.query(
       "INSERT INTO users (email, password, role) VALUES ($1, $2, $3) RETURNING id",
-      [email, hashedPassword, role],
+      [rawEmail, hashedPassword, role],
     );
-    await db.query("INSERT INTO password_reset_tokens (user_id) VALUES ($1)", [
-      newUser.rows[0].id,
-    ]);
-    await db.query(
+    await client.query(
+      "INSERT INTO password_reset_tokens (user_id) VALUES ($1)",
+      [newUser.rows[0].id],
+    );
+    await client.query(
       "INSERT INTO email_verification_tokens (user_id) VALUES ($1)",
       [newUser.rows[0].id],
     );
 
-    sendVerifyEmail(email, newUser.rows[0].id);
-
     // Insert role-specific data
     if (role === "jobseeker") {
-      const jobseekerResult = await db.query(
+      const jobseekerResult = await client.query(
         "INSERT INTO job_seeker (user_id, first_name, last_name, professional_title, experience_level, education_level, gender, address, phone_number, profile_image, linkedin, professional_summary, cv, skills) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id",
         [
           newUser.rows[0].id,
@@ -133,12 +128,12 @@ const register = async (req, res) => {
         ],
       );
 
-      const userId = newUser.rows[0].id;
+      const userId = jobseekerResult.rows[0].id;
 
       if (Array.isArray(experiences) && experiences.length > 0) {
         for (const exp of experiences) {
           if (exp && exp.title && exp.company && exp.from) {
-            await db.query(
+            await client.query(
               'INSERT INTO experiences (user_id, title, company, "from", "to", is_current, description) VALUES ($1, $2, $3, $4, $5, $6, $7)',
               [
                 userId,
@@ -157,7 +152,7 @@ const register = async (req, res) => {
       if (Array.isArray(educations) && educations.length > 0) {
         for (const edu of educations) {
           if (edu && edu.degree && edu.institution && edu.from) {
-            await db.query(
+            await client.query(
               'INSERT INTO educations (user_id, degree, institution, "from", "to", is_current, description) VALUES ($1, $2, $3, $4, $5, $6, $7)',
               [
                 userId,
@@ -173,7 +168,7 @@ const register = async (req, res) => {
         }
       }
     } else if (role === "employer") {
-      const employerResult = await db.query(
+      const employerResult = await client.query(
         "INSERT INTO employers (user_id, company_name, industry, size, address, phone_number, founding_year, linkedin, website, description, missions, logo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id",
         [
           newUser.rows[0].id,
@@ -192,7 +187,7 @@ const register = async (req, res) => {
       );
 
       // Auto-assign Free plan to new employer
-      const freePlan = await db.query(
+      const freePlan = await client.query(
         "SELECT id, duration FROM subscription_plans WHERE type = 'free' LIMIT 1",
       );
 
@@ -201,82 +196,91 @@ const register = async (req, res) => {
         const endDay = new Date();
         endDay.setDate(endDay.getDate() + freePlan.rows[0].duration);
 
-        const subscription = await db.query(
+        const subscription = await client.query(
           `INSERT INTO subscriptions (employer_id, plan_id, start_day, end_day, status)
            VALUES ($1, $2, $3, $4, 'active')
            RETURNING id`,
           [employerResult.rows[0].id, freePlan.rows[0].id, startDay, endDay],
         );
 
-        await db.query(
+        await client.query(
           `INSERT INTO subscription_usage (subscription_id, job_post_used, profile_access_used)
            VALUES ($1, 0, 0)`,
           [subscription.rows[0].id],
         );
       }
     }
+
+    await client.query("COMMIT");
+
+    // Send verification email AFTER commit, so a failure here
+    // doesn't roll back a successfully registered user.
+    sendVerifyEmail(rawEmail, newUser.rows[0].id);
+
     res.status(201).json({ message: "User registered successfully." });
   } catch (error) {
-    // await db.query("DELETE FROM users WHERE id=$1", [newUser.rows[0].id]);
-    res
-      .status(500)
-      .json({ code_error: "INTERNAL_SERVER_ERROR", message: error.message });
+    await client.query("ROLLBACK");
+
+    if (error.code === "23505") {
+      return res.status(409).json({
+        code_error: "USER_ALREADY_EXISTS",
+        message: "User already exists.",
+      });
+    }
+
+    res.status(500).json({
+      code_error: "INTERNAL_SERVER_ERROR",
+      message: "There is an error, try again.",
+    });
+  } finally {
+    client.release();
   }
 };
 
 const login = async (req, res) => {
   const { email, password, rememberMe } = req.body;
   if (!email || !password) {
-    return res
-      .status(400)
-      .json({ message: "Email and password are required." });
+    return res.status(400).json({
+      error_code: "ALL_FIELDS_REQUIRED",
+      message: "Email and password are required.",
+    });
   }
 
   try {
     const user = await db.query("SELECT * FROM users WHERE email=$1", [email]);
     if (user.rows.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "Password or email is incorrect" });
+      return res.status(401).json({
+        error_code: "UNAUTHORIZED",
+        message: "Password or email is incorrect",
+      });
     }
-    const isPasswordValid = bcryptjs.compareSync(
+    const isPasswordValid = await bcryptjs.compare(
       password,
       user.rows[0].password,
     );
     if (!isPasswordValid) {
-      return res
-        .status(401)
-        .json({ message: "Password or email is incorrect." });
+      return res.status(401).json({
+        error_code: "UNAUTHORIZED",
+        message: "Password or email is incorrect",
+      });
     }
 
-    if (user.rows[0].role === "employer") {
-      const emp = await db.query(
-        "SELECT status FROM employers WHERE user_id = $1",
-        [user.rows[0].id],
-      );
-      const empStatus = emp.rows[0]?.status;
-      if (empStatus === "deactivated") {
-        return res
-          .status(403)
-          .json({ message: "Account deactivated, contact support" });
-      }
-      if (empStatus === "suspended") {
-        return res
-          .status(403)
-          .json({ message: "Account suspended, contact support" });
-      }
-    }
-
+    let userData;
     if (user.rows[0].role === "jobseeker") {
-      var userData = await db.query(
-        "SELECT * FROM job_seeker WHERE user_id=$1",
-        [user.rows[0].id],
-      );
+      userData = await db.query("SELECT * FROM job_seeker WHERE user_id=$1", [
+        user.rows[0].id,
+      ]);
     } else {
-      var userData = await db.query(
-        "SELECT * FROM employers WHERE user_id=$1",
-        [user.rows[0].id],
-      );
+      userData = await db.query("SELECT * FROM employers WHERE user_id=$1", [
+        user.rows[0].id,
+      ]);
+    }
+
+    if (userData.rows[0].status === "deactivated") {
+      return res.status(403).json({
+        error_code: "ACCOUNT_DEACTIVATED",
+        message: "Account deactivated, contact support",
+      });
     }
 
     const token = jwt.sign(
@@ -292,7 +296,7 @@ const login = async (req, res) => {
       .cookie("token", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "none",
+        sameSite: "lax",
         path: "/",
         maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000,
       })
@@ -301,7 +305,10 @@ const login = async (req, res) => {
         ...userData.rows[0],
       });
   } catch (error) {
-    res.status(500).json(error.message);
+    res.status(500).json({
+      code_error: "INTERNAL_SERVER_ERROR",
+      message: "There is an error, try again.",
+    });
   }
 };
 

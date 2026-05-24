@@ -1,0 +1,5 @@
+{
+  "ALL_FIELDS_REQUIRED": "All fields are required.",
+  "USER_ALREADY_EXISTS": "User already exists.",
+  "INTERNAL_SERVER_ERROR": "There is an error, try again."
+}
