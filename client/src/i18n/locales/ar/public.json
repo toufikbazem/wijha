@@ -165,5 +165,22 @@
   "statsCvs": "سيرة ذاتية مقدمة",
   "statsCompanies": "شركات شريكة",
   "statsJobs": "عروض عمل",
-  "OurImpact": "تأثيرنا"
+  "OurImpact": "تأثيرنا",
+  "Companies": "الشركات",
+  "companiesTitle": "استكشف الشركات",
+  "companiesSubtitle": "اكتشف الشركات التي توظف على وجهة وابحث عن فرصتك القادمة.",
+  "companiesSearchPlaceholder": "ابحث عن الشركات بالاسم...",
+  "companiesFound_one": "تم العثور على شركة واحدة",
+  "companiesFound_other": "تم العثور على {{count}} شركة",
+  "companiesEmptyTitle": "لم يتم العثور على شركات",
+  "companiesEmptyText": "جرّب مصطلح بحث آخر أو عد لاحقًا.",
+  "companiesErrorTitle": "فشل تحميل الشركات",
+  "companiesErrorText": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+  "companiesRetry": "حاول مرة أخرى",
+  "companiesClearSearch": "مسح البحث",
+  "viewProfile": "عرض الملف الشخصي",
+  "notSpecified": "غير محدد",
+  "companyLocation": "الموقع",
+  "companySize": "حجم الشركة",
+  "companyFounded": "تأسست عام"
 }

@@ -165,5 +165,22 @@
   "statsCvs": "CVs submitted",
   "statsCompanies": "Partner companies",
   "statsJobs": "Job offers",
-  "OurImpact": "Our Impact"
+  "OurImpact": "Our Impact",
+  "Companies": "Companies",
+  "companiesTitle": "Explore Companies",
+  "companiesSubtitle": "Discover companies hiring on Wijha and find your next opportunity.",
+  "companiesSearchPlaceholder": "Search companies by name...",
+  "companiesFound_one": "{{count}} company found",
+  "companiesFound_other": "{{count}} companies found",
+  "companiesEmptyTitle": "No companies found",
+  "companiesEmptyText": "Try a different search term or check back later.",
+  "companiesErrorTitle": "Failed to load companies",
+  "companiesErrorText": "Something went wrong. Please try again.",
+  "companiesRetry": "Try Again",
+  "companiesClearSearch": "Clear Search",
+  "viewProfile": "View Profile",
+  "notSpecified": "Not specified",
+  "companyLocation": "Location",
+  "companySize": "Company Size",
+  "companyFounded": "Founded"
 }

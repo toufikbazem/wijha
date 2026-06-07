@@ -20,7 +20,10 @@ export const getEmployerProfile = async (req, res) => {
         [id],
       );
 
-      if (user.rows[0].status === "deactivated" || user.rows[0].status === "suspended") {
+      if (
+        user.rows[0].status === "deactivated" ||
+        user.rows[0].status === "suspended"
+      ) {
         return res
           .status(403)
           .json({ message: "Employer account is not active, contact support" });
@@ -90,12 +93,10 @@ export const updateEmployerProfile = async (req, res) => {
       employer.rows[0].status !== "active" &&
       employer.rows[0].status !== "unverified"
     ) {
-      return res
-        .status(403)
-        .json({
-          error_code: "EMPLOYER_INACTIVE",
-          message: "Employer account is not active, contact support",
-        });
+      return res.status(403).json({
+        error_code: "EMPLOYER_INACTIVE",
+        message: "Employer account is not active, contact support",
+      });
     }
 
     const updates = [];
@@ -189,6 +190,69 @@ export const updateEmployerProfile = async (req, res) => {
 };
 
 export const getEmployersProfiles = async (req, res) => {};
+
+// Public listing of companies for the /companies page.
+// Supports search by company name and pagination.
+export const getPublicCompanies = async (req, res) => {
+  const { search, page = 1, limit = 12 } = req.query;
+
+  const pageNum = Math.max(1, parseInt(page) || 1);
+  const limitNum = Math.min(50, Math.max(1, parseInt(limit) || 12));
+  const offset = (pageNum - 1) * limitNum;
+
+  try {
+    const conditions = [
+      "e.status IN ('active', 'unverified')",
+      "u.is_email_verified = true",
+    ];
+    const values = [];
+    let index = 1;
+
+    if (search) {
+      conditions.push(`e.company_name ILIKE $${index++}`);
+      values.push(`%${search}%`);
+    }
+
+    const whereClause = conditions.join(" AND ");
+
+    const limitIdx = index++;
+    const offsetIdx = index++;
+    values.push(limitNum, offset);
+
+    const result = await db.query(
+      `SELECT
+         u.id AS user_id,
+         e.id AS employer_id,
+         e.company_name,
+         e.industry,
+         e.size,
+         e.address,
+         e.logo,
+         e.founding_year,
+         COUNT(*) OVER() AS total
+       FROM users u
+       INNER JOIN employers e ON u.id = e.user_id
+       WHERE ${whereClause}
+       ORDER BY e.company_name ASC
+       LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
+      values,
+    );
+
+    const total = result.rows.length > 0 ? Number(result.rows[0].total) : 0;
+    const companies = result.rows.map(({ total: _, ...row }) => row);
+
+    return res.status(200).json({
+      total,
+      page: pageNum,
+      limit: limitNum,
+      totalPages: Math.ceil(total / limitNum),
+      companies,
+    });
+  } catch (error) {
+    console.error("Error fetching public companies:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 export const getDashboardStats = async (req, res) => {
   const userId = req.user.userId;

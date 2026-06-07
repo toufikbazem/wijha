@@ -165,5 +165,22 @@
   "statsCvs": "CV soumis",
   "statsCompanies": "Entreprises partenaires",
   "statsJobs": "Offres d'emploi",
-  "OurImpact": "Notre Impact"
+  "OurImpact": "Notre Impact",
+  "Companies": "Entreprises",
+  "companiesTitle": "Explorer les Entreprises",
+  "companiesSubtitle": "Découvrez les entreprises qui recrutent sur Wijha et trouvez votre prochaine opportunité.",
+  "companiesSearchPlaceholder": "Rechercher des entreprises par nom...",
+  "companiesFound_one": "{{count}} entreprise trouvée",
+  "companiesFound_other": "{{count}} entreprises trouvées",
+  "companiesEmptyTitle": "Aucune entreprise trouvée",
+  "companiesEmptyText": "Essayez un autre terme de recherche ou revenez plus tard.",
+  "companiesErrorTitle": "Échec du chargement des entreprises",
+  "companiesErrorText": "Une erreur s'est produite. Veuillez réessayer.",
+  "companiesRetry": "Réessayer",
+  "companiesClearSearch": "Effacer la recherche",
+  "viewProfile": "Voir le Profil",
+  "notSpecified": "Non spécifié",
+  "companyLocation": "Localisation",
+  "companySize": "Taille de l'entreprise",
+  "companyFounded": "Fondée en"
 }

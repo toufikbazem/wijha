@@ -1,10 +1,15 @@
 import {
   Building,
+  Home,
+  Info,
   LogOutIcon,
   Menu,
+  Phone,
+  Search,
   Settings,
   User,
   User2Icon,
+  Users,
 } from "lucide-react";
 
 import img from "@/assets/logo-w.png";
@@ -34,8 +39,9 @@ function Header() {
   const navLinkClass = (path: string) =>
     `${
       pathname === path ? "text-[#2E8CB8]" : "text-gray-100"
-    } hover:text-[#5DADE2] transition font-medium`;
+    } hover:text-[#5DADE2]! transition font-medium`;
 
+  console.log(pathname);
   const handleLogOut = async () => {
     try {
       const res = await fetch(
@@ -71,6 +77,53 @@ function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
+            <Link
+              to="/"
+              className={`${pathname === "/" ? "text-[#2E8CB8]" : "text-gray-100"} hover:text-[#5DADE2]! transition font-medium flex flex-col items-center justify-center`}
+            >
+              <Home className="w-6 h-6" />
+              {t("home")}
+            </Link>
+            <Link
+              to="/Companies"
+              className={`${pathname === "/Companies" ? "text-[#2E8CB8]" : "text-gray-100"} hover:text-[#5DADE2]! transition font-medium flex flex-col items-center justify-center`}
+            >
+              <Building className="w-6 h-6" />
+              {t("Companies")}
+            </Link>
+            {user?.role === "employer" ? (
+              <Link
+                to="/dashboard?tab=profileAccess"
+                className={`${pathname === "/dashboard?tab=profileAccess" ? "text-[#2E8CB8]" : "text-gray-100"} hover:text-[#5DADE2]! transition font-medium flex flex-col items-center justify-center`}
+              >
+                <Users className="w-6 h-6" />
+                {t("navFindProfiles")}
+              </Link>
+            ) : (
+              <Link
+                to="/jobSearch"
+                className={`${pathname === "/dashboard?tab=profileAccess" ? "text-[#2E8CB8]" : "text-gray-100"} hover:text-[#5DADE2]! transition font-medium flex flex-col items-center justify-center`}
+              >
+                <Search className="w-6 h-6" />
+                {t("navFindJobs")}
+              </Link>
+            )}
+            <Link
+              to="/contacts"
+              className={`${navLinkClass("/contacts")} flex flex-col items-center justify-center text-white`}
+            >
+              <Phone className="w-6 h-6" />
+              {t("navContacts")}
+            </Link>
+            <Link
+              to="/about"
+              className={`${navLinkClass("/about")} flex flex-col items-center justify-center text-white`}
+            >
+              <Info className="w-6 h-6" />
+              {t("navAbout")}
+            </Link>
+          </div>
+          {/* <div className="hidden lg:flex items-center space-x-8">
             <Link to="/" className={navLinkClass("/")}>
               {t("home")}
             </Link>
@@ -92,7 +145,7 @@ function Header() {
             <Link to="/about" className={navLinkClass("/about")}>
               {t("navAbout")}
             </Link>
-          </div>
+          </div> */}
 
           {/* Right Section - Language Switcher + User Profile */}
           <div className="flex items-center gap-4">
