@@ -31,7 +31,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://wijha-z3rf.onrender.com",
+      "https://wijha-1.onrender.com",
       "http://localhost:5174",
     ],
     credentials: true,
