@@ -7,20 +7,26 @@ import {
   Phone,
   Calendar,
   Share2,
+  Home,
+  Building2,
+  FileText,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import Header from "@/features/public/components/Header";
 import Footer from "@/features/public/components/Footer";
+import CompanyJobPosts from "@/features/employers/components/CompanyJobPosts";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 export default function CompanyProfile() {
   useDocumentTitle("meta.title.companyProfile");
+  const [tab, setTab] = useState("Company");
   const { t } = useTranslation("employer");
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const [companyInfo, setCompanyInfo] = useState({
+    employer_id: "",
     company_name: "",
     email: "",
     industry: "",
@@ -207,38 +213,74 @@ export default function CompanyProfile() {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
               {/* Main Content Column */}
               <div className="lg:col-span-2">
-                <div className="space-y-6">
-                  {/* About Section */}
-                  <div className="bg-white rounded-xl shadow-lg p-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                      {t("aboutUs")}
-                    </h2>
-                    <p className="text-gray-700 leading-relaxed mb-4">
-                      {companyInfo.description}
-                    </p>
-                  </div>
-
-                  {/* What We Do */}
-                  <div className="bg-white rounded-xl shadow-lg p-8">
-                    <div className="flex justify-between">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                        {t("whatWeDo")}
-                      </h3>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {companyInfo?.missions?.map((item, index) => {
-                        return (
-                          <div
-                            key={index}
-                            className="relative p-4 rounded-lg bg-[#008CBA10] border-t-3 border-[#008CBA]"
-                          >
-                            <p className="text-sm text-gray-600">{item}</p>
-                          </div>
-                        );
-                      })}
-                    </div>
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-1.5 mb-6 overflow-x-auto">
+                  <div className="flex gap-4 min-w-max">
+                    <button
+                      key={1}
+                      type="button"
+                      onClick={() => setTab("Company")}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer
+                        ${
+                          tab === "Company"
+                            ? "bg-[#008CBA] text-white shadow-sm"
+                            : "text-gray-600 bg-gray-100 hover:bg-gray-200 hover:text-gray-900"
+                        }`}
+                    >
+                      <Building2 className="w-4 h-4" />
+                      Company Info
+                    </button>
+                    <button
+                      key={2}
+                      type="button"
+                      onClick={() => setTab("JobPosts")}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer
+                        ${
+                          tab === "JobPosts"
+                            ? "bg-[#008CBA] text-white shadow-sm"
+                            : "text-gray-600 bg-gray-100 hover:bg-gray-200 hover:text-gray-900"
+                        }`}
+                    >
+                      <FileText className="w-4 h-4" />
+                      Job Posts
+                    </button>
                   </div>
                 </div>
+                {tab === "Company" ? (
+                  <div className="space-y-6">
+                    {/* About Section */}
+                    <div className="bg-white rounded-xl shadow-lg p-8">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                        {t("aboutUs")}
+                      </h2>
+                      <p className="text-gray-700 leading-relaxed mb-4">
+                        {companyInfo.description}
+                      </p>
+                    </div>
+
+                    {/* What We Do */}
+                    <div className="bg-white rounded-xl shadow-lg p-8">
+                      <div className="flex justify-between">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                          {t("whatWeDo")}
+                        </h3>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {companyInfo?.missions?.map((item, index) => {
+                          return (
+                            <div
+                              key={index}
+                              className="relative p-4 rounded-lg bg-[#008CBA10] border-t-3 border-[#008CBA]"
+                            >
+                              <p className="text-sm text-gray-600">{item}</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <CompanyJobPosts employerId={companyInfo.employer_id} />
+                )}
               </div>
 
               {/* Sidebar Column */}
