@@ -18,6 +18,8 @@ import {
   Camera,
   Mars,
   Venus,
+  Pen,
+  Save,
 } from "lucide-react";
 import { useRef, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
@@ -65,7 +67,15 @@ const statusConfig: Record<
   },
 };
 
-function ProfileHeader({ profile, isEditing, form, setProfile }: any) {
+function ProfileHeader({
+  profile,
+  isEditing,
+  setIsEditing,
+  loadingEdit,
+  setLoadingEdit,
+  form,
+  setProfile,
+}: any) {
   const [loadingUploadProfileImage, setLoadingUpLoadProfileImage] =
     useState(false);
   const [profileImgUploadProgress, setProfileImgUploadProgress] = useState(0);
@@ -126,6 +136,37 @@ function ProfileHeader({ profile, isEditing, form, setProfile }: any) {
 
   return (
     <div className=" bg-white rounded-3xl shadow-xl overflow-hidden mb-6 relative">
+      {isEditing ? (
+        <button
+          disabled={loadingEdit}
+          type="submit"
+          className="flex items-center gap-2 text-sm font-semibold cursor-pointer text-primary-500 hover:text-primary-600 absolute top-4 right-4  z-10 px-4 py-1.5 rounded-lg bg-white border border-gray-50 transition-all"
+        >
+          {loadingEdit ? (
+            <>
+              <Spinner className="w-4 h-4" />
+              <span className="hidden sm:block">Saving...</span>
+            </>
+          ) : (
+            <>
+              <Save className="w-4 h-4" />
+              <span className="hidden sm:block">Save Edits</span>
+            </>
+          )}
+        </button>
+      ) : (
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            setIsEditing(true);
+          }}
+          type="button"
+          className="flex items-center gap-2 text-sm font-semibold cursor-pointer text-primary-500 hover:text-primary-600 absolute top-4 right-4  z-10 px-4 py-1.5 rounded-lg bg-white border border-gray-50 transition-all"
+        >
+          <Pen className="w-4 h-4" />
+          <span className="hidden sm:block">Edit Profile</span>
+        </button>
+      )}
       <div className="h-32  bg-[#008CBA]"></div>
       <div className="px-8 pb-8">
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 -mt-16">
