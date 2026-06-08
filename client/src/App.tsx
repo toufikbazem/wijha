@@ -14,6 +14,7 @@ import JobPostsSearch from "./features/job-posts/pages/JobPostsSearch";
 import JobPosts from "./features/job-posts/pages/JobPosts";
 import CompanyProfile from "./features/employers/pages/CompanyProfile";
 import JobseekerDashboard from "@/features/jobseekers/pages/Dashboard";
+import Jobseeker from "@/features/jobseekers/dashboard/Main";
 import EmployerDashboard from "@/features/employers/pages/Dashboard";
 import Admin from "./features/admin/pages/Admin";
 import AboutUs from "./features/public/pages/AboutUs";
@@ -23,6 +24,7 @@ import TermsAndConditions from "./features/public/pages/TermsAndConditions";
 import SessionGuard from "./components/SessionGuard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
+import Companies from "./features/public/pages/Companies";
 
 function App() {
   const { user } = useSelector((state: any) => state.user);
@@ -55,6 +57,7 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contacts" element={<ContactUs />} />
           <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="/companies" element={<Companies />} />
 
           {/* Protected: any authenticated user */}
           <Route element={<ProtectedRoute />}>
@@ -64,10 +67,20 @@ function App() {
                 user?.role === "employer" ? (
                   <EmployerDashboard />
                 ) : (
-                  <JobseekerDashboard />
+                  <Jobseeker />
                 )
               }
             />
+            {/* <Route
+              path="/dashboard"
+              element={
+                user?.role === "employer" ? (
+                  <EmployerDashboard />
+                ) : (
+                  <JobseekerDashboard />
+                )
+              }
+            /> */}
           </Route>
 
           {/* Protected: admin only */}
