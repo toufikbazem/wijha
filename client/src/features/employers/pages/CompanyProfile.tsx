@@ -219,7 +219,7 @@ export default function CompanyProfile() {
                       key={1}
                       type="button"
                       onClick={() => setTab("Company")}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer
+                      className={`flex-1 flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer
                         ${
                           tab === "Company"
                             ? "bg-[#008CBA] text-white shadow-sm"
@@ -233,7 +233,7 @@ export default function CompanyProfile() {
                       key={2}
                       type="button"
                       onClick={() => setTab("JobPosts")}
-                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer
+                      className={`flex-1 flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer
                         ${
                           tab === "JobPosts"
                             ? "bg-[#008CBA] text-white shadow-sm"
