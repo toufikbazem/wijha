@@ -12,6 +12,9 @@ import {
   Building2,
   GraduationCap,
   Globe,
+  Share2,
+  Copy,
+  Check,
 } from "lucide-react";
 
 import { useParams, useNavigate, Link } from "react-router";
@@ -29,6 +32,16 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import {
   createApplication,
@@ -43,6 +56,73 @@ import i18n from "@/i18n/i18n";
 import addressData from "@/utils/address.json";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
+function ShareDialog({
+  shareUrl,
+  copied,
+  onCopy,
+  t,
+}: {
+  shareUrl: string;
+  copied: boolean;
+  onCopy: () => void;
+  t: (key: string) => string;
+}) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <button
+          aria-label={t("share")}
+          className="cursor-pointer p-3 rounded-xl bg-gray-100 text-gray-600 hover:text-[#008CBA] transition-all"
+        >
+          <Share2 className="w-5 h-5" />
+        </button>
+      </DialogTrigger>
+      <DialogContent className="bg-white sm:max-w-md">
+        <DialogHeader className="items-center text-center">
+          <div className="mx-auto mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-[#E6F7FB]">
+            <Share2 className="h-7 w-7 text-[#008CBA]" />
+          </div>
+          <DialogTitle className="text-center text-xl">
+            {t("shareJob")}
+          </DialogTitle>
+          <DialogDescription className="text-center">
+            {t("shareJobDescription")}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="mt-2 flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-1.5">
+          <Input
+            readOnly
+            value={shareUrl}
+            onFocus={(e) => e.target.select()}
+            className="flex-1 border-0 bg-transparent text-sm text-gray-600 shadow-none focus-visible:ring-0"
+          />
+          <Button
+            type="button"
+            onClick={onCopy}
+            className={`shrink-0 rounded-lg text-white transition-colors ${
+              copied
+                ? "bg-green-500 hover:bg-green-500"
+                : "bg-[#008CBA] hover:bg-[#0077A3]"
+            }`}
+          >
+            {copied ? (
+              <>
+                <Check className="h-4 w-4" />
+                {t("copied")}
+              </>
+            ) : (
+              <>
+                <Copy className="h-4 w-4" />
+                {t("copyLink")}
+              </>
+            )}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function JobPosts() {
   useDocumentTitle("meta.title.jobPost");
   const { user } = useSelector((state: any) => state.user);
@@ -52,6 +132,7 @@ export default function JobPosts() {
   const [applyLoading, setApplyLoading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [onSaving, setOnSaving] = useState(false);
+  const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -231,6 +312,22 @@ export default function JobPosts() {
     }
   };
 
+  const shareUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/jobPost/${data?.id ?? id}`
+      : "";
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      toast.success(t("linkCopied"));
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      toast.error(t("linkCopyFailed"));
+    }
+  };
+
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
       <Header />
@@ -259,6 +356,12 @@ export default function JobPosts() {
                 )}
 
                 <div className="flex gap-2 h-fit lg:hidden">
+                  <ShareDialog
+                    shareUrl={shareUrl}
+                    copied={copied}
+                    onCopy={handleCopyLink}
+                    t={t}
+                  />
                   {!user && (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
@@ -391,6 +494,12 @@ export default function JobPosts() {
                 </div>
               </div>
               <div className="lg:flex gap-2 h-fit hidden">
+                <ShareDialog
+                  shareUrl={shareUrl}
+                  copied={copied}
+                  onCopy={handleCopyLink}
+                  t={t}
+                />
                 {!user && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
