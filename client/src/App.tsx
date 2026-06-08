@@ -14,6 +14,7 @@ import JobPostsSearch from "./features/job-posts/pages/JobPostsSearch";
 import JobPosts from "./features/job-posts/pages/JobPosts";
 import CompanyProfile from "./features/employers/pages/CompanyProfile";
 import JobseekerDashboard from "@/features/jobseekers/pages/Dashboard";
+import DashSettings from "@/features/jobseekers/dashboard/DashSettings";
 import Jobseeker from "@/features/jobseekers/dashboard/Main";
 import EmployerDashboard from "@/features/employers/pages/Dashboard";
 import Admin from "./features/admin/pages/Admin";
@@ -71,6 +72,8 @@ function App() {
                 )
               }
             />
+            <Route path="/settings" element={<DashSettings />} />
+
             {/* <Route
               path="/dashboard"
               element={

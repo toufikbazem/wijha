@@ -300,7 +300,7 @@ function Header() {
                     {t("profile")}
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => navigate("/dashboard?tab=settings")}
+                    onClick={() => navigate("/settings")}
                     className="hover:bg-gray-100 rounded-md cursor-pointer p-2 text-gray-900"
                   >
                     <Settings className="w-4 h-4 ltr:mr-2 rtl:ml-2" />
