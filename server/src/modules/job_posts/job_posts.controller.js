@@ -211,7 +211,7 @@ export const createJobPost = async (req, res) => {
 
   try {
     if (req.user.role === "employer") {
-      const employer = await db.query(
+      const employer = await client.query(
         `
             SELECT users.id AS user_id, users.is_email_verified, employers.id AS employer_id, employers.status, employers.company_name
             FROM users
