@@ -10,21 +10,40 @@ import {
   Home,
   Building2,
   FileText,
+  Crown,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import Header from "@/features/public/components/Header";
 import Footer from "@/features/public/components/Footer";
 import CompanyJobPosts from "@/features/employers/components/CompanyJobPosts";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
+// User IDs of the companies currently marked as "Company of the Month".
+// Keep in sync with the featured list in Companies.tsx.
+const COMPANY_OF_THE_MONTH_IDS = [
+  "a077a05c-8927-46c4-95dc-06fb912ea0f8",
+  "b4573689-a65c-414c-b416-e14177799053",
+];
+
 export default function CompanyProfile() {
   useDocumentTitle("meta.title.companyProfile");
-  const [tab, setTab] = useState("Company");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = searchParams.get("tab") === "JobPosts" ? "JobPosts" : "Company";
+  const setTab = (nextTab: string) => {
+    setSearchParams(
+      (prev) => {
+        prev.set("tab", nextTab);
+        return prev;
+      },
+      { replace: true },
+    );
+  };
   const { t } = useTranslation("employer");
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
+  const isCompanyOfTheMonth = !!id && COMPANY_OF_THE_MONTH_IDS.includes(id);
   const [companyInfo, setCompanyInfo] = useState({
     employer_id: "",
     company_name: "",
@@ -169,9 +188,16 @@ export default function CompanyProfile() {
 
                   <div className="flex-1 m-auto text-center sm:text-start sm:mt-16 flex flex-col gap-2">
                     {/* company name */}
-                    <h2 className="text-2xl font-bold text-gray-900">
-                      {companyInfo.company_name}
-                    </h2>
+                    <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+                      <h2 className="text-2xl font-bold text-gray-900">
+                        {companyInfo.company_name}
+                      </h2>
+                      {isCompanyOfTheMonth && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-linear-to-r from-amber-400 to-yellow-500 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white shadow-sm">
+                          <Crown className="h-3 w-3 fill-current" />
+                        </span>
+                      )}
+                    </div>
                     {/* industry */}
                     <span className="bg-[#008CBA] w-fit inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white">
                       {t(companyInfo.industry)}
@@ -219,7 +245,7 @@ export default function CompanyProfile() {
                       key={1}
                       type="button"
                       onClick={() => setTab("Company")}
-                      className={`flex-1 flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer
                         ${
                           tab === "Company"
                             ? "bg-[#008CBA] text-white shadow-sm"
@@ -233,7 +259,7 @@ export default function CompanyProfile() {
                       key={2}
                       type="button"
                       onClick={() => setTab("JobPosts")}
-                      className={`flex-1 flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer
+                      className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap cursor-pointer
                         ${
                           tab === "JobPosts"
                             ? "bg-[#008CBA] text-white shadow-sm"

@@ -1,54 +1,153 @@
 import { useEffect, useState } from "react";
+import { Briefcase, CheckCircle2, Pen, Play, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router";
-import { Briefcase, Users, Play, Plus, MapPin } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
+import { companyProfileSchema } from "../schema";
+import DashCompanyProfileHeader from "../components/DashCompanyProfileHeader";
+import DashCompanyProfileContent from "../components/DashCompanyProfileContent";
+import type z from "zod";
 import { useTranslation } from "react-i18next";
-import addressData from "@/utils/address.json";
-
-interface RecentJob {
-  id: string;
-  title: string;
-  status: string;
-  location: string;
-  job_type: string;
-  created_at: string;
-  applicants: number;
-}
-
-interface RecentApplicant {
-  application_id: string;
-  applied_at: string;
-  job_post_id: string;
-  job_title: string;
-  first_name: string;
-  last_name: string;
-  professional_title: string;
-  profile_image: string;
-}
+import ProfileCompletionCard from "@/components/ProfileCompletionCard";
 
 interface DashboardStats {
   totalJobs: number;
   activeJobs: number;
   totalApplicants: number;
-  recentJobs: RecentJob[];
-  recentApplicants: RecentApplicant[];
+  profileCompletion: number;
 }
 
-export default function DashMain() {
-  const [loading, setLoading] = useState(true);
+export default function DashCompanyProfile() {
+  const [loading, setLoading] = useState(false);
+  const [loadingEditMode, setLoadingEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const navigate = useNavigate();
-  const { user } = useSelector((state: any) => state.user);
-  const { t, i18n } = useTranslation("employer");
-  const { t: tc } = useTranslation("common");
 
-  const translateLocation = (location: string) => {
-    if (i18n.language !== "ar") return location;
-    const entry = addressData.find(
-      (a) => a.label.toLowerCase() === location.toLowerCase(),
-    );
-    return entry ? entry.labelAr : location;
+  const [companyInfo, setCompanyInfo] = useState({
+    company_name: "",
+    industry: "",
+    size: "",
+    phone_number: "",
+    address: "",
+    logo: "",
+    cover_image: "",
+    description: "",
+    missions: [],
+    founding_year: "",
+    website: "",
+    linkedin: "",
+  });
+
+  const { user } = useSelector((state: any) => state.user);
+  const { t } = useTranslation("employer");
+
+  useEffect(() => {
+    const getData = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/v1/employers/${user.user_id}`,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        if (res.ok) {
+          const data = await res.json();
+          setCompanyInfo(data);
+        } else {
+          console.error("Failed to fetch company data");
+        }
+      } catch (error) {
+        console.error("Error fetching company data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getData();
+  }, []);
+
+  const form = useForm<z.infer<typeof companyProfileSchema>>({
+    resolver: zodResolver(companyProfileSchema),
+    defaultValues: {
+      company_name: companyInfo.company_name,
+      industry: companyInfo?.industry ? companyInfo.industry : "",
+      size: companyInfo?.size ? companyInfo.size : "",
+      phone_number: companyInfo?.phone_number ? companyInfo.phone_number : "",
+      address: companyInfo.address,
+      logo: companyInfo?.logo ? companyInfo.logo : "",
+      cover_image: companyInfo?.cover_image ? companyInfo.cover_image : "",
+      description: companyInfo?.description ? companyInfo.description : "",
+      missions: companyInfo?.missions ? companyInfo.missions : [],
+      website: companyInfo?.website ? companyInfo.website : "",
+      linkedin: companyInfo?.linkedin ? companyInfo.linkedin : "",
+      founding_year: companyInfo?.founding_year
+        ? companyInfo.founding_year
+        : "",
+    },
+  });
+
+  useEffect(() => {
+    if (companyInfo && companyInfo.company_name) {
+      form.reset({
+        company_name: companyInfo.company_name,
+        industry: companyInfo.industry || "",
+        size: companyInfo.size || "",
+        phone_number: companyInfo.phone_number || "",
+        address: companyInfo.address || "",
+        logo: companyInfo.logo || "",
+        cover_image: companyInfo.cover_image || "",
+        description: companyInfo.description || "",
+        missions: companyInfo.missions || [],
+        founding_year: companyInfo.founding_year || "",
+        website: companyInfo.website || "",
+        linkedin: companyInfo.linkedin || "",
+      });
+    }
+  }, [companyInfo]);
+
+  const onSubmit = async (data: z.infer<typeof companyProfileSchema>) => {
+    setLoadingEditMode(true);
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/v1/employers/${user.user_id}`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        },
+      );
+      const updatedData = await res.json();
+
+      if (res.ok) {
+        setEditMode(false);
+        toast.success(t("profileEditedSuccess"));
+        setCompanyInfo(updatedData);
+      } else {
+        if (updatedData && updatedData.error_code === "EMPLOYER_INACTIVE") {
+          toast.error(t("employerInactive"));
+        } else {
+          toast.error(t("errorOccurred"));
+        }
+      }
+    } catch (error) {
+      console.error("Error updating company data:", error);
+      toast.error(t("errorOccurred"));
+    } finally {
+      setLoadingEditMode(false);
+      setEditMode(false);
+    }
   };
 
   useEffect(() => {
@@ -77,202 +176,186 @@ export default function DashMain() {
     fetchStats();
   }, []);
 
-  const statCards = [
+  const featureCards = [
     {
       label: t("totalJobPosts"),
+      description: t("totalJobPostsDesc"),
       value: stats?.totalJobs ?? 0,
       icon: Briefcase,
-      color: "bg-blue-50 text-blue-600",
+      iconClass: "bg-blue-50 text-[#008CBA]",
     },
     {
       label: t("activeJobs"),
+      description: t("activeJobsDesc"),
       value: stats?.activeJobs ?? 0,
       icon: Play,
-      color: "bg-green-50 text-green-600",
+      iconClass: "bg-emerald-50 text-emerald-600",
     },
     {
       label: t("totalApplicants"),
+      description: t("totalApplicantsDesc"),
       value: stats?.totalApplicants ?? 0,
       icon: Users,
-      color: "bg-purple-50 text-purple-600",
+      iconClass: "bg-indigo-50 text-indigo-600",
     },
   ];
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-        <div className="max-w-7xl mx-auto">
-          <Skeleton className="h-8 w-64 mb-2 bg-gray-300" />
-          <Skeleton className="h-4 w-96 mb-8 bg-gray-300" />
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-28 rounded-xl bg-gray-300" />
-            ))}
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Skeleton className="h-80 rounded-xl bg-gray-300" />
-            <Skeleton className="h-80 rounded-xl bg-gray-300" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              {tc("dashboard")}
-            </h1>
-            <p className="mt-1 text-gray-600">
-              {t("welcome")} {user?.company_name}
-            </p>
-          </div>
-          <button
-            onClick={() => navigate("/dashboard?tab=createJobPost")}
-            className="cursor-pointer inline-flex items-center justify-center px-6 py-3 bg-[#008CBA] text-white font-medium rounded-lg hover:bg-[#007399] transition-colors shadow-md hover:shadow-lg"
-          >
-            <Plus className="w-5 h-5 ltr:mr-2 rtl:ml-2" />
-            {t("createNewJob")}
-          </button>
-        </div>
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-6">
+        {loading && (
+          <div className="space-y-8">
+            {/* ===== Header ===== */}
+            <div className="relative">
+              {/* Cover image */}
+              <Skeleton className="h-48 w-full rounded-lg bg-gray-200" />
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-          {statCards.map((card) => {
-            const Icon = card.icon;
-            return (
-              <div
-                key={card.label}
-                className="bg-white rounded-xl border border-gray-200 p-6 flex items-center gap-4"
-              >
-                <div
-                  className={`w-12 h-12 rounded-lg flex items-center justify-center ${card.color}`}
-                >
-                  <Icon className="w-6 h-6" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">{card.label}</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {card.value}
-                  </p>
+              {/* Avatar + name */}
+              <div className="flex items-end gap-4 mt-[-40px] px-4">
+                <Skeleton className="h-20 w-20 rounded-full bg-gray-200" />
+
+                <div className="space-y-2 pb-2">
+                  <Skeleton className="h-6 w-48 bg-gray-200" />
+                  <Skeleton className="h-4 w-32 bg-gray-200" />
                 </div>
               </div>
-            );
-          })}
-        </div>
-
-        {/* Recent Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent Job Posts */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">
-                {t("recentJobPosts")}
-              </h2>
-              <button
-                onClick={() => navigate("/dashboard?tab=jobPosts")}
-                className="text-sm text-[#008CBA] hover:underline cursor-pointer"
-              >
-                {tc("viewAll")}
-              </button>
             </div>
-            {stats?.recentJobs.length === 0 ? (
-              <p className="text-gray-500 text-sm py-4">{t("noJobPostsYet")}</p>
-            ) : (
+
+            {/* ===== Content ===== */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Main content */}
+              <div className="md:col-span-2 space-y-4">
+                <Skeleton className="h-5 w-40" />
+
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-11/12" />
+                  <Skeleton className="h-4 w-10/12" />
+                  <Skeleton className="h-4 w-9/12" />
+                </div>
+
+                {/* Section */}
+                <Skeleton className="h-5 w-32 mt-4 bg-gray-200" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full bg-gray-200" />
+                  <Skeleton className="h-4 w-5/6 bg-gray-200" />
+                  <Skeleton className="h-4 w-4/6 bg-gray-200" />
+                </div>
+              </div>
+
+              {/* Side content */}
               <div className="space-y-4">
-                {stats?.recentJobs.map((job) => (
+                <Skeleton className="h-5 w-32 bg-gray-200" />
+
+                <div className="space-y-3">
+                  <Skeleton className="h-4 w-full bg-gray-200" />
+                  <Skeleton className="h-4 w-5/6 bg-gray-200" />
+                  <Skeleton className="h-4 w-4/6 bg-gray-200" />
+                </div>
+
+                <Skeleton className="h-5 w-28 mt-4 bg-gray-200" />
+                <div className="space-y-3">
+                  <Skeleton className="h-4 w-full bg-gray-200" />
+                  <Skeleton className="h-4 w-3/4 bg-gray-200" />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!loading && (
+          <>
+            {/* Header */}
+            <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {t("companyProfile")}
+                </h1>
+                <p className="mt-1 text-gray-600">{t("manageUpdate")}</p>
+              </div>
+              {editMode ? (
+                <button
+                  className="cursor-pointer flex items-center justify-center px-6 py-3 bg-[#008CBA] text-white font-medium rounded-lg hover:bg-[#007399] transition-colors shadow-md hover:shadow-lg"
+                  type="submit"
+                >
+                  {loadingEditMode ? (
+                    <Spinner className="h-4 w-4" />
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-5 h-5 ltr:mr-2 rtl:ml-2" />
+                      {t("saveChanges")}
+                    </>
+                  )}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setEditMode(true);
+                  }}
+                  className="cursor-pointer flex items-center justify-center !px-6 !py-3 bg-[#008CBA] text-white !font-medium rounded-lg hover:bg-[#007399] transition-colors shadow-md hover:shadow-lg"
+                >
+                  <Pen className="w-5 h-5 ltr:mr-2 rtl:ml-2" />
+                  {t("editMode")}
+                </button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+              <ProfileCompletionCard
+                namespace="employer"
+                percentage={stats?.profileCompletion ?? 0}
+                loading={!stats}
+              />
+              {featureCards.map((card) => {
+                const Icon = card.icon;
+                return (
                   <div
-                    key={job.id}
-                    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                    key={card.label}
+                    className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
                   >
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {job.title}
-                      </p>
-                      <div className="flex items-center gap-3 mt-1">
-                        <span className="flex items-center text-xs text-gray-500">
-                          <MapPin className="w-3 h-3 ltr:mr-1 rtl:ml-1" />
-                          {translateLocation(job.location)}
-                        </span>
-                        <span className="flex items-center text-xs text-gray-500">
-                          <Users className="w-3 h-3 ltr:mr-1 rtl:ml-1" />
-                          {job.applicants} {t("applicants")}
-                        </span>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div
+                        className={`inline-flex items-center justify-center w-11 h-11 rounded-xl ${card.iconClass}`}
+                      >
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">
+                          {card.label}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {card.description}
+                        </p>
                       </div>
                     </div>
-                    <span
-                      className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                        job.status === "Active"
-                          ? "bg-green-100 text-green-700"
-                          : job.status === "Paused"
-                            ? "bg-yellow-100 text-yellow-700"
-                            : job.status === "In-review"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-gray-100 text-gray-700"
-                      }`}
-                    >
-                      {t(job.status)}
+                    <span className="text-3xl font-bold text-gray-900">
+                      {card.value}
                     </span>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Recent Applicants */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">
-                {t("recentApplicants")}
-              </h2>
+                );
+              })}
             </div>
-            {stats?.recentApplicants.length === 0 ? (
-              <p className="text-gray-500 text-sm py-4">
-                {t("noApplicantsYet")}
-              </p>
-            ) : (
-              <div className="space-y-4">
-                {stats?.recentApplicants.map((applicant) => (
-                  <div
-                    key={applicant.application_id}
-                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden shrink-0">
-                      {applicant.profile_image ? (
-                        <img
-                          src={applicant.profile_image}
-                          alt={applicant.first_name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <Users className="w-5 h-5 text-gray-500" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {applicant.first_name} {applicant.last_name}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate">
-                        {applicant.professional_title}
-                      </p>
-                    </div>
-                    <div className="ltr:text-right rtl:text-left shrink-0">
-                      <p className="text-xs text-gray-500">{t("appliedFor")}</p>
-                      <p className="text-xs font-medium text-gray-700 truncate max-w-[120px]">
-                        {applicant.job_title}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+
+            {/* profile header */}
+            <DashCompanyProfileHeader
+              companyInfo={companyInfo}
+              setCompanyInfo={setCompanyInfo}
+              editMode={editMode}
+              form={form}
+            />
+
+            {/* Two Column Layout */}
+            <DashCompanyProfileContent
+              companyInfo={companyInfo}
+              setCompanyInfo={setCompanyInfo}
+              editMode={editMode}
+              form={form}
+            />
+          </>
+        )}
       </div>
-    </div>
+    </form>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, Pen } from "lucide-react";
+import { Briefcase, CheckCircle2, Pen, Play, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -13,10 +13,17 @@ import DashCompanyProfileContent from "../components/DashCompanyProfileContent";
 import type z from "zod";
 import { useTranslation } from "react-i18next";
 
+interface DashboardStats {
+  totalJobs: number;
+  activeJobs: number;
+  totalApplicants: number;
+}
+
 export default function DashCompanyProfile() {
   const [loading, setLoading] = useState(false);
   const [loadingEditMode, setLoadingEditMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
 
   const [companyInfo, setCompanyInfo] = useState({
     company_name: "",
@@ -141,6 +148,56 @@ export default function DashCompanyProfile() {
     }
   };
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/v1/employers/dashboard-stats`,
+          {
+            method: "GET",
+            credentials: "include",
+          },
+        );
+        const data = await res.json();
+        if (res.ok) {
+          setStats(data);
+        } else {
+          console.error("Error fetching dashboard stats:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const featureCards = [
+    {
+      label: t("totalJobPosts"),
+      description: t("totalJobPostsDesc"),
+      value: stats?.totalJobs ?? 0,
+      icon: Briefcase,
+      iconClass: "bg-blue-50 text-[#008CBA]",
+    },
+    {
+      label: t("activeJobs"),
+      description: t("activeJobsDesc"),
+      value: stats?.activeJobs ?? 0,
+      icon: Play,
+      iconClass: "bg-emerald-50 text-emerald-600",
+    },
+    {
+      label: t("totalApplicants"),
+      description: t("totalApplicantsDesc"),
+      value: stats?.totalApplicants ?? 0,
+      icon: Users,
+      iconClass: "bg-indigo-50 text-indigo-600",
+    },
+  ];
+
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-6">
@@ -241,6 +298,37 @@ export default function DashCompanyProfile() {
                   {t("editMode")}
                 </button>
               )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {featureCards.map((card) => {
+                const Icon = card.icon;
+                return (
+                  <div
+                    key={card.label}
+                    className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <div
+                        className={`inline-flex items-center justify-center w-11 h-11 rounded-xl ${card.iconClass}`}
+                      >
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">
+                          {card.label}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {card.description}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-3xl font-bold text-gray-900">
+                      {card.value}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
 
             {/* profile header */}
