@@ -162,9 +162,53 @@ function MultiStepRegister({
     return false;
   };
 
+  const checkEmailAvailable = async (): Promise<boolean> => {
+    const email = form.getValues("email");
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/v1/auth/check-email`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ email }),
+        },
+      );
+      const result = await res.json();
+
+      if (!res.ok) {
+        setErrorMessage(t(result.code_error));
+        return false;
+      }
+
+      if (result.exists) {
+        form.setError("email", {
+          type: "manual",
+          message: t("emailAlreadyExists"),
+        });
+        return false;
+      }
+
+      return true;
+    } catch {
+      setErrorMessage(t("errorDuringRegistration"));
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const goNext = async () => {
     const ok = await validateCurrent();
     if (!ok) return;
+
+    // After the account-info step passes local validation, confirm the email
+    // isn't already taken before letting the user continue.
+    if (step === 2) {
+      const available = await checkEmailAvailable();
+      if (!available) return;
+    }
 
     if (
       (accountType === "jobseeker" && step === 9) ||

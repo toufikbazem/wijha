@@ -4,6 +4,7 @@ import {
   login,
   logout,
   register,
+  checkEmail,
   resetPassword,
   verifyEmail,
   sendVerificationEmail,
@@ -14,6 +15,7 @@ import { requireAuth } from "../../middleware/auth.middleware.js";
 const router = express.Router();
 
 router.post("/register", register);
+router.post("/check-email", checkEmail);
 router.post("/login", login);
 router.post("/logout", logout);
 router.post("/forgot-password", forgotPassword);

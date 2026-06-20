@@ -237,6 +237,33 @@ const register = async (req, res) => {
   }
 };
 
+const checkEmail = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email || typeof email !== "string") {
+    return res.status(400).json({
+      code_error: "ALL_FIELDS_REQUIRED",
+      message: "Email is required.",
+    });
+  }
+
+  // Normalize email: lowercase + trim (must match register normalization).
+  const rawEmail = email.trim().toLowerCase();
+
+  try {
+    const user = await db.query("SELECT id FROM users WHERE email=$1", [
+      rawEmail,
+    ]);
+
+    res.status(200).json({ exists: user.rows.length > 0 });
+  } catch (error) {
+    res.status(500).json({
+      code_error: "INTERNAL_SERVER_ERROR",
+      message: "Internal Server Error",
+    });
+  }
+};
+
 const login = async (req, res) => {
   const { email, password, rememberMe } = req.body;
   if (!email || !password) {
@@ -459,6 +486,7 @@ const me = (req, res) => {
 
 export {
   register,
+  checkEmail,
   login,
   logout,
   forgotPassword,
