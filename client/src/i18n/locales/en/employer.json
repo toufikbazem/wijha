@@ -2,8 +2,13 @@
   "welcome": "Welcome back,",
   "createNewJob": "Create New Job",
   "totalJobPosts": "Total Job Posts",
+  "totalJobPostsDesc": "All job posts you've created",
   "activeJobs": "Active Jobs",
+  "activeJobsDesc": "Currently live and accepting applicants",
   "totalApplicants": "Total Applicants",
+  "totalApplicantsDesc": "Across all of your job posts",
+  "profileCompletion": "Profile Completion",
+  "profileCompletionDesc": "Complete your profile to stand out",
   "recentJobPosts": "Recent Job Posts",
   "noJobPostsYet": "No job posts yet. Create your first job post to get started.",
   "applicants": "applicants",
@@ -280,5 +285,6 @@
   "foundingYear": "Founding Year",
   "email": "Email",
   "emailNotVerifiedError": "Please verify your email to confirm your account.",
-  "employerNotActiveError": "Your account is inactive. Please contact support for more information."
+  "employerNotActiveError": "Your account is inactive. Please contact support for more information.",
+  "companyOfTheMonth": "Company of the Month"
 }

@@ -1,4 +1,9 @@
 import db from "../../config/db.js";
+import {
+  computeWeightedCompletion,
+  hasText,
+  hasItems,
+} from "../../utils/completion.js";
 
 export const getJobSeekerProfile = async (req, res) => {
   const { id } = req.params;
@@ -229,6 +234,8 @@ export const getDashboardStats = async (req, res) => {
       totalApplicationsResult,
       savedCountResult,
       recentApplicationsResult,
+      profileResult,
+      relationsResult,
     ] = await Promise.all([
       // Total applications
       db.query(
@@ -259,12 +266,51 @@ export const getDashboardStats = async (req, res) => {
          ORDER BY a.created_at DESC LIMIT 5`,
         [jobseekerId],
       ),
+      // Profile fields used to compute completion
+      db.query(
+        `SELECT first_name, last_name, professional_title, professional_summary,
+                phone_number, address, profile_image, cv, skills,
+                experience_level, education_level, linkedin
+         FROM job_seeker WHERE id = $1`,
+        [jobseekerId],
+      ),
+      // Whether the job seeker has any experience / education / language entries
+      db.query(
+        `SELECT
+           EXISTS(SELECT 1 FROM experiences WHERE user_id = $1) AS has_experience,
+           EXISTS(SELECT 1 FROM educations WHERE user_id = $1) AS has_education,
+           EXISTS(SELECT 1 FROM languages WHERE user_id = $1) AS has_language`,
+        [jobseekerId],
+      ),
+    ]);
+
+    const profile = profileResult.rows[0] || {};
+    const relations = relationsResult.rows[0] || {};
+    // Each field contributes its own weight toward completion (higher = more
+    // important). The percentage is earned weight over total weight.
+    const profileCompletion = computeWeightedCompletion([
+      { filled: hasText(profile.first_name), weight: 8 },
+      { filled: hasText(profile.last_name), weight: 8 },
+      { filled: hasText(profile.professional_title), weight: 10 },
+      { filled: hasText(profile.professional_summary), weight: 10 },
+      { filled: hasText(profile.phone_number), weight: 7 },
+      { filled: hasText(profile.address), weight: 5 },
+      { filled: hasText(profile.profile_image), weight: 6 },
+      { filled: hasText(profile.cv), weight: 12 },
+      { filled: hasItems(profile.skills), weight: 10 },
+      { filled: hasText(profile.experience_level), weight: 4 },
+      { filled: hasText(profile.education_level), weight: 4 },
+      { filled: hasText(profile.linkedin), weight: 4 },
+      { filled: Boolean(relations.has_experience), weight: 4 },
+      { filled: Boolean(relations.has_education), weight: 4 },
+      { filled: Boolean(relations.has_language), weight: 4 },
     ]);
 
     return res.status(200).json({
       totalApplications: parseInt(totalApplicationsResult.rows[0].count),
       savedJobs: parseInt(savedCountResult.rows[0].count),
       recentApplications: recentApplicationsResult.rows,
+      profileCompletion,
     });
   } catch (error) {
     console.error("Error fetching dashboard stats:", error);

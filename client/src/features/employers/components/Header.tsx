@@ -27,9 +27,15 @@ import {
 import { logout } from "@/features/auth/userSlice";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n/i18n";
-import LanguageSwitcher from "./LanguageSwitcher";
+import LanguageSwitcher from "@/features/public/components/LanguageSwitcher";
 
-function Header() {
+function Header({
+  sidebarOpen,
+  setSidebarOpen,
+}: {
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+}) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user } = useSelector((state: any) => state.user);
@@ -64,9 +70,14 @@ function Header() {
 
   return (
     <>
-      <nav className="sticky top-0 w-full z-20 border-b border-white/10 backdrop-blur-md bg-[#06192d]/95">
+      <nav className="sticky top-0 w-full z-49 border-b border-white/10 backdrop-blur-md bg-[#06192d]/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
+            <Menu
+              className="cursor-pointer h-6 w-6 text-white md:hidden"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            />
+
             {/* Logo */}
             <div
               className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition"
@@ -81,7 +92,7 @@ function Header() {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
+            <div className="hidden md:flex items-center space-x-4 lg:space-x-8 ">
               <Link
                 to="/"
                 className={`${pathname === "/" ? "text-[#2E8CB8]" : "text-gray-100"} hover:text-[#5DADE2]! transition font-medium flex flex-col items-center justify-center`}

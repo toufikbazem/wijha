@@ -2,8 +2,13 @@
   "welcome": "Bienvenue,",
   "createNewJob": "Créer une offre",
   "totalJobPosts": "Total des offres",
+  "totalJobPostsDesc": "Toutes les offres que vous avez créées",
   "activeJobs": "Offres actives",
+  "activeJobsDesc": "Actuellement en ligne et ouvertes aux candidatures",
   "totalApplicants": "Total des candidats",
+  "totalApplicantsDesc": "Sur l'ensemble de vos offres",
+  "profileCompletion": "Complétion du profil",
+  "profileCompletionDesc": "Complétez votre profil pour vous démarquer",
   "recentJobPosts": "Offres récentes",
   "noJobPostsYet": "Aucune offre pour le moment. Créez votre première offre pour commencer.",
   "applicants": "candidats",
@@ -266,5 +271,6 @@
   "jobTitlePlaceholder": "Entrez le titre du poste...",
   "e.g.,": "ex.",
   "foundingYear": "Année de fondation",
-  "email": "Email"
+  "email": "Email",
+  "companyOfTheMonth": "Entreprise du mois"
 }

@@ -182,5 +182,9 @@
   "notSpecified": "Non spécifié",
   "companyLocation": "Localisation",
   "companySize": "Taille de l'entreprise",
-  "companyFounded": "Fondée en"
+  "companyFounded": "Fondée en",
+  "companyEmployees": "Employés",
+  "companyNoDescription": "Aucune description fournie pour le moment.",
+  "follow": "Suivre",
+  "companyOfTheMonth": "Entreprise du mois"
 }

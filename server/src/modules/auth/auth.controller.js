@@ -305,6 +305,7 @@ const login = async (req, res) => {
         ...userData.rows[0],
       });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       code_error: "INTERNAL_SERVER_ERROR",
       message: "There is an error, try again.",

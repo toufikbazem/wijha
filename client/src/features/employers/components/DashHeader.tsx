@@ -63,7 +63,7 @@ export default function DashHeader({
   };
 
   return (
-    <header className="bg-[#06192d]/95 border-b border-gray-200 sticky top-0 z-30">
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
       <div className="flex items-center justify-between h-16 px-4 sm:px-6 gap-3 ">
         {/* Left: Menu (mobile) */}
         <button

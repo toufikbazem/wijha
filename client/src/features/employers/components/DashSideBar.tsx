@@ -3,6 +3,7 @@ import {
   Building2,
   CreditCard,
   FileText,
+  FolderOpen,
   LogOut,
   Settings,
   User,
@@ -44,19 +45,26 @@ function DashSideBar({
       icon: FileText,
       url: "jobPosts",
     },
-    {
-      id: "company",
-      actives: ["company"],
-      label: t("sidebar.companyProfile"),
-      icon: Building2,
-      url: "company",
-    },
+    // {
+    //   id: "company",
+    //   actives: ["company"],
+    //   label: t("sidebar.companyProfile"),
+    //   icon: Building2,
+    //   url: "company",
+    // },
     {
       id: "profileAccess",
       actives: ["profileAccess"],
       label: t("sidebar.profileAccess"),
       icon: Users,
       url: "profileAccess",
+    },
+    {
+      id: "cvHub",
+      actives: ["cvHub", "cvHubCvs"],
+      label: "CV Hub",
+      icon: FolderOpen,
+      url: "cvHub",
     },
     {
       id: "subscription",
@@ -100,15 +108,15 @@ function DashSideBar({
 
   return (
     <aside
-      className={`h-screen w-56 flex flex-col bg-white ltr:border-r rtl:border-l border-gray-200
-          shrink-0 z-50 fixed md:sticky top-0 ltr:left-0 rtl:right-0 transform transition-transform
+      className={`h-screen md:h-[calc(100vh-5rem)] w-56 flex flex-col bg-white ltr:border-r rtl:border-l border-gray-200
+          shrink-0 z-50 md:z-48 fixed md:sticky top-[80px] ltr:left-0 rtl:right-0 transform transition-transform
           duration-300 ease-in-out ${sidebarOpen ? "translate-x-0" : "ltr:-translate-x-full rtl:translate-x-full"}
           md:!translate-x-0`}
     >
       {/* Logo */}
       <div
         onClick={() => navigate("/")}
-        className="h-15 flex items-center gap-2.5 px-4.5 border-b border-gray-200 shrink-0"
+        className="md:hidden h-15 flex items-center gap-2.5 px-4.5 border-b border-gray-200 shrink-0"
       >
         <img className="w-8 h-8" src={img} alt="logo" />
         <img className="h-6" src={img1} alt="logo" />

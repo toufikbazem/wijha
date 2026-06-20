@@ -106,7 +106,7 @@ function JobPostCard({ job }: { job: any }) {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className="font-semibold w-13 h-13 bg-[#E6F7FB] rounded-xl hidden sm:flex items-center justify-center text-xl shrink-0 border border-gray-100">
+          <div className="font-semibold w-13 h-13 bg-[#E6F7FB] rounded-xl flex items-center justify-center text-xl shrink-0 border border-gray-100">
             {job.is_anonymous ? (
               <Building2 className="w-6 h-6 text-gray-400" />
             ) : job.logo ? (
@@ -116,7 +116,10 @@ function JobPostCard({ job }: { job: any }) {
             )}
           </div>
           <div>
-            <h4 className="text-[15px] font-medium text-gray-900 mb-0.5">
+            <h4
+              onClick={() => navigate(`/jobPost/${job.id}`)}
+              className="text-[15px] font-medium text-gray-900 mb-0.5 cursor-pointer hover:text-primary-500"
+            >
               {job.title}
             </h4>
             {job.is_anonymous ? (

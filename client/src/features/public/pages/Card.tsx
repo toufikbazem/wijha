@@ -1,4 +1,4 @@
-import { MapPin, Users, Calendar, Building2 } from "lucide-react";
+import { Users, Building2, Tag, Crown } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 
@@ -11,98 +11,119 @@ export interface Company {
   size?: string | null;
   founding_year?: number | string | null;
   logo?: string | null;
+  cover_image?: string | null;
+  description?: string | null;
 }
 
-export default function CompanyCard({ company }: { company: Company }) {
+export default function CompanyCard({
+  company,
+  featured = false,
+}: {
+  company: Company;
+  featured?: boolean;
+}) {
   const navigate = useNavigate();
   const { t } = useTranslation("public");
 
-  const { company_name, industry, address, size, founding_year, logo } =
+  const { company_name, industry, size, logo, cover_image, description } =
     company;
 
   const placeholder = t("notSpecified");
 
+  const goToProfile = () => navigate(`/companyProfile/${company.user_id}`);
+
   return (
-    <div className="group relative flex h-full w-full flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all hover:shadow-xl">
-      <div className="relative flex flex-1 flex-col p-7">
-        {/* Logo + industry tag */}
-        <div className="flex items-center gap-4">
-          <div
-            className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-lg ${
-              logo ? "bg-white" : "bg-primary-500"
-            } text-white shadow-sm border border-gray-100`}
-          >
-            {logo ? (
-              <img
-                src={logo}
-                alt={company_name}
-                className="h-full w-full rounded-lg object-contain"
-              />
-            ) : (
-              <Building2 className="h-7 w-7" />
-            )}
-          </div>
-          <div className="min-w-0 text-xs font-medium tracking-wide">
-            {/* Company name */}
-            <h2 className="truncate text-xl font-bold leading-tight tracking-tight text-gray-900">
-              {company_name}
-            </h2>
-            <p className="truncate text-gray-500">
-              {industry ? t(industry) : placeholder}
-            </p>
-          </div>
+    <div
+      className={`group relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-white transition-all ${
+        featured
+          ? "border-2 border-amber-400 shadow-lg ring-1 ring-amber-400/10 hover:shadow-2xl hover:ring-amber-400/30"
+          : "border border-gray-100 shadow-sm hover:shadow-xl"
+      }`}
+    >
+      {/* Company of the month badge */}
+      {featured && (
+        <div className="absolute inset-e-3 top-3 z-10 flex items-center gap-1 rounded-full bg-linear-to-r from-amber-400 to-yellow-500 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white shadow-sm">
+          <Crown className="h-3 w-3 fill-current" />
+          {t("companyOfTheMonth", "Company of the Month")}
+        </div>
+      )}
+
+      {/* Cover / banner */}
+      <div
+        onClick={goToProfile}
+        className="relative h-28 w-full cursor-pointer overflow-hidden"
+      >
+        {cover_image ? (
+          <img
+            src={cover_image}
+            alt={company_name}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <div className="h-full w-full bg-linear-to-br from-primary-600 via-primary-500 to-primary-600" />
+        )}
+      </div>
+
+      <div className="relative flex flex-1 flex-col px-5 pb-5">
+        {/* Logo overlapping the banner */}
+        <div
+          onClick={goToProfile}
+          className={`-mt-9 flex h-18 w-18 cursor-pointer items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-white shadow-md ${
+            logo ? "" : "bg-primary-500"
+          }`}
+        >
+          {logo ? (
+            <img
+              src={logo}
+              alt={company_name}
+              className="h-full w-full rounded-xl object-contain"
+            />
+          ) : (
+            <Building2 className="h-8 w-8 text-white" />
+          )}
         </div>
 
-        {/* Details */}
-        <div className="mt-6 flex flex-col gap-4 text-sm">
-          {/* Location */}
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-primary-500 border border-gray-100 bg-primary-50">
-              <MapPin className="h-4 w-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[11px] uppercase tracking-wider">
-                {t("companyLocation")}
-              </p>
-              <p className="truncate">{address || placeholder}</p>
-            </div>
-          </div>
+        {/* Company name + verified badge */}
+        <div className="mt-3 flex items-center gap-1.5">
+          <h2
+            onClick={goToProfile}
+            className="cursor-pointer truncate text-xl font-bold leading-tight tracking-tight text-gray-900 hover:text-primary-500"
+          >
+            {company_name}
+          </h2>
+        </div>
 
-          {/* Size */}
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-primary-500 border border-gray-100 bg-primary-50">
-              <Users className="h-4 w-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[11px] uppercase tracking-wider">
-                {t("companySize")}
-              </p>
-              <p className="truncate">{size || placeholder}</p>
-            </div>
-          </div>
+        {/* Description */}
+        <p className="mt-2 line-clamp-3 min-h-15 text-sm leading-relaxed text-gray-500">
+          {description}
+        </p>
 
-          {/* Founded */}
+        {/* Meta: industry + size */}
+        <div className="mt-4 flex flex-col gap-1.5 text-sm text-gray-400">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-primary-500 border border-gray-100 bg-primary-50">
-              <Calendar className="h-4 w-4" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[11px] uppercase tracking-wider font_regular">
-                {t("companyFounded")}
-              </p>
-              <p className="truncate">
-                {founding_year && founding_year !== 0
-                  ? founding_year
-                  : placeholder}
-              </p>
-            </div>
+            <Tag className="h-4 w-4 shrink-0" />
+            <span className="truncate">
+              {industry ? t(industry) : placeholder}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Users className="h-4 w-4 shrink-0" />
+            <span className="truncate">
+              {size
+                ? `${size} ${t("companyEmployees", "Employees")}`
+                : placeholder}
+            </span>
           </div>
         </div>
 
         {/* CTA */}
         <button
-          onClick={() => navigate(`/companyProfile/${company.user_id}`)}
-          className="mt-7 flex w-full cursor-pointer items-center justify-center rounded-sm bg-primary-50 py-2 text-sm font-semibold text-primary-500 transition-all hover:text-primary-600"
+          onClick={goToProfile}
+          className={`mt-5 flex w-full cursor-pointer items-center justify-center rounded-lg border py-2 text-sm font-semibold transition-all ${
+            featured
+              ? "border-transparent bg-linear-to-r from-amber-400 to-yellow-500 text-white shadow-sm hover:from-amber-500 hover:to-yellow-600"
+              : "border-gray-200 bg-white text-gray-700 hover:border-primary-500 hover:text-primary-600"
+          }`}
         >
           {t("viewProfile")}
         </button>

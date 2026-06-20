@@ -17,6 +17,7 @@ import subscriptions from "./src/modules/subscriptions/subscriptions.routes.js";
 import admin from "./src/modules/admin/admin.routes.js";
 import adminAuth from "./src/modules/admin/admin.auth.routes.js";
 import contact from "./src/modules/contact/contact.routes.js";
+import cvHub from "./src/modules/cv-hub/cv-hub.routes.js";
 
 const app = express();
 dotenv.config();
@@ -72,6 +73,7 @@ app.use("/api/v1/subscriptions", subscriptions);
 app.use("/api/v1/admin/auth", adminAuth);
 app.use("/api/v1/admin", admin);
 app.use("/api/v1/contact", contact);
+app.use("/api/v1/cv-hub", cvHub);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

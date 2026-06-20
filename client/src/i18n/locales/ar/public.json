@@ -182,5 +182,9 @@
   "notSpecified": "غير محدد",
   "companyLocation": "الموقع",
   "companySize": "حجم الشركة",
-  "companyFounded": "تأسست عام"
+  "companyFounded": "تأسست عام",
+  "companyEmployees": "موظف",
+  "companyNoDescription": "لا يوجد وصف بعد.",
+  "follow": "متابعة",
+  "companyOfTheMonth": "شركة الشهر"
 }

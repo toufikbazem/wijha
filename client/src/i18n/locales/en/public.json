@@ -182,5 +182,9 @@
   "notSpecified": "Not specified",
   "companyLocation": "Location",
   "companySize": "Company Size",
-  "companyFounded": "Founded"
+  "companyFounded": "Founded",
+  "companyEmployees": "Employees",
+  "companyNoDescription": "No description provided yet.",
+  "follow": "Follow",
+  "companyOfTheMonth": "Company of the Month"
 }

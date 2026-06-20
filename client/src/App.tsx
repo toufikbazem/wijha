@@ -26,6 +26,7 @@ import SessionGuard from "./components/SessionGuard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import Companies from "./features/public/pages/Companies";
+import CvHubSubmit from "./features/public/pages/CvHubSubmit";
 
 function App() {
   const { user } = useSelector((state: any) => state.user);
@@ -59,6 +60,7 @@ function App() {
           <Route path="/contacts" element={<ContactUs />} />
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="/companies" element={<Companies />} />
+          <Route path="/cv-hub/:slug" element={<CvHubSubmit />} />
 
           {/* Protected: any authenticated user */}
           <Route element={<ProtectedRoute />}>

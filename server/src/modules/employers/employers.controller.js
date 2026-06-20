@@ -1,4 +1,9 @@
 import db from "../../config/db.js";
+import {
+  computeWeightedCompletion,
+  hasText,
+  hasItems,
+} from "../../utils/completion.js";
 
 export const getEmployerProfile = async (req, res) => {
   const { id } = req.params;
@@ -31,6 +36,7 @@ export const getEmployerProfile = async (req, res) => {
     } else {
       user = await db.query(
         `SELECT users.id,
+        users.email,
         employers.id AS employer_id,
         employers.user_id, 
         employers.company_name,
@@ -228,6 +234,8 @@ export const getPublicCompanies = async (req, res) => {
          e.size,
          e.address,
          e.logo,
+         e.cover_image,
+         e.description,
          e.founding_year,
          COUNT(*) OVER() AS total
        FROM users u
@@ -277,6 +285,7 @@ export const getDashboardStats = async (req, res) => {
       totalApplicantsResult,
       recentJobsResult,
       recentApplicantsResult,
+      profileResult,
     ] = await Promise.all([
       // Total job posts
       db.query(
@@ -321,6 +330,31 @@ export const getDashboardStats = async (req, res) => {
          ORDER BY a.created_at DESC LIMIT 5`,
         [employerId],
       ),
+      // Profile fields used to compute completion
+      db.query(
+        `SELECT company_name, industry, size, phone_number, address, logo,
+                cover_image, description, missions, founding_year, website, linkedin
+         FROM employers WHERE id = $1`,
+        [employerId],
+      ),
+    ]);
+
+    const profile = profileResult.rows[0] || {};
+    // Each field contributes its own weight toward completion (higher = more
+    // important). The percentage is earned weight over total weight.
+    const profileCompletion = computeWeightedCompletion([
+      { filled: hasText(profile.company_name), weight: 15 },
+      { filled: hasText(profile.industry), weight: 10 },
+      { filled: hasText(profile.size), weight: 8 },
+      { filled: hasText(profile.phone_number), weight: 10 },
+      { filled: hasText(profile.address), weight: 10 },
+      { filled: hasText(profile.logo), weight: 10 },
+      { filled: hasText(profile.cover_image), weight: 5 },
+      { filled: hasText(profile.description), weight: 12 },
+      { filled: hasItems(profile.missions), weight: 8 },
+      { filled: Boolean(profile.founding_year), weight: 4 },
+      { filled: hasText(profile.website), weight: 4 },
+      { filled: hasText(profile.linkedin), weight: 4 },
     ]);
 
     return res.status(200).json({
@@ -329,6 +363,7 @@ export const getDashboardStats = async (req, res) => {
       totalApplicants: parseInt(totalApplicantsResult.rows[0].count),
       recentJobs: recentJobsResult.rows,
       recentApplicants: recentApplicantsResult.rows,
+      profileCompletion,
     });
   } catch (error) {
     console.error("Error fetching dashboard stats:", error);

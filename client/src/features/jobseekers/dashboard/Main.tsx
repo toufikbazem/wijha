@@ -6,7 +6,6 @@ import {
   FileText,
   Save,
   Settings,
-  TrendingUp,
   User,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -27,6 +26,7 @@ import DashSaved from "./DashSaved";
 import DashApplication from "./DashApplications";
 import DashSettings from "./DashSettings";
 import Header from "@/features/public/components/Header";
+import ProfileCompletionCard from "@/components/ProfileCompletionCard";
 
 const TABS = ["Profile", "Applications", "SavedJobs"] as const;
 type Tab = (typeof TABS)[number];
@@ -99,7 +99,7 @@ const DashProfile = () => {
 
   const { user } = useSelector((state: any) => state.user);
 
-  const profileCompletion = 60;
+  const [profileCompletion, setProfileCompletion] = useState(0);
 
   const form = useForm<z.infer<typeof ProfileSchema>>({
     resolver: zodResolver(ProfileSchema),
@@ -181,21 +181,29 @@ const DashProfile = () => {
       if (!user?.id) return;
       setStatsLoading(true);
       try {
-        const [applicationsRes, savedJobsRes] = await Promise.all([
-          fetch(
-            `${import.meta.env.VITE_API_URL}/api/v1/applications?jobseekerId=${user.id}&page=1&limit=1`,
-            { method: "GET", credentials: "include" },
-          ),
-          fetch(
-            `${import.meta.env.VITE_API_URL}/api/v1/saved-jobs?jobseekerId=${user.id}&page=1&limit=1`,
-            { method: "GET", credentials: "include" },
-          ),
-        ]);
+        const [applicationsRes, savedJobsRes, dashboardStatsRes] =
+          await Promise.all([
+            fetch(
+              `${import.meta.env.VITE_API_URL}/api/v1/applications?jobseekerId=${user.id}&page=1&limit=1`,
+              { method: "GET", credentials: "include" },
+            ),
+            fetch(
+              `${import.meta.env.VITE_API_URL}/api/v1/saved-jobs?jobseekerId=${user.id}&page=1&limit=1`,
+              { method: "GET", credentials: "include" },
+            ),
+            fetch(
+              `${import.meta.env.VITE_API_URL}/api/v1/jobseekers/dashboard-stats`,
+              { method: "GET", credentials: "include" },
+            ),
+          ]);
         const applicationsData = await applicationsRes.json();
         const savedJobsData = await savedJobsRes.json();
+        const dashboardStatsData = await dashboardStatsRes.json();
         if (applicationsRes.ok)
           setApplicationsTotal(applicationsData.total || 0);
         if (savedJobsRes.ok) setSavedJobsTotal(savedJobsData.total || 0);
+        if (dashboardStatsRes.ok)
+          setProfileCompletion(dashboardStatsData.profileCompletion || 0);
       } catch (error) {
         console.error("Error fetching profile stats:", error);
       } finally {
@@ -327,7 +335,7 @@ const DashProfile = () => {
           </div>
         )}
         {!loading && (
-          <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50">
+          <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 mb-16">
             {/* Top Navigation */}
             {/* <div className="flex flex-col sm:flex-row justify-between items-center max-w-7xl mx-auto px-6 py-4">
               <div>
@@ -372,32 +380,11 @@ const DashProfile = () => {
             {/* Feature Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-6 py-4 pt-6">
               {/* Profile Completion */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600">
-                      <TrendingUp className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">
-                        {t("profileCompletion")}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {t("profileCompletionDesc")}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-2xl font-bold text-emerald-600">
-                    {profileCompletion}%
-                  </span>
-                </div>
-                <div className="w-full h-2.5 rounded-full bg-gray-100 overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-emerald-500 transition-all duration-500"
-                    style={{ width: `${profileCompletion}%` }}
-                  />
-                </div>
-              </div>
+              <ProfileCompletionCard
+                namespace="jobseeker"
+                percentage={profileCompletion}
+                loading={statsLoading}
+              />
 
               {/* Applications */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">

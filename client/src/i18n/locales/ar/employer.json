@@ -2,8 +2,13 @@
   "welcome": "مرحباً بعودتك،",
   "createNewJob": "إنشاء وظيفة جديدة",
   "totalJobPosts": "إجمالي الوظائف",
+  "totalJobPostsDesc": "جميع الوظائف التي أنشأتها",
   "activeJobs": "الوظائف النشطة",
+  "activeJobsDesc": "نشطة حالياً وتستقبل المتقدمين",
   "totalApplicants": "إجمالي المتقدمين",
+  "totalApplicantsDesc": "عبر جميع وظائفك",
+  "profileCompletion": "اكتمال الملف الشخصي",
+  "profileCompletionDesc": "أكمل ملفك الشخصي لتبرز",
   "recentJobPosts": "الوظائف الأخيرة",
   "noJobPostsYet": "لا توجد وظائف حتى الآن. أنشئ أول وظيفة للبدء.",
   "applicants": "متقدمين",
@@ -269,5 +274,6 @@
   "foundingYear": "سنة التأسيس",
   "email": "البريد الإلكتروني",
   "emailNotVerifiedError": "يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك.",
-  "employerNotActiveError": "حسابك غير نشط. يرجى الاتصال بالدعم لمزيد من المعلومات."
+  "employerNotActiveError": "حسابك غير نشط. يرجى الاتصال بالدعم لمزيد من المعلومات.",
+  "companyOfTheMonth": "شركة الشهر"
 }
