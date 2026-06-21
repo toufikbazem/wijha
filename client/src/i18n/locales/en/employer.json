@@ -145,6 +145,8 @@
   "addNewMission": "Add new Mission",
   "addNewMissionPlaceholder": "add new mission.....",
   "pleaseAddMission": "Please add a mission",
+  "missionTooShort": "Mission must be at least 3 characters.",
+  "missionTooLong": "Mission must be at most 150 characters.",
   "linkedin": "Linkedin",
   "phoneNumber": "Phone Number",
   "website": "Website",

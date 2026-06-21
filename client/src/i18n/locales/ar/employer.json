@@ -139,6 +139,8 @@
   "addNewMission": "إضافة مهمة جديدة",
   "addNewMissionPlaceholder": "أضف مهمة جديدة.....",
   "pleaseAddMission": "يرجى إضافة مهمة",
+  "missionTooShort": "يجب أن تتكون المهمة من 3 أحرف على الأقل.",
+  "missionTooLong": "يجب ألا تتجاوز المهمة 150 حرفًا.",
   "linkedin": "لينكد إن",
   "phoneNumber": "رقم الهاتف",
   "website": "الموقع الإلكتروني",

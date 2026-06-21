@@ -55,10 +55,7 @@ function StepProfessionalInfo({ form }: { form: any }) {
           name="educationLevel"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field
-              data-invalid={fieldState.invalid}
-              className="overflow-hidden flex-1"
-            >
+            <Field data-invalid={fieldState.invalid} className="flex-1">
               <FieldLabel className="input-label">
                 {tc("educationLevel")}
               </FieldLabel>
@@ -94,10 +91,7 @@ function StepProfessionalInfo({ form }: { form: any }) {
           name="experienceLevel"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field
-              data-invalid={fieldState.invalid}
-              className="overflow-hidden flex-1"
-            >
+            <Field data-invalid={fieldState.invalid} className=" flex-1">
               <FieldLabel className="input-label">
                 {tc("experienceLevel")}
               </FieldLabel>

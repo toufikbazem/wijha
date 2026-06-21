@@ -154,7 +154,12 @@ function MultiStepRegister({
     // map zod errors to react-hook-form
     form.clearErrors();
     result.error.issues.forEach((issue: any) => {
-      const path = issue.path[0];
+      // Preserve the full path so nested errors (e.g. an invalid array item
+      // at ["missions", 0]) land at "missions.0" instead of colliding on
+      // "missions". Falsy segments are skipped to keep the dotted path clean.
+      const path = issue.path
+        .filter((seg: any) => seg !== undefined && seg !== null)
+        .join(".");
       if (path) {
         form.setError(path as any, { type: "manual", message: issue.message });
       }

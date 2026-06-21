@@ -15,7 +15,6 @@ import { Building2, Camera, PlusIcon, Upload, X } from "lucide-react";
 import { Controller } from "react-hook-form";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import i18n from "@/i18n/i18n";
 
@@ -27,14 +26,37 @@ function StepCompanyProfile({ form }: { form: any }) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [missionDraft, setMissionDraft] = useState("");
+  const [missionDraftError, setMissionDraftError] = useState<string | null>(
+    null,
+  );
   const [missionDialogOpen, setMissionDialogOpen] = useState(false);
   const logo = form.watch("logo");
   const missions: string[] = form.watch("missions") || [];
+  // Array-level error for the missions field, produced by the schema when the
+  // step is validated (e.g. on Next). Its message lives on `.message`.
+  const missionsError = form.formState.errors?.missions;
+  const missionsArrayError =
+    missionsError && typeof missionsError.message === "string"
+      ? missionsError.message
+      : undefined;
+
+  // Validate a single mission value. Returns an error message key result, or
+  // null when valid. This is the per-item validation — it runs in the dialog
+  // before the mission is added, since the array schema never sees a rejected
+  // draft.
+  const validateMissionDraft = (value: string): string | null => {
+    const trimmed = value.trim();
+    if (!trimmed) return te("pleaseAddMission");
+    if (trimmed.length < 3) return te("missionTooShort");
+    if (trimmed.length > 150) return te("missionTooLong");
+    return null;
+  };
 
   const addMission = () => {
     const value = missionDraft.trim();
-    if (!value) {
-      toast.error(te("pleaseAddMission"));
+    const error = validateMissionDraft(value);
+    if (error) {
+      setMissionDraftError(error);
       return;
     }
     form.setValue("missions", [...missions, value], {
@@ -42,6 +64,7 @@ function StepCompanyProfile({ form }: { form: any }) {
       shouldTouch: true,
     });
     setMissionDraft("");
+    setMissionDraftError(null);
     setMissionDialogOpen(false);
   };
 
@@ -148,7 +171,9 @@ function StepCompanyProfile({ form }: { form: any }) {
             )}
           </button>
         </div>
-        <span className="text-xs text-gray-500">{t("companyLogoOptional")}</span>
+        <span className="text-xs text-gray-500">
+          {t("companyLogoOptional")}
+        </span>
       </div>
 
       <Controller
@@ -175,7 +200,7 @@ function StepCompanyProfile({ form }: { form: any }) {
       />
 
       {/* Missions */}
-      <Field>
+      <Field data-invalid={!!missionsArrayError}>
         <div className="flex items-center justify-between">
           <FieldLabel className="input-label">
             {t("missions")}{" "}
@@ -185,7 +210,10 @@ function StepCompanyProfile({ form }: { form: any }) {
             open={missionDialogOpen}
             onOpenChange={(v) => {
               setMissionDialogOpen(v);
-              if (!v) setMissionDraft("");
+              if (!v) {
+                setMissionDraft("");
+                setMissionDraftError(null);
+              }
             }}
           >
             <DialogTrigger asChild>
@@ -204,15 +232,26 @@ function StepCompanyProfile({ form }: { form: any }) {
                 type="text"
                 placeholder={te("addNewMissionPlaceholder")}
                 value={missionDraft}
-                onChange={(e) => setMissionDraft(e.target.value)}
+                aria-invalid={!!missionDraftError}
+                onChange={(e) => {
+                  setMissionDraft(e.target.value);
+                  if (missionDraftError) setMissionDraftError(null);
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
                     addMission();
                   }
                 }}
-                className="input-filter mb-6 mt-6 ltr:pl-2! rtl:pr-2!"
+                className="input-filter mt-6 ltr:pl-2! rtl:pr-2!"
               />
+              {missionDraftError ? (
+                <FieldError
+                  className="mt-2"
+                  errors={[{ message: missionDraftError }]}
+                />
+              ) : null}
+              <div className="mb-6" />
               <DialogFooter>
                 <DialogClose asChild>
                   <Button
@@ -255,6 +294,10 @@ function StepCompanyProfile({ form }: { form: any }) {
             ))}
           </div>
         )}
+
+        {missionsArrayError ? (
+          <FieldError errors={[{ message: missionsArrayError }]} />
+        ) : null}
       </Field>
     </div>
   );

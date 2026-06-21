@@ -72,10 +72,7 @@ function StepCompanyInfo({ form }: { form: any }) {
           name="industry"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field
-              data-invalid={fieldState.invalid}
-              className="overflow-hidden flex-1"
-            >
+            <Field data-invalid={fieldState.invalid} className="flex-1">
               <FieldLabel className="input-label">{tc("industry")}</FieldLabel>
               <div className="relative">
                 <Factory className="input-icon" size={20} />
@@ -109,10 +106,7 @@ function StepCompanyInfo({ form }: { form: any }) {
           name="size"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field
-              data-invalid={fieldState.invalid}
-              className="overflow-hidden flex-1"
-            >
+            <Field data-invalid={fieldState.invalid} className="flex-1">
               <FieldLabel className="input-label">
                 {t("companySize")}
               </FieldLabel>
