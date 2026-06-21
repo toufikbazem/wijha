@@ -22,6 +22,7 @@ function StepCompanyProfile({ form }: { form: any }) {
   const { t } = useTranslation("auth");
   const { t: te } = useTranslation("employer");
   const { t: tc } = useTranslation("common");
+  const { t: tr } = useTranslation("error");
   const logoInput = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -194,7 +195,11 @@ function StepCompanyProfile({ form }: { form: any }) {
               placeholder={t("companyDescriptionPlaceholder")}
               className="text-[16px] w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008CBA] focus:border-transparent outline-none transition resize-none"
             />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />
@@ -296,7 +301,7 @@ function StepCompanyProfile({ form }: { form: any }) {
         )}
 
         {missionsArrayError ? (
-          <FieldError errors={[{ message: missionsArrayError }]} />
+          <FieldError errors={[{ message: tr(missionsArrayError) }]} />
         ) : null}
       </Field>
     </div>

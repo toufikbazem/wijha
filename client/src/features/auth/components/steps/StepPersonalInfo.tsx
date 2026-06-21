@@ -13,6 +13,7 @@ import i18n from "@/i18n/i18n";
 
 function StepPersonalInfo({ form }: { form: any }) {
   const { t } = useTranslation("auth");
+  const { t: tr } = useTranslation("error");
   const { t: tc } = useTranslation("common");
   const profileImg = useRef<HTMLInputElement | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -136,7 +137,11 @@ function StepPersonalInfo({ form }: { form: any }) {
                   placeholder={t("enterFirstName")}
                 />
               </div>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && (
+                <FieldError
+                  errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+                />
+              )}
             </Field>
           )}
         />
@@ -157,7 +162,11 @@ function StepPersonalInfo({ form }: { form: any }) {
                   placeholder={t("enterLastName")}
                 />
               </div>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && (
+                <FieldError
+                  errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+                />
+              )}
             </Field>
           )}
         />
@@ -175,7 +184,11 @@ function StepPersonalInfo({ form }: { form: any }) {
               invalid={fieldState.invalid}
               variant="default"
             />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />
@@ -196,7 +209,11 @@ function StepPersonalInfo({ form }: { form: any }) {
                 placeholder="0X XX XX XX XX"
               />
             </div>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />
@@ -238,7 +255,11 @@ function StepPersonalInfo({ form }: { form: any }) {
                 </Label>
               </div>
             </RadioGroup>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />

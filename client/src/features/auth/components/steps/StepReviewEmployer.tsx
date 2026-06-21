@@ -38,6 +38,7 @@ function Row({
 function StepReviewEmployer({ form }: { form: any }) {
   const { t } = useTranslation("auth");
   const { t: tc } = useTranslation("common");
+  const { t: tr } = useTranslation("error");
   const v = form.watch();
 
   return (
@@ -151,7 +152,10 @@ function StepReviewEmployer({ form }: { form: any }) {
                 </FieldLabel>
               </Field>
               {fieldState.invalid && (
-                <FieldError className="mt-2" errors={[fieldState.error]} />
+                <FieldError
+                  className="mt-2"
+                  errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+                />
               )}
             </div>
           )}

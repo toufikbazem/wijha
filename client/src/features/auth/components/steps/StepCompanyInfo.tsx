@@ -17,6 +17,7 @@ import i18n from "@/i18n/i18n";
 function StepCompanyInfo({ form }: { form: any }) {
   const { t } = useTranslation("auth");
   const { t: tc } = useTranslation("common");
+  const { t: tr } = useTranslation("error");
 
   return (
     <div className="space-y-5">
@@ -45,7 +46,11 @@ function StepCompanyInfo({ form }: { form: any }) {
                 placeholder={t("enterCompanyName")}
               />
             </div>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />
@@ -62,7 +67,11 @@ function StepCompanyInfo({ form }: { form: any }) {
               invalid={fieldState.invalid}
               variant="default"
             />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />
@@ -97,7 +106,11 @@ function StepCompanyInfo({ form }: { form: any }) {
                   </SelectContent>
                 </Select>
               </div>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
             </Field>
           )}
         />
@@ -133,7 +146,11 @@ function StepCompanyInfo({ form }: { form: any }) {
                   </SelectContent>
                 </Select>
               </div>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
             </Field>
           )}
         />
@@ -156,7 +173,11 @@ function StepCompanyInfo({ form }: { form: any }) {
                 maxLength={4}
               />
             </div>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />

@@ -19,6 +19,7 @@ function StepProfessionalInfo({ form }: { form: any }) {
   const { t } = useTranslation("auth");
   const { t: tc } = useTranslation("common");
   const { t: td } = useTranslation("data");
+  const { t: tr } = useTranslation("error");
 
   return (
     <div className="space-y-5">
@@ -45,7 +46,11 @@ function StepProfessionalInfo({ form }: { form: any }) {
               invalid={fieldState.invalid}
               placeholder={t("enterProfessionalTitle")}
             />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />
@@ -82,7 +87,11 @@ function StepProfessionalInfo({ form }: { form: any }) {
                   </SelectContent>
                 </Select>
               </div>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
             </Field>
           )}
         />
@@ -118,7 +127,11 @@ function StepProfessionalInfo({ form }: { form: any }) {
                   </SelectContent>
                 </Select>
               </div>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
             </Field>
           )}
         />
@@ -146,7 +159,11 @@ function StepProfessionalInfo({ form }: { form: any }) {
                 placeholder="https://linkedin.com/in/your-profile"
               />
             </div>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />
@@ -169,7 +186,11 @@ function StepProfessionalInfo({ form }: { form: any }) {
               placeholder={t("professionalSummaryPlaceholder")}
               className="text-[16px] w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#008CBA] focus:border-transparent outline-none transition resize-none"
             />
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />

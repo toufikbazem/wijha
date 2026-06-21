@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 function StepCompanyContact({ form }: { form: any }) {
   const { t } = useTranslation("auth");
+  const { t: tr } = useTranslation("error");
 
   return (
     <div className="space-y-5">
@@ -34,7 +35,11 @@ function StepCompanyContact({ form }: { form: any }) {
                 placeholder="0X XX XX XX XX"
               />
             </div>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />
@@ -61,7 +66,11 @@ function StepCompanyContact({ form }: { form: any }) {
                 placeholder="https://linkedin.com/company/your-company"
               />
             </div>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />
@@ -88,7 +97,11 @@ function StepCompanyContact({ form }: { form: any }) {
                 placeholder="https://yourcompany.com"
               />
             </div>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />

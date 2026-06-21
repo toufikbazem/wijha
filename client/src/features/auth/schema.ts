@@ -9,7 +9,7 @@ import {
 // Step 1 — Account Type
 export const accountTypeSchema = z.object({
   accountType: z.enum(["jobseeker", "employer"], {
-    message: "Please select an account type.",
+    message: "ACCOUNT_TYPE_REQUIRED",
   }),
 });
 
@@ -18,21 +18,21 @@ export const accountInfoSchema = z
   .object({
     email: z
       .string()
-      .min(1, "Email is required.")
-      .max(254, "Email must be at most 254 characters.")
-      .pipe(z.email("Invalid email address")),
+      .min(1, "EMAIL_REQUIRED")
+      .max(254, "EMAIL_MAX_LENGTH")
+      .pipe(z.email("EMAIL_INVALID")),
     password: z
       .string()
-      .min(1, "Password is required.")
-      .max(128, "Password must be at most 128 characters.")
-      .pipe(z.string().min(8, "Password must be at least 8 characters.")),
+      .min(1, "PASSWORD_REQUIRED")
+      .max(128, "PASSWORD_MAX_LENGTH")
+      .pipe(z.string().min(8, "PASSWORD_MIN_LENGTH")),
     confirmPassword: z
       .string()
-      .min(1, "Confirm password is required.")
-      .max(128, "Confirm password must be at most 128 characters."),
+      .min(1, "CONFIRMPASSWORD_REQUIRED")
+      .max(128, "CONFIRMPASSWORD_MAX_LENGTH"),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Confirm password must match the password.",
+    message: "PASSWORD_MISMATCH",
     path: ["confirmPassword"],
   });
 
@@ -40,30 +40,30 @@ export const accountInfoSchema = z
 export const jobseekerPersonalSchema = z.object({
   firstName: z
     .string()
-    .min(1, "First name is required.")
-    .max(128, "First name must be at most 128 characters.")
-    .pipe(z.string().min(2, "First name must be at least 2 characters.")),
+    .min(1, "FIRST_NAME_REQUIRED")
+    .max(128, "FIRST_NAME_MAX_LENGTH")
+    .pipe(z.string().min(2, "FIRST_NAME_MIN_LENGTH")),
   lastName: z
     .string()
-    .min(1, "Last name is required.")
-    .max(128, "Last name must be at most 128 characters.")
-    .pipe(z.string().min(2, "Last name must be at least 2 characters.")),
+    .min(1, "LAST_NAME_REQUIRED")
+    .max(128, "LAST_NAME_MAX_LENGTH")
+    .pipe(z.string().min(2, "LAST_NAME_MIN_LENGTH")),
   address: z
     .string()
-    .min(1, "Address is required.")
-    .max(256, "Address must be at most 256 characters."),
+    .min(1, "ADDRESS_REQUIRED")
+    .max(256, "ADDRESS_MAX_LENGTH"),
   phoneNumber: z
     .string()
-    .min(1, "Phone number is required.")
-    .pipe(z.string().regex(/^0[5-7]\d{8}$/, "Invalid Phone number")),
+    .min(1, "PHONE_REQUIRED")
+    .pipe(z.string().regex(/^0[5-7]\d{8}$/, "PHONE_INVALID")),
   gender: z.enum(["male", "female"], {
-    message: "Please select a valid gender.",
+    message: "GENDER_REQUIRED",
   }),
   profileImage: z
     .string()
     .optional()
     .refine((val) => !val || /^https?:\/\/.+/.test(val), {
-      message: "Invalid URL",
+      message: "PROFILE_IMAGE_INVALID",
     }),
 });
 
@@ -71,30 +71,31 @@ export const jobseekerPersonalSchema = z.object({
 export const jobseekerProfessionalSchema = z.object({
   professionalTitle: z
     .string()
-    .min(1, "Professional title is required.")
-    .max(128, "Professional title must be at most 128 characters.")
-    .pipe(
-      z.string().min(2, "Professional title must be at least 2 characters."),
-    ),
+    .min(1, "PROFESSIONAL_TITLE_REQUIRED")
+    .max(128, "PROFESSIONAL_TITLE_MAX_LENGTH")
+    .pipe(z.string().min(2, "PROFESSIONAL_TITLE_MIN_LENGTH")),
   educationLevel: z.enum(educationLevels, {
-    message: "Please select a valid education level.",
+    message: "EDUCATION_LEVEL_REQUIRED",
   }),
   experienceLevel: z.enum(experienceLevels, {
-    message: "Please select a valid experience level.",
+    message: "EXPERIENCE_LEVEL_REQUIRED",
   }),
   linkedin: z
     .string()
     .optional()
     .refine((val) => !val || /^https?:\/\/.+/.test(val), {
-      message: "Invalid URL",
+      message: "LINKEDIN_URL_INVALID",
     }),
-  professionalSummary: z.string().optional(),
+  professionalSummary: z
+    .string()
+    .max(2024, "PROFESSIONAL_SUMMARY_MAX_LENGTH")
+    .optional(),
 });
 
 // Final review schema (terms only — all required validation already happened on prior steps)
 export const reviewSchema = z.object({
   termsAndConditions: z.boolean().refine((val) => val === true, {
-    message: "You must accept the terms and conditions.",
+    message: "TERMS_AND_CONDITIONS_REQUIRED",
   }),
 });
 
@@ -102,58 +103,66 @@ export const reviewSchema = z.object({
 export const employerCompanySchema = z.object({
   companyName: z
     .string()
-    .min(1, "Company name is required.")
-    .max(128, "Company name must be at most 128 characters.")
-    .pipe(z.string().min(2, "Company name must be at least 2 characters.")),
+    .min(1, "COMPANY_NAME_REQUIRED")
+    .max(128, "COMPANY_NAME_MAX_LENGTH")
+    .pipe(z.string().min(2, "COMPANY_NAME_MIN_LENGTH")),
   address: z
     .string()
-    .min(1, "Address is required.")
-    .max(256, "Address must be at most 256 characters."),
+    .min(1, "ADDRESS_REQUIRED")
+    .max(256, "ADDRESS_MAX_LENGTH"),
   industry: z.enum(industries, {
-    message: "Please select a valid industry.",
+    message: "INDUSTRY_REQUIRED",
   }),
   size: z.enum(companySize, {
-    message: "Please select a valid company size.",
+    message: "SIZE_REQUIRED",
   }),
   foundingYear: z
     .string()
-    .min(1, "Founding year is required.")
-    .pipe(z.string().regex(/^\d{4}$/, "Invalid founding year")),
+    .min(1, "FOUNDING_YEAR_REQUIRED")
+    .pipe(z.string().regex(/^\d{4}$/, "FOUNDING_YEAR_INVALID")),
 });
 
 // Employer — Step 4 — Company Contact
 export const employerContactSchema = z.object({
   phoneNumber: z
     .string()
-    .min(1, "Phone number is required.")
-    .pipe(z.string().regex(/^0[5-7]\d{8}$/, "Invalid Phone number")),
+    .min(1, "PHONE_REQUIRED")
+    .pipe(z.string().regex(/^0[5-7]\d{8}$/, "PHONE_INVALID")),
   linkedin: z
     .string()
     .optional()
     .refine((val) => !val || /^https?:\/\/.+/.test(val), {
-      message: "Invalid URL",
+      message: "LINKEDIN_URL_INVALID",
     }),
   website: z
     .string()
     .optional()
     .refine((val) => !val || /^https?:\/\/.+/.test(val), {
-      message: "Invalid URL",
+      message: "WEBSITE_URL_INVALID",
     }),
 });
 
 // Employer — Step 5 — Company Profile
 export const employerProfileSchema = z.object({
-  description: z.string().optional(),
+  description: z
+    .string()
+    .max(2024, "DESCRIPTION_MAX_LENGTH")
+    .optional(),
   missions: z
     .array(
       z
         .string()
-        .min(2, "Mission must be at least 2 characters.")
-        .max(256, "Mission must be at most 256 characters"),
+        .min(2, "MISSION_MIN_LENGTH")
+        .max(256, "MISSION_MAX_LENGTH"),
     )
-    .max(20, "You can only add up to 20 missions.")
+    .max(20, "MISSIONS_MAX_LENGTH")
     .optional(),
-  logo: z.string().optional(),
+  logo: z
+    .string()
+    .refine((val) => !val || /^https?:\/\/.+/.test(val), {
+      message: "LOGO_REQUIRED",
+    })
+    .optional(),
 });
 
 // Combined schemas (kept for typing of the unified form values)

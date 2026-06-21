@@ -12,6 +12,7 @@ import enAdmin from "./locales/en/admin.json";
 import enPublic from "./locales/en/public.json";
 import enData from "./locales/en/data.json";
 import enTerms from "./locales/en/terms.json";
+import enError from "./locales/en/error.json";
 
 // French
 import frCommon from "./locales/fr/common.json";
@@ -23,6 +24,7 @@ import frAdmin from "./locales/fr/admin.json";
 import frPublic from "./locales/fr/public.json";
 import frData from "./locales/fr/data.json";
 import frTerms from "./locales/fr/terms.json";
+import frError from "./locales/fr/error.json";
 
 // Arabic
 import arCommon from "./locales/ar/common.json";
@@ -34,6 +36,7 @@ import arAdmin from "./locales/ar/admin.json";
 import arPublic from "./locales/ar/public.json";
 import arData from "./locales/ar/data.json";
 import arTerms from "./locales/ar/terms.json";
+import arError from "./locales/ar/error.json";
 
 i18n
   .use(LanguageDetector)
@@ -51,6 +54,7 @@ i18n
       "public",
       "data",
       "terms",
+      "error",
     ],
     debug: false,
     interpolation: {
@@ -71,6 +75,7 @@ i18n
         public: enPublic,
         data: enData,
         terms: enTerms,
+        error: enError,
       },
       fr: {
         common: frCommon,
@@ -82,6 +87,7 @@ i18n
         public: frPublic,
         data: frData,
         terms: frTerms,
+        error: frError,
       },
       ar: {
         common: arCommon,
@@ -93,6 +99,7 @@ i18n
         public: arPublic,
         data: arData,
         terms: arTerms,
+        error: arError,
       },
     },
   });

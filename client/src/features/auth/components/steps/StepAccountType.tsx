@@ -5,6 +5,7 @@ import { FieldError } from "@/components/ui/field";
 
 function StepAccountType({ form }: { form: any }) {
   const { t } = useTranslation("auth");
+  const { t: tr } = useTranslation("error");
 
   return (
     <div className="space-y-6">
@@ -67,7 +68,10 @@ function StepAccountType({ form }: { form: any }) {
             </div>
 
             {fieldState.invalid && (
-              <FieldError className="mt-3" errors={[fieldState.error]} />
+              <FieldError
+                className="mt-3"
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
             )}
           </div>
         )}

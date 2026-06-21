@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 
 function StepAccountInfo({ form }: { form: any }) {
   const { t } = useTranslation("auth");
+  const { t: tr } = useTranslation("error");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -37,7 +38,11 @@ function StepAccountInfo({ form }: { form: any }) {
                 placeholder="example@email.com"
               />
             </div>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />
@@ -71,7 +76,11 @@ function StepAccountInfo({ form }: { form: any }) {
                 />
               )}
             </div>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />
@@ -107,7 +116,11 @@ function StepAccountInfo({ form }: { form: any }) {
                 />
               )}
             </div>
-            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            {fieldState.invalid && (
+              <FieldError
+                errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+              />
+            )}
           </Field>
         )}
       />
