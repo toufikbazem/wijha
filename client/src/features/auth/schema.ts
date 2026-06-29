@@ -48,10 +48,7 @@ export const jobseekerPersonalSchema = z.object({
     .min(1, "LAST_NAME_REQUIRED")
     .max(128, "LAST_NAME_MAX_LENGTH")
     .pipe(z.string().min(2, "LAST_NAME_MIN_LENGTH")),
-  address: z
-    .string()
-    .min(1, "ADDRESS_REQUIRED")
-    .max(256, "ADDRESS_MAX_LENGTH"),
+  address: z.string().min(1, "ADDRESS_REQUIRED").max(256, "ADDRESS_MAX_LENGTH"),
   phoneNumber: z
     .string()
     .min(1, "PHONE_REQUIRED")
@@ -92,7 +89,178 @@ export const jobseekerProfessionalSchema = z.object({
     .optional(),
 });
 
-// Final review schema (terms only — all required validation already happened on prior steps)
+// Job Seeker — Step 5 — Experiences
+export const experienceDraftSchema = z
+  .object({
+    title: z
+      .string()
+      .min(1, "EXPERIENCE_TITLE_REQUIRED")
+      .max(128, "EXPERIENCE_TITLE_MAX_LENGTH")
+      .pipe(z.string().min(2, "EXPERIENCE_TITLE_MIN_LENGTH")),
+    company: z
+      .string()
+      .min(1, "EXPERIENCE_COMPANY_REQUIRED")
+      .max(128, "EXPERIENCE_COMPANY_MAX_LENGTH")
+      .pipe(z.string().min(2, "EXPERIENCE_COMPANY_MIN_LENGTH")),
+    fromMonth: z
+      .string()
+      .min(1, "EXPERIENCE_FROM_MONTH_REQUIRED")
+      .pipe(
+        z.string().regex(/^(1[0-2]|[1-9])$/, "EXPERIENCE_FROM_MONTH_REQUIRED"),
+      ),
+    fromYear: z
+      .string()
+      .min(1, "EXPERIENCE_FROM_YEAR_REQUIRED")
+      .pipe(z.string().regex(/^\d{4}$/, "EXPERIENCE_FROM_YEAR_REQUIRED")),
+    toMonth: z
+      .string()
+      .min(1, "EXPERIENCE_TO_MONTH_REQUIRED")
+      .pipe(
+        z.string().regex(/^(1[0-2]|[1-9])$/, "EXPERIENCE_TO_MONTH_REQUIRED"),
+      ),
+    toYear: z
+      .string()
+      .min(1, "EXPERIENCE_TO_YEAR_REQUIRED")
+      .pipe(z.string().regex(/^\d{4}$/, "EXPERIENCE_TO_YEAR_REQUIRED")),
+    description: z
+      .string()
+      .max(2024, "EXPERIENCE_DESCRIPTION_MAX_LENGTH")
+      .optional(),
+  })
+  .refine(
+    (data) => {
+      const start = new Date(
+        parseInt(data.fromYear),
+        parseInt(data.fromMonth) - 1,
+      );
+      const end = new Date(parseInt(data.toYear), parseInt(data.toMonth) - 1);
+      return start <= end;
+    },
+    {
+      message: "EXPERIENCE_END_DATE_AFTER_START",
+      path: ["toYear"],
+    },
+  );
+
+export const experienceItemSchema = z
+  .object({
+    title: z
+      .string()
+      .min(2, "EXPERIENCE_TITLE_MIN_LENGTH")
+      .max(128, "EXPERIENCE_TITLE_MAX_LENGTH"),
+    company: z
+      .string()
+      .min(2, "EXPERIENCE_COMPANY_MIN_LENGTH")
+      .max(128, "EXPERIENCE_COMPANY_MAX_LENGTH"),
+    from: z.iso.datetime("EXPERIENCE_FROM_INVALID"),
+    to: z.iso.datetime("EXPERIENCE_TO_INVALID"),
+    description: z
+      .string()
+      .max(2024, "EXPERIENCE_DESCRIPTION_MAX_LENGTH")
+      .optional(),
+  })
+  .refine((data) => new Date(data.from) <= new Date(data.to), {
+    message: "EXPERIENCE_END_DATE_AFTER_START",
+    path: ["to"],
+  });
+
+export const experiencesSchema = z
+  .array(experienceItemSchema)
+  .max(20, "EXPERIENCES_MAX_LENGTH")
+  .optional();
+
+// Job Seeker — Step 6 — Education
+export const educationDraftSchema = z
+  .object({
+    degree: z
+      .string()
+      .min(1, "EDUCATION_DEGREE_REQUIRED")
+      .max(128, "EDUCATION_DEGREE_MAX_LENGTH")
+      .pipe(z.string().min(2, "EDUCATION_DEGREE_MIN_LENGTH")),
+    institution: z
+      .string()
+      .min(1, "EDUCATION_INSTITUTION_REQUIRED")
+      .max(128, "EDUCATION_INSTITUTION_MAX_LENGTH")
+      .pipe(z.string().min(2, "EDUCATION_INSTITUTION_MIN_LENGTH")),
+    fromMonth: z
+      .string()
+      .min(1, "EDUCATION_FROM_MONTH_REQUIRED")
+      .pipe(
+        z.string().regex(/^(1[0-2]|[1-9])$/, "EDUCATION_FROM_MONTH_REQUIRED"),
+      ),
+    fromYear: z
+      .string()
+      .min(1, "EDUCATION_FROM_YEAR_REQUIRED")
+      .pipe(z.string().regex(/^\d{4}$/, "EDUCATION_FROM_YEAR_REQUIRED")),
+    toMonth: z
+      .string()
+      .min(1, "EDUCATION_TO_MONTH_REQUIRED")
+      .pipe(
+        z.string().regex(/^(1[0-2]|[1-9])$/, "EDUCATION_TO_MONTH_REQUIRED"),
+      ),
+    toYear: z
+      .string()
+      .min(1, "EDUCATION_TO_YEAR_REQUIRED")
+      .pipe(z.string().regex(/^\d{4}$/, "EDUCATION_TO_YEAR_REQUIRED")),
+    description: z
+      .string()
+      .max(2024, "EDUCATION_DESCRIPTION_MAX_LENGTH")
+      .optional(),
+  })
+  .refine(
+    (data) => {
+      const start = new Date(
+        parseInt(data.fromYear),
+        parseInt(data.fromMonth) - 1,
+      );
+      const end = new Date(parseInt(data.toYear), parseInt(data.toMonth) - 1);
+      return start <= end;
+    },
+    {
+      message: "EDUCATION_END_DATE_AFTER_START",
+      path: ["toYear"],
+    },
+  );
+
+export const educationItemSchema = z
+  .object({
+    degree: z
+      .string()
+      .min(2, "EDUCATION_DEGREE_MIN_LENGTH")
+      .max(128, "EDUCATION_DEGREE_MAX_LENGTH"),
+    institution: z
+      .string()
+      .min(2, "EDUCATION_INSTITUTION_MIN_LENGTH")
+      .max(128, "EDUCATION_INSTITUTION_MAX_LENGTH"),
+    from: z.iso.datetime("EDUCATION_FROM_INVALID"),
+    to: z.iso.datetime("EDUCATION_TO_INVALID"),
+    description: z
+      .string()
+      .max(2024, "EDUCATION_DESCRIPTION_MAX_LENGTH")
+      .optional(),
+  })
+  .refine((data) => new Date(data.from) <= new Date(data.to), {
+    message: "EDUCATION_END_DATE_AFTER_START",
+    path: ["to"],
+  });
+
+export const educationsSchema = z
+  .array(educationItemSchema)
+  .max(20, "EDUCATIONS_MAX_LENGTH")
+  .optional();
+
+// Job Seeker — Step 7 — Skills
+export const skillSchema = z
+  .string()
+  .min(2, "SKILL_MIN_LENGTH")
+  .max(50, "SKILL_MAX_LENGTH");
+
+export const skillsSchema = z
+  .array(skillSchema)
+  .max(30, "SKILLS_MAX_LENGTH")
+  .optional();
+
+// Final review schema
 export const reviewSchema = z.object({
   termsAndConditions: z.boolean().refine((val) => val === true, {
     message: "TERMS_AND_CONDITIONS_REQUIRED",
@@ -106,10 +274,7 @@ export const employerCompanySchema = z.object({
     .min(1, "COMPANY_NAME_REQUIRED")
     .max(128, "COMPANY_NAME_MAX_LENGTH")
     .pipe(z.string().min(2, "COMPANY_NAME_MIN_LENGTH")),
-  address: z
-    .string()
-    .min(1, "ADDRESS_REQUIRED")
-    .max(256, "ADDRESS_MAX_LENGTH"),
+  address: z.string().min(1, "ADDRESS_REQUIRED").max(256, "ADDRESS_MAX_LENGTH"),
   industry: z.enum(industries, {
     message: "INDUSTRY_REQUIRED",
   }),
@@ -144,16 +309,10 @@ export const employerContactSchema = z.object({
 
 // Employer — Step 5 — Company Profile
 export const employerProfileSchema = z.object({
-  description: z
-    .string()
-    .max(2024, "DESCRIPTION_MAX_LENGTH")
-    .optional(),
+  description: z.string().max(2024, "DESCRIPTION_MAX_LENGTH").optional(),
   missions: z
     .array(
-      z
-        .string()
-        .min(2, "MISSION_MIN_LENGTH")
-        .max(256, "MISSION_MAX_LENGTH"),
+      z.string().min(2, "MISSION_MIN_LENGTH").max(256, "MISSION_MAX_LENGTH"),
     )
     .max(20, "MISSIONS_MAX_LENGTH")
     .optional(),
@@ -165,107 +324,40 @@ export const employerProfileSchema = z.object({
     .optional(),
 });
 
-// Combined schemas (kept for typing of the unified form values)
-export const jobSeekerSchema = z
-  .object({
-    firstName: z
-      .string()
-      .min(1, "User name is required.")
-      .min(2, "User name must be at least 2 characters.")
-      .max(25, "User name must not exceed 25 characters."),
-    lastName: z
-      .string()
-      .min(1, "User name is required.")
-      .min(2, "User name must be at least 2 characters.")
-      .max(25, "User name must not exceed 25 characters."),
-    professionalTitle: z
-      .string()
-      .min(1, "Professional title is required.")
-      .min(2, "Professional title must be at least 2 characters.")
-      .max(50, "Professional title must not exceed 50 characters."),
-    email: z
-      .string()
-      .min(1, "Email is required.")
-      .email("Invalid email address"),
-    educationLevel: z.string().min(1, "Education level is required."),
-    experienceLevel: z.string().min(1, "Experience level is required."),
-    gender: z.string().min(1, "Gender is required."),
-    phoneNumber: z
-      .string()
-      .min(1, "Phone number is required.")
-      .regex(/^0[5-7]\d{8}$/, "Invalid Phone number"),
-    address: z.string().min(1, "Address is required."),
-    password: z
-      .string()
-      .min(1, "Password is required.")
-      .min(8, "Password must be at least 8 characters."),
-    confirmPassword: z.string().min(1, "Confirm password is required."),
-    termsAndConditions: z.boolean().refine((val) => val === true, {
-      message: "You must accept the terms and conditions.",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords must match",
-    path: ["confirmPassword"],
-  });
-
-export const employerSchema = z
-  .object({
-    companyName: z
-      .string()
-      .min(1, "Company name is required.")
-      .min(2, "Company name must be at least 2 characters.")
-      .max(100, "Company name must not exceed 100 characters."),
-    size: z.string().min(1, "Company size is required."),
-    address: z.string().min(1, "Address is required."),
-    industry: z.string().min(1, "Industry is required."),
-    phoneNumber: z
-      .string()
-      .min(1, "Phone number is required.")
-      .regex(/^0[5-7]\d{8}$/, "Invalid Phone number"),
-    email: z
-      .string()
-      .min(1, "Email is required.")
-      .email("Invalid email address"),
-    foundingYear: z
-      .string()
-      .min(1, "Founding year is required.")
-      .regex(/^\d{4}$/, "Invalid founding year"),
-    password: z
-      .string()
-      .min(1, "Password is required.")
-      .min(8, "Password must be at least 8 characters."),
-    confirmPassword: z.string().min(1, "Confirm password is required."),
-    termsAndConditions: z.boolean().refine((val) => val === true, {
-      message: "You must accept the terms and conditions.",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords must match",
-    path: ["confirmPassword"],
-  });
-
 export const loginSchema = z.object({
-  email: z.string().min(1, "Email is required.").email("Invalid email address"),
+  email: z
+    .string()
+    .min(1, "EMAIL_REQUIRED")
+    .max(254, "EMAIL_MAX_LENGTH")
+    .pipe(z.email("EMAIL_INVALID")),
   password: z
     .string()
-    .min(1, "Password is required.")
-    .min(8, "Password must be at least 8 characters."),
+    .min(1, "PASSWORD_REQUIRED")
+    .max(128, "PASSWORD_MAX_LENGTH")
+    .pipe(z.string().min(8, "PASSWORD_MIN_LENGTH")),
   rememberMe: z.boolean(),
 });
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().min(1, "Email is required.").email("Invalid email address"),
+  email: z
+    .string()
+    .min(1, "EMAIL_REQUIRED")
+    .max(254, "EMAIL_MAX_LENGTH")
+    .pipe(z.email("EMAIL_INVALID")),
 });
 
 export const resetPasswordSchema = z
   .object({
     password: z
       .string()
-      .min(1, "Password is required.")
-      .min(8, "Password must be at least 8 characters."),
-    confirmPassword: z.string().min(1, "Confirm password is required."),
+      .min(1, "PASSWORD_REQUIRED")
+      .max(128, "PASSWORD_MAX_LENGTH")
+      .pipe(z.string().min(8, "PASSWORD_MIN_LENGTH")),
+    confirmPassword: z
+      .string()
+      .min(1, "CONFIRMPASSWORD_REQUIRED")
+      .max(128, "CONFIRMPASSWORD_MAX_LENGTH"),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords must match",
+    message: "PASSWORDS_MUST_MATCH",
   });

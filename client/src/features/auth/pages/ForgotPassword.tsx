@@ -23,6 +23,7 @@ function ForgotPassword() {
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { t } = useTranslation("auth");
+  const { t: tr } = useTranslation("error");
 
   const form = useForm<z.infer<typeof forgotPasswordSchema>>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -147,7 +148,11 @@ function ForgotPassword() {
                       />
                     </div>
                     {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
+                      <FieldError
+                        errors={[
+                          { message: tr(fieldState.error?.message ?? "") },
+                        ]}
+                      />
                     )}
                   </Field>
                 )}

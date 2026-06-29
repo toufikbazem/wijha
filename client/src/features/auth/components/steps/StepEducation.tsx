@@ -14,13 +14,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GraduationCap, Pen, Plus, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
 import i18n from "@/i18n/i18n";
+import { educationDraftSchema } from "../../schema";
 
 const months = [
   "January",
@@ -56,28 +57,45 @@ function StepEducation({ form }: { form: any }) {
   const { t } = useTranslation("auth");
   const { t: tj } = useTranslation("jobseeker");
   const { t: tc } = useTranslation("common");
+  const { t: tr } = useTranslation("error");
   const educations: any[] = form.watch("educations") || [];
   const [draft, setDraft] = useState<any>(emptyEducation);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
 
   const resetDraft = () => {
     setDraft(emptyEducation);
+    setErrors({});
     setEditIndex(null);
   };
 
+  // Update a draft field and clear its inline error (and the cross-field date
+  // error, which is surfaced on `toYear`) so it disappears as the user fixes it.
+  const updateDraft = (patch: Record<string, any>) => {
+    setDraft((prev: any) => ({ ...prev, ...patch }));
+    setErrors((prev) => {
+      const next = { ...prev };
+      Object.keys(patch).forEach((key) => delete next[key]);
+      delete next.toYear;
+      return next;
+    });
+  };
+
   const handleSave = () => {
-    if (
-      !draft.degree ||
-      !draft.institution ||
-      !draft.fromMonth ||
-      !draft.fromYear ||
-      !draft.toMonth ||
-      !draft.toYear
-    ) {
-      toast.error(t("fillAllEducationFields"));
+    const result = educationDraftSchema.safeParse(draft);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        const key = issue.path[0];
+        if (typeof key === "string" && !fieldErrors[key]) {
+          fieldErrors[key] = issue.message;
+        }
+      });
+      setErrors(fieldErrors);
       return;
     }
+    setErrors({});
     const startDate = new Date(
       parseInt(draft.fromYear),
       parseInt(draft.fromMonth) - 1,
@@ -86,10 +104,6 @@ function StepEducation({ form }: { form: any }) {
       parseInt(draft.toYear),
       parseInt(draft.toMonth) - 1,
     );
-    if (startDate > endDate) {
-      toast.error(tj("endDateAfterStart"));
-      return;
-    }
 
     const newEntry = {
       degree: draft.degree,
@@ -174,9 +188,13 @@ function StepEducation({ form }: { form: any }) {
                 type="text"
                 value={draft.degree}
                 placeholder={t("degree")}
-                onChange={(e) => setDraft({ ...draft, degree: e.target.value })}
+                aria-invalid={!!errors.degree}
+                onChange={(e) => updateDraft({ degree: e.target.value })}
                 className="input-filter ltr:pl-2! rtl:pr-2!"
               />
+              {errors.degree && (
+                <FieldError errors={[{ message: tr(errors.degree) }]} />
+              )}
             </div>
 
             <div className="flex flex-col gap-1">
@@ -185,11 +203,13 @@ function StepEducation({ form }: { form: any }) {
                 type="text"
                 value={draft.institution}
                 placeholder={t("institution")}
-                onChange={(e) =>
-                  setDraft({ ...draft, institution: e.target.value })
-                }
+                aria-invalid={!!errors.institution}
+                onChange={(e) => updateDraft({ institution: e.target.value })}
                 className="input-filter ltr:pl-2! rtl:pr-2!"
               />
+              {errors.institution && (
+                <FieldError errors={[{ message: tr(errors.institution) }]} />
+              )}
             </div>
 
             <div className="flex flex-col gap-2">
@@ -198,12 +218,11 @@ function StepEducation({ form }: { form: any }) {
                 <div className="flex items-center gap-2">
                   <Select
                     value={draft.fromMonth}
-                    onValueChange={(v) =>
-                      setDraft((prev: any) => ({ ...prev, fromMonth: v }))
-                    }
+                    onValueChange={(v) => updateDraft({ fromMonth: v })}
                   >
                     <SelectTrigger
                       dir={i18n.dir()}
+                      aria-invalid={!!errors.fromMonth}
                       className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
                     >
                       <SelectValue placeholder={tj("selectMonth")} />
@@ -218,12 +237,11 @@ function StepEducation({ form }: { form: any }) {
                   </Select>
                   <Select
                     value={draft.fromYear}
-                    onValueChange={(v) =>
-                      setDraft((prev: any) => ({ ...prev, fromYear: v }))
-                    }
+                    onValueChange={(v) => updateDraft({ fromYear: v })}
                   >
                     <SelectTrigger
                       dir={i18n.dir()}
+                      aria-invalid={!!errors.fromYear}
                       className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
                     >
                       <SelectValue placeholder={tj("selectYear")} />
@@ -237,6 +255,13 @@ function StepEducation({ form }: { form: any }) {
                     </SelectContent>
                   </Select>
                 </div>
+                {(errors.fromMonth || errors.fromYear) && (
+                  <FieldError
+                    errors={[
+                      { message: tr(errors.fromMonth || errors.fromYear) },
+                    ]}
+                  />
+                )}
               </div>
 
               <div className="flex flex-col gap-1">
@@ -244,12 +269,11 @@ function StepEducation({ form }: { form: any }) {
                 <div className="flex items-center gap-2">
                   <Select
                     value={draft.toMonth}
-                    onValueChange={(v) =>
-                      setDraft((prev: any) => ({ ...prev, toMonth: v }))
-                    }
+                    onValueChange={(v) => updateDraft({ toMonth: v })}
                   >
                     <SelectTrigger
                       dir={i18n.dir()}
+                      aria-invalid={!!errors.toMonth}
                       className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
                     >
                       <SelectValue placeholder={tj("selectMonth")} />
@@ -264,12 +288,11 @@ function StepEducation({ form }: { form: any }) {
                   </Select>
                   <Select
                     value={draft.toYear}
-                    onValueChange={(v) =>
-                      setDraft((prev: any) => ({ ...prev, toYear: v }))
-                    }
+                    onValueChange={(v) => updateDraft({ toYear: v })}
                   >
                     <SelectTrigger
                       dir={i18n.dir()}
+                      aria-invalid={!!errors.toYear}
                       className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
                     >
                       <SelectValue placeholder={tj("selectYear")} />
@@ -283,6 +306,11 @@ function StepEducation({ form }: { form: any }) {
                     </SelectContent>
                   </Select>
                 </div>
+                {(errors.toMonth || errors.toYear) && (
+                  <FieldError
+                    errors={[{ message: tr(errors.toMonth || errors.toYear) }]}
+                  />
+                )}
               </div>
             </div>
 
@@ -292,11 +320,13 @@ function StepEducation({ form }: { form: any }) {
                 value={draft.description}
                 placeholder={tj("jobDescription")}
                 rows={4}
-                onChange={(e) =>
-                  setDraft({ ...draft, description: e.target.value })
-                }
+                aria-invalid={!!errors.description}
+                onChange={(e) => updateDraft({ description: e.target.value })}
                 className="input-filter ltr:pl-2! rtl:pr-2! resize-none"
               />
+              {errors.description && (
+                <FieldError errors={[{ message: tr(errors.description) }]} />
+              )}
             </div>
 
             <DialogFooter>

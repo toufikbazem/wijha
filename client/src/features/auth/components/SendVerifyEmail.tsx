@@ -41,7 +41,9 @@ export default function SendVerifyEmail({ email }: { email: string }) {
         toast.success(t("verificationSentSuccess"));
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : t("failedSendVerification"));
+      toast.error(
+        error instanceof Error ? error.message : t("failedSendVerification"),
+      );
       setSent(false);
       setCountdown(0);
     }
@@ -60,9 +62,7 @@ export default function SendVerifyEmail({ email }: { email: string }) {
           <h1 className="text-lg font-medium text-gray-900 mb-1">
             {t("checkYourEmail")}
           </h1>
-          <p className="text-sm text-gray-500">
-            {t("sentVerificationTo")}
-          </p>
+          <p className="text-sm text-gray-500">{t("sentVerificationTo")}</p>
           <p className="text-sm font-medium text-gray-900 mt-0.5 mb-6">
             {email}
           </p>

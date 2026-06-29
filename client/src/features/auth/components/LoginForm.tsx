@@ -30,6 +30,7 @@ function LoginForm({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation("auth");
+  const { t: tr } = useTranslation("error");
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -92,7 +93,11 @@ function LoginForm({
                   placeholder="example@email.com"
                 />
               </div>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && (
+                <FieldError
+                  errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+                />
+              )}
             </Field>
           )}
         />
@@ -127,7 +132,11 @@ function LoginForm({
                   />
                 )}
               </div>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              {fieldState.invalid && (
+                <FieldError
+                  errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+                />
+              )}
             </Field>
           )}
         />
@@ -151,7 +160,9 @@ function LoginForm({
                   </FieldLabel>
                 </Field>
                 {fieldState.invalid && (
-                  <FieldError className="mt-2" errors={[fieldState.error]} />
+                  <FieldError
+                    errors={[{ message: tr(fieldState.error?.message ?? "") }]}
+                  />
                 )}
               </div>
             )}

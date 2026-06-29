@@ -29,6 +29,7 @@ function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { t } = useTranslation("auth");
+  const { t: tr } = useTranslation("error");
 
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
@@ -121,7 +122,11 @@ function ResetPassword() {
                       )}
                     </div>
                     {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
+                      <FieldError
+                        errors={[
+                          { message: tr(fieldState.error?.message ?? "") },
+                        ]}
+                      />
                     )}
                   </Field>
                 )}
@@ -163,7 +168,11 @@ function ResetPassword() {
                       )}
                     </div>
                     {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
+                      <FieldError
+                        errors={[
+                          { message: tr(fieldState.error?.message ?? "") },
+                        ]}
+                      />
                     )}
                   </Field>
                 )}
@@ -177,7 +186,8 @@ function ResetPassword() {
               >
                 {loading ? (
                   <>
-                    <Spinner className="ltr:mr-2 rtl:ml-2" /> {t("loading", { ns: "common" })}
+                    <Spinner className="ltr:mr-2 rtl:ml-2" />{" "}
+                    {t("loading", { ns: "common" })}
                   </>
                 ) : (
                   t("resetPassword")

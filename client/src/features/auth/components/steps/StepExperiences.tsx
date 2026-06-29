@@ -14,13 +14,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Briefcase, Pen, Plus, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
 import i18n from "@/i18n/i18n";
+import { experienceDraftSchema } from "../../schema";
 
 const months = [
   "January",
@@ -56,14 +57,29 @@ function StepExperiences({ form }: { form: any }) {
   const { t } = useTranslation("auth");
   const { t: tj } = useTranslation("jobseeker");
   const { t: tc } = useTranslation("common");
+  const { t: tr } = useTranslation("error");
   const experiences: any[] = form.watch("experiences") || [];
   const [draft, setDraft] = useState<any>(emptyExperience);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
 
   const resetDraft = () => {
     setDraft(emptyExperience);
+    setErrors({});
     setEditIndex(null);
+  };
+
+  // Update a draft field and clear its inline error (and the cross-field date
+  // error, which is surfaced on `toYear`) so it disappears as the user fixes it.
+  const updateDraft = (patch: Record<string, any>) => {
+    setDraft((prev: any) => ({ ...prev, ...patch }));
+    setErrors((prev) => {
+      const next = { ...prev };
+      Object.keys(patch).forEach((key) => delete next[key]);
+      delete next.toYear;
+      return next;
+    });
   };
 
   const buildPayload = () => {
@@ -79,22 +95,20 @@ function StepExperiences({ form }: { form: any }) {
   };
 
   const handleSave = () => {
-    if (
-      !draft.title ||
-      !draft.company ||
-      !draft.fromMonth ||
-      !draft.fromYear ||
-      !draft.toMonth ||
-      !draft.toYear
-    ) {
-      toast.error(t("fillAllExperienceFields"));
+    const result = experienceDraftSchema.safeParse(draft);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        const key = issue.path[0];
+        if (typeof key === "string" && !fieldErrors[key]) {
+          fieldErrors[key] = issue.message;
+        }
+      });
+      setErrors(fieldErrors);
       return;
     }
+    setErrors({});
     const { startDate, endDate } = buildPayload();
-    if (startDate > endDate) {
-      toast.error(tj("endDateAfterStart"));
-      return;
-    }
 
     const newEntry = {
       title: draft.title,
@@ -141,9 +155,7 @@ function StepExperiences({ form }: { form: any }) {
     <div className="space-y-5">
       <div>
         <h2 className="text-xl font-bold text-gray-900">{t("experiences")}</h2>
-        <p className="text-sm text-gray-500 mt-1">
-          {t("experiencesSubtitle")}
-        </p>
+        <p className="text-sm text-gray-500 mt-1">{t("experiencesSubtitle")}</p>
       </div>
 
       <div className="flex justify-end">
@@ -183,9 +195,13 @@ function StepExperiences({ form }: { form: any }) {
                 type="text"
                 value={draft.title}
                 placeholder={tj("jobTitle")}
-                onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+                aria-invalid={!!errors.title}
+                onChange={(e) => updateDraft({ title: e.target.value })}
                 className="input-filter ltr:pl-2! rtl:pr-2!"
               />
+              {errors.title && (
+                <FieldError errors={[{ message: tr(errors.title) }]} />
+              )}
             </div>
 
             <div className="flex flex-col gap-1">
@@ -194,11 +210,13 @@ function StepExperiences({ form }: { form: any }) {
                 type="text"
                 value={draft.company}
                 placeholder={tj("company")}
-                onChange={(e) =>
-                  setDraft({ ...draft, company: e.target.value })
-                }
+                aria-invalid={!!errors.company}
+                onChange={(e) => updateDraft({ company: e.target.value })}
                 className="input-filter ltr:pl-2! rtl:pr-2!"
               />
+              {errors.company && (
+                <FieldError errors={[{ message: tr(errors.company) }]} />
+              )}
             </div>
 
             <div className="flex flex-col gap-2">
@@ -207,12 +225,11 @@ function StepExperiences({ form }: { form: any }) {
                 <div className="flex items-center gap-2">
                   <Select
                     value={draft.fromMonth}
-                    onValueChange={(v) =>
-                      setDraft((prev: any) => ({ ...prev, fromMonth: v }))
-                    }
+                    onValueChange={(v) => updateDraft({ fromMonth: v })}
                   >
                     <SelectTrigger
                       dir={i18n.dir()}
+                      aria-invalid={!!errors.fromMonth}
                       className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
                     >
                       <SelectValue placeholder={tj("selectMonth")} />
@@ -227,12 +244,11 @@ function StepExperiences({ form }: { form: any }) {
                   </Select>
                   <Select
                     value={draft.fromYear}
-                    onValueChange={(v) =>
-                      setDraft((prev: any) => ({ ...prev, fromYear: v }))
-                    }
+                    onValueChange={(v) => updateDraft({ fromYear: v })}
                   >
                     <SelectTrigger
                       dir={i18n.dir()}
+                      aria-invalid={!!errors.fromYear}
                       className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
                     >
                       <SelectValue placeholder={tj("selectYear")} />
@@ -246,6 +262,13 @@ function StepExperiences({ form }: { form: any }) {
                     </SelectContent>
                   </Select>
                 </div>
+                {(errors.fromMonth || errors.fromYear) && (
+                  <FieldError
+                    errors={[
+                      { message: tr(errors.fromMonth || errors.fromYear) },
+                    ]}
+                  />
+                )}
               </div>
 
               <div className="flex flex-col gap-1">
@@ -253,12 +276,11 @@ function StepExperiences({ form }: { form: any }) {
                 <div className="flex items-center gap-2">
                   <Select
                     value={draft.toMonth}
-                    onValueChange={(v) =>
-                      setDraft((prev: any) => ({ ...prev, toMonth: v }))
-                    }
+                    onValueChange={(v) => updateDraft({ toMonth: v })}
                   >
                     <SelectTrigger
                       dir={i18n.dir()}
+                      aria-invalid={!!errors.toMonth}
                       className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
                     >
                       <SelectValue placeholder={tj("selectMonth")} />
@@ -273,12 +295,11 @@ function StepExperiences({ form }: { form: any }) {
                   </Select>
                   <Select
                     value={draft.toYear}
-                    onValueChange={(v) =>
-                      setDraft((prev: any) => ({ ...prev, toYear: v }))
-                    }
+                    onValueChange={(v) => updateDraft({ toYear: v })}
                   >
                     <SelectTrigger
                       dir={i18n.dir()}
+                      aria-invalid={!!errors.toYear}
                       className="input-filter flex w-full justify-between ltr:pl-2! rtl:pr-2!"
                     >
                       <SelectValue placeholder={tj("selectYear")} />
@@ -292,6 +313,11 @@ function StepExperiences({ form }: { form: any }) {
                     </SelectContent>
                   </Select>
                 </div>
+                {(errors.toMonth || errors.toYear) && (
+                  <FieldError
+                    errors={[{ message: tr(errors.toMonth || errors.toYear) }]}
+                  />
+                )}
               </div>
             </div>
 
@@ -301,11 +327,13 @@ function StepExperiences({ form }: { form: any }) {
                 value={draft.description}
                 placeholder={tj("jobDescription")}
                 rows={4}
-                onChange={(e) =>
-                  setDraft({ ...draft, description: e.target.value })
-                }
+                aria-invalid={!!errors.description}
+                onChange={(e) => updateDraft({ description: e.target.value })}
                 className="input-filter ltr:pl-2! rtl:pr-2! resize-none"
               />
+              {errors.description && (
+                <FieldError errors={[{ message: tr(errors.description) }]} />
+              )}
             </div>
 
             <DialogFooter>
@@ -337,9 +365,7 @@ function StepExperiences({ form }: { form: any }) {
             <p className="text-gray-800 font-semibold mb-1">
               {t("noExperienceYet")}
             </p>
-            <p className="text-sm text-gray-500">
-              {t("noExperienceYetDesc")}
-            </p>
+            <p className="text-sm text-gray-500">{t("noExperienceYetDesc")}</p>
           </div>
         ) : (
           experiences.map((exp: any, index: number) => (

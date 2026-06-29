@@ -1,22 +1,44 @@
+import { FieldError } from "@/components/ui/field";
 import { SkillCombobox } from "@/components/ui/skill-combobox";
 import { Award, Plus, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { skillSchema, skillsSchema } from "../../schema";
 
 function StepSkills({ form }: { form: any }) {
   const { t } = useTranslation("auth");
+  const { t: tr } = useTranslation("error");
   const skills: string[] = form.watch("skills") || [];
   const [draft, setDraft] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const addSkill = (value?: string) => {
     const trimmed = (value ?? draft).trim();
     if (!trimmed) return;
     if (skills.includes(trimmed)) {
       setDraft("");
+      setError(null);
       return;
     }
-    form.setValue("skills", [...skills, trimmed], { shouldDirty: true });
+
+    const result = skillSchema.safeParse(trimmed);
+    if (!result.success) {
+      setError(result.error.issues[0].message);
+      return;
+    }
+
+    const next = [...skills, trimmed];
+    // Guard against exceeding the array max (e.g. 30 skills).
+    const listResult = skillsSchema.safeParse(next);
+    if (!listResult.success) {
+      setError(listResult.error.issues[0].message);
+      return;
+    }
+
+    form.setValue("skills", next, { shouldDirty: true });
+    form.clearErrors("skills");
     setDraft("");
+    setError(null);
   };
 
   const removeSkill = (idx: number) => {
@@ -25,6 +47,13 @@ function StepSkills({ form }: { form: any }) {
       skills.filter((_, i) => i !== idx),
       { shouldDirty: true },
     );
+    setError(null);
+  };
+
+  // Clear the inline error as the user edits the draft.
+  const handleDraftChange = (value: string) => {
+    setDraft(value);
+    if (error) setError(null);
   };
 
   return (
@@ -34,22 +63,25 @@ function StepSkills({ form }: { form: any }) {
         <p className="text-sm text-gray-500 mt-1">{t("skillsSubtitle")}</p>
       </div>
 
-      <div className="flex items-center gap-2">
-        <SkillCombobox
-          value={draft}
-          onChange={setDraft}
-          onSelect={(label) => addSkill(label)}
-          onPlainEnter={() => addSkill()}
-          placeholder={t("addSkillPlaceholder")}
-        />
-        <button
-          type="button"
-          onClick={() => addSkill()}
-          className="flex items-center gap-2 px-4 py-2 bg-[#008CBA] hover:bg-[#007399] text-white rounded-lg transition text-sm font-medium cursor-pointer shrink-0"
-        >
-          <Plus className="w-4 h-4" />
-          {t("add")}
-        </button>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2">
+          <SkillCombobox
+            value={draft}
+            onChange={handleDraftChange}
+            onSelect={(label) => addSkill(label)}
+            onPlainEnter={() => addSkill()}
+            placeholder={t("addSkillPlaceholder")}
+          />
+          <button
+            type="button"
+            onClick={() => addSkill()}
+            className="flex items-center gap-2 px-4 py-2 bg-[#008CBA] hover:bg-[#007399] text-white rounded-lg transition text-sm font-medium cursor-pointer shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            {t("add")}
+          </button>
+        </div>
+        {error && <FieldError errors={[{ message: tr(error) }]} />}
       </div>
 
       {skills.length === 0 ? (

@@ -2,12 +2,16 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { z } from "zod";
 
 import {
   accountTypeSchema,
   accountInfoSchema,
   jobseekerPersonalSchema,
   jobseekerProfessionalSchema,
+  experiencesSchema,
+  educationsSchema,
+  skillsSchema,
   employerCompanySchema,
   employerContactSchema,
   employerProfileSchema,
@@ -111,6 +115,15 @@ function MultiStepRegister({
           "linkedin",
           "professionalSummary",
         ];
+      } else if (step === 5) {
+        schema = z.object({ experiences: experiencesSchema });
+        pickFields = ["experiences"];
+      } else if (step === 6) {
+        schema = z.object({ educations: educationsSchema });
+        pickFields = ["educations"];
+      } else if (step === 7) {
+        schema = z.object({ skills: skillsSchema });
+        pickFields = ["skills"];
       } else if (step === 9) {
         schema = reviewSchema;
         pickFields = ["termsAndConditions"];
