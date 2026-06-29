@@ -210,6 +210,7 @@ export const getPublicCompanies = async (req, res) => {
     const conditions = [
       "e.status IN ('active', 'unverified')",
       "u.is_email_verified = true",
+      "u.id NOT IN ('a077a05c-8927-46c4-95dc-06fb912ea0f8', 'b4573689-a65c-414c-b416-e14177799053')",
     ];
     const values = [];
     let index = 1;
@@ -241,7 +242,13 @@ export const getPublicCompanies = async (req, res) => {
        FROM users u
        INNER JOIN employers e ON u.id = e.user_id
        WHERE ${whereClause}
-       ORDER BY e.company_name ASC
+       ORDER BY
+         (
+           (CASE WHEN e.logo IS NOT NULL AND e.logo <> '' THEN 1 ELSE 0 END) +
+           (CASE WHEN e.cover_image IS NOT NULL AND e.cover_image <> '' THEN 1 ELSE 0 END) +
+           (CASE WHEN e.description IS NOT NULL AND e.description <> '' THEN 1 ELSE 0 END)
+         ) DESC,
+         e.company_name ASC
        LIMIT $${limitIdx} OFFSET $${offsetIdx}`,
       values,
     );

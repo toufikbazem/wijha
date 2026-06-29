@@ -34,7 +34,8 @@ function Companies() {
       size: "51-200",
       founding_year: "2004",
       logo: "https://boviztzlmswursbcnsnh.supabase.co/storage/v1/object/public/wijha/public/1777537216067-UVEDS.png",
-      cover_image: null,
+      cover_image:
+        "https://boviztzlmswursbcnsnh.supabase.co/storage/v1/object/public/wijha/public/1782296600983-484870131_998814535641934_771476738659899988_n.jpg",
       description:
         "Spécialiste de la motorisation diesel, UVEDS conçoit et fabrique des solutions industrielles fiables pour les secteurs de l'énergie et du transport.",
     },
@@ -47,7 +48,8 @@ function Companies() {
       size: "201-500",
       founding_year: "2008",
       logo: "https://boviztzlmswursbcnsnh.supabase.co/storage/v1/object/public/wijha/public/1778327794241-70624_1.png.thb.jpg",
-      cover_image: null,
+      cover_image:
+        "https://boviztzlmswursbcnsnh.supabase.co/storage/v1/object/public/wijha/public/1778327846443-573088652_122099665293092834_3288622589970192079_n.jpg",
       description:
         "RECOLTAL accompagne les acteurs agro-industriels avec des équipements de récolte et de transformation performants, au service d'une agriculture moderne.",
     },
